@@ -1,0 +1,212 @@
+{
+    "settings":{
+        "index":{
+            "analysis":{
+                "analyzer":{
+                    "keylower":{
+                        "tokenizer":"keyword",
+                        "filter": "lowercase"
+                    }
+                }
+            }
+        }
+    },
+    "mappings": {
+        "scientificnames": {
+            "properties": {
+                "scientificname": {
+                    "properties": {
+                        "genus": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "family": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        }
+                    }
+                }
+            }
+        },
+        "botanists": {
+            "properties": {
+                "botanist": {
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "id": {
+                            "type": "long",
+                            "index": "not_analyzed"
+                        }
+                    }
+                }
+            }
+        },
+        "missions": {
+            "properties": {
+                "mission": {
+                    "properties": {
+                        "description": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "id": {
+                            "type": "long",
+                            "index": "not_analyzed"
+                        },
+                        "title": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "tags": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        }
+                    }
+                }
+            }
+        },
+        "herbonautes": {
+            "properties": {
+                "herbonaute": {
+                    "properties": {
+                        "firstName": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "lastName": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "id": {
+                            "type": "long",
+                            "index": "not_analyzed"
+                        },
+                        "login": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        }
+                    }
+                }
+            }
+        },
+        "specimens": {
+            "properties": {
+                "specimen": {
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "genus": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "institute": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "collection": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "family": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "tags": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "country": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "region1": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "region2": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        }
+                    }
+                }
+            }
+        },
+        "tags": {
+            "properties": {
+                "tag": {
+                    "properties": {
+                        "tagId": {
+                            "type": "long",
+                            "index": "not_analyzed"
+                        },
+                        "tagType": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "tagLabel": {
+                            "type": "string",
+                            "analyser": "keylower"
+                        },
+                        "tagLabelRaw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                }
+            }
+        },
+        "news": {
+            "properties": {
+                "news": {
+                    "properties": {
+                        "id": {
+                            "type": "long",
+                            "index": "not_analyzed"
+                        },
+                        "text": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "title": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        }
+                    }
+                }
+            }
+        },
+        "discussions": {
+            "properties": {
+                "discussion": {
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "messages": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "categories": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        },
+                        "id": {
+                            "type": "long",
+                            "index": "not_analyzed"
+                        },
+                        "tags": {
+                            "type": "string",
+                            "analyzer":"keylower"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

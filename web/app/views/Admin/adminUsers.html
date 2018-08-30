@@ -1,0 +1,54 @@
+#{extends 'main.html' /}
+#{set title: 'Admin utilisateurs' /}
+
+<div ng-controller="AdminUsersCtrl">
+
+    <div class="row">
+        <div class="span10">
+
+            <h2>&{'admin.users'}</h2>
+
+
+            <input type="text" ng-model="filter" ng-change="changeFilter()" class="form-control" placeholder="&{'admin.users.filter'}" />
+
+            <table class="table">
+                <thead>
+                    <th><sort-link page="users" field="login" on-click="sortBy" title="&{'admin.users.login'}" /></th>
+                    <th><sort-link page="users" field="firstName" on-click="sortBy" title="&{'admin.users.firstname'}" /></th>
+                    <th><sort-link page="users" field="lastName" on-click="sortBy" title="&{'admin.users.lastName'}" /></th>
+                    <th style="width:10%"><sort-link page="users" field="leader" on-click="sortBy" title="&{'admin.users.leader'}" /></th>
+                    <th style="width:10%"><sort-link page="users" field="team" on-click="sortBy" title="&{'admin.users.team'}" /></th>
+                    <th style="width:10%"><sort-link page="users" field="admin" on-click="sortBy" title="&{'admin.users.admin'}" /></th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="user in users.list">
+                        <td>{{ user.login }}</td>
+                        <td>{{ user.firstName }}</td>
+                        <td>{{ user.lastName }}</td>
+                        <td><input type="checkbox" ng-change="updateUser(user)" ng-model="user.leader" /></td>
+                        <td><input type="checkbox" ng-change="updateUser(user)" ng-model="user.team" /></td>
+                        <td><input type="checkbox" ng-change="updateUser(user)" ng-model="user.admin" /></td>
+                        <td>
+                            <a href="#"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pages page="users" page-click="goToPage"></pages>
+
+        </div>
+        <div class="span2">
+        </div>
+    </div>
+
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+<script src="@{'/public/js/herbonautes-app-chef.js'}" type="text/javascript"></script>
+<script src="@{'/public/js/herbonautes-app-admin.js'}" type="text/javascript"></script>
+#{/set}
+
+

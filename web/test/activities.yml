@@ -1,0 +1,17 @@
+# Activities
+
+activities.ContributionAddActivity(act1):
+    user: jon
+    contribution: con1
+    
+activities.ContributionAddActivity(act2):
+    user: jon
+    contribution: con2
+
+activities.ContributionAddActivity(act3):
+    user: jon
+    contribution: con4
+
+activities.BadgeWinActivity(act4):
+    user: jon
+    badge: botanist

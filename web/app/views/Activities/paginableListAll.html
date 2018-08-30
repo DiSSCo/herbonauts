@@ -1,0 +1,18 @@
+<ul 
+	id="all-activities-list" 
+	class="activities paginable"
+	data-paginate-url="@{Activities.list}?view=all"
+	data-paginate-btn="#more-global-activities-btn"
+	data-before-attr="activity-id">
+</ul>
+					
+<a class="btn btn-small" id="more-global-activities-btn">&{'activities.no.more'}</a>
+<a class="btn btn-small hide" id="more-global-activities-loading">&{'activities.charging'}</a>
+					
+<script type="text/javascript">
+	herbonautes.initActivityList(
+		'#all-activities-list',
+		'#more-global-activities-btn',
+		'#more-global-activities-loading'
+	);
+</script>

@@ -1,0 +1,10 @@
+#{extends 'mailLayout.html' /}
+
+
+
+#{set 'validateUrl'}@@{Confirmation.validate(confirmation.token)}#{/set}
+<p>&{'mail.email.change.content'}</p>
+<p>&{'mail.email.change.subject.more1', validateUrl}</p>
+<p>&{'mail.email.change.subject.more2', validateUrl}</p>
+
+

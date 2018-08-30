@@ -1,0 +1,150 @@
+<table
+        id="ratings-table"
+        class="table contributions paginable">
+
+    <thead>
+    <tr>
+        <th class="rank">#</th>
+        <th class="specimen">&{'user.herbonaute'}</th>
+        <th class="contribution total">&{'total'}</th>
+        <th class="contribution" ng-repeat="q in questions">{{ q.shortLabel }}</th>
+    </tr>
+    </thead>
+
+    <tbody>
+        <tr ng-repeat="stat in ratingStats">
+            <td class="rank">{{ $index + 1 }}</td>
+            <td ng-if="!stat.user.deleted">
+                <a ng-href="{{ userProfileUrl(stat.user) }}"><img ng-src="{{ userImageUrl(stat.user) }}" /></a>
+                <a ng-href="{{ userProfileUrl(stat.user) }}">{{ stat.user.login }}</a>
+            </td>
+            <td ng-if="stat.user.deleted">
+				&{'user.deleted.account'}
+			</td>
+            <td class="contribution">{{ stat.answerCount }}</td>
+            <td ng-repeat="q in questions" class="rating contribution" ng-init="c = answerCount(stat, q.name)">
+                <span ng-if="c">{{c.answerCount}}</span>
+                <span ng-if="!c">&middot;</span>
+            </td>
+        </tr>
+
+    </tbody>
+
+    <tfoot>
+    <tr>
+        <td colspan="{{ questions.length + 3 }}">
+            <a ng-hide="noMoreRatings || ratingLoading" ng-click="nextRatingPage()" class="btn btn-small" >&{'btn.more.ratings'}</a>
+            <button ng-show="ratingLoading" disabled class="btn btn-small btn-disabled" >&{'btn.loading'}</button>
+            <span ng-show="noMoreRatings">&{'btn.no.more.ratings'}</span>
+        </td>
+    </tr>
+    </tfoot>
+
+</table>
+
+<em>&{'mission.only.contributors.list'}</em>
+
+*{ <table
+	id="ratings-table"
+	class="table contributions paginable"
+	data-paginate-url="@{Missions.contributionRatings(mission.id)}"
+	data-paginate-btn="#more-ratings-btn">
+
+	<thead>
+		<tr>
+			<th class="rank">#</th>
+			<th class="specimen">&{'user.herbonaute'}</th>
+			<th class="contribution total">&{'total'}</th>
+			#{list items: contributionTypes, as: 'type'}
+			<th class="contribution" data-type="${type}">&{'contribution.' + type.toLowerCase() + '.short'}</th>
+			#{/list}
+			<th class="contribution" data-type="UNUSABLE">&{'contribution.unusable.short'}</th>
+		</tr>
+	</thead>
+
+	<tbody>
+	</tbody>
+
+	<tfoot>
+		<tr>
+			<td colspan="${contributionTypes.size() + 4}">
+				<a href="#" class="btn btn-small" id="more-ratings-btn">&{'btn.more.ratings'}</a>
+				<a href="#" class="btn btn-small hide" id="more-ratings-loading" >&{'btn.loading'}</a>
+				<span class="hide" id="no-more-ratings">&{'btn.no.more.ratings'}</span>
+			</td>
+		</tr>
+	</tfoot>
+
+</table>
+
+	<em>&{'mission.only.contributors.list'}</em>
+
+<script>
+	$('#ratings-table').bind('page-received', function(event, datas) {
+
+      		var types =
+      			$('#ratings-table th.contribution').map(function() {
+      				return $(this).data('type');
+      			});
+
+      		$('#more-ratings-loading').hide();
+      		$('#more-ratings-btn').show();
+
+      		function _countHTML(report, type) {
+      			if (report == null || report.countByType == null || report.countByType[type] == null) {
+      				return '&middot';
+      			} else {
+      				return report.countByType[type];
+      			}
+      		}
+
+      		$.each(datas, function(index, report) {
+
+      			var tds = [];
+
+      			tds[0] = '<td class="rank">' + report.rank + '.</td>';
+      			tds[1] = '<td>' +
+      				herbonautes.images.user(report.user, true) + ' ' +
+      				herbonautes.links.user(report.user) +
+      				'</td>';
+      			tds[2] = '<td class="contribution">' + report.total + '</td>';
+
+      			$.each(types, function(i, type) {
+      				tds[i+3] = '<td class="contribution">' + _countHTML(report, type) + '</td>';
+      			});
+
+      			$('<tr/>').html(tds.join(''))
+      				.appendTo('#ratings-table');
+
+      		});
+
+      		// Scroll vers le bas de la table (+ 100 px)
+      		$(window).scrollTop(
+      				$('#ratings-table').height() +
+      				$('#ratings-table').position().top -
+      				$(window).height() +
+      				100); // 100 px de marge
+
+      		return false;
+
+      	}).bind('page-loading', function(event) {
+
+      		$('#more-ratings-btn').hide();
+      		$('#more-ratings-loading').show();
+      	}).bind('page-error', function(event) {
+
+      		var columnCount = $('#ratings-table th').length;
+      		$('#ratings-table td.error').remove();
+      		var td = '<td colspan="' + columnCount +'" class="error rank"><span class="label">&{'data.error'}</span></td>';
+      		$('<tr/>').html(td).appendTo('#ratings-table');
+
+      		$('#more-ratings-loading').hide();
+      		$('#more-ratings-btn').show();
+      	}).bind('page-no-data', function(event) {
+      		$('#more-ratings-loading').hide();
+      		$('#more-ratings-btn').hide();
+      		$('#no-more-ratings').show();
+      	});
+   		</script>
+
+}*

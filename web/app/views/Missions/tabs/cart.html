@@ -1,0 +1,37 @@
+
+
+<h2>Gestion des spécimens</h2>
+
+<p>
+    %{
+        total = mission.id == null ? 0 : mission.getTotalSpecimensCount();
+    }%
+    #{if total < 2}
+        &{'mission.nb.specimens.one', total}
+    #{/if}
+    #{else}
+        &{'mission.nb.specimens.many', total}
+    #{/else}
+
+
+#{if isLeader && mission.isLeader(connectedLogin)}
+     <br/><br/>
+    &{'mission.show.tiles.creation'} :
+    <span id="tiled-specimens-count" class="count"
+              data-refresh-url="@{Missions.tiledSpecimensCount(mission.id)}">${mission.getTiledSpecimensCount()}</span>/<span
+            id="specimens-count-2" class="count">${mission.getAllSpecimensCount()}</span>
+
+    <script>
+        // refresh('#tiled-specimens-count');
+        refresh('#specimens-count-2');
+    </script>
+
+<br/>
+#{/if}
+
+</p>
+
+<a href="@{Missions.settingsCart(mission.id)}" class="btn btn-small"><i class="icon-shopping-cart"></i> &{'mission.specimens.cart.btn'}</a>
+
+
+

@@ -1,0 +1,43 @@
+#{extends 'main.html' /}
+#{set 'title'}
+	&{quiz.title} ${herbonautes.titleSep} ${herbonautes.title}
+#{/set}
+
+<h2>${quiz.title} <small>&{'Question'} ${number}/${totalNumber}</small></h2>
+
+#{if question.hasImage}
+	<div class="quiz-image">
+		<img src="@{Quizzes.image(id: question.id)}" />
+	</div>
+#{/if}
+
+<br/>
+
+${question.text} :
+
+#{if correct}
+	<span class="label label-success">&{'question.correct'}</span>
+#{/if}
+#{else}
+	<span class="label label-important">&{'question.not.correct'}</span>
+#{/else}
+
+<ul class="choices">
+#{list items: question.choices, as: 'choice'}
+	<li>
+		<span class="{choice.answer ? 'answer' : ''}">
+			${choice.text}
+		</span>
+		
+	</li>
+#{/list}
+</ul>
+
+<p class="answer-details">#{verbatim}${question.answerDetails}#{/verbatim}</p>
+
+#{if !finished}
+<a href="@{Quizzes.showQuestion(name: quiz.name, number: nextNumber)}" class="btn btn-info">&{'next.question'} <i class="icon-step-forward icon-white"></i></a>
+#{/if}
+#{else}
+<a href="@{Quizzes.end(name: quiz.name)}" class="btn btn-info">&{'quiz.results'}</a>
+#{/else}

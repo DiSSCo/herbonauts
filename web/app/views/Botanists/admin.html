@@ -1,0 +1,15 @@
+#{extends 'main.html' /}
+#{set title: 'Admin botanistes' + herbonautes.titleSep + herbonautes.title /}
+
+
+<h2><small>Administration</small> botanistes</h2>
+
+
+#{form action: @Botanists.load(),
+	method: 'POST',
+	enctype: 'multipart/form-data'}
+	
+	<input type="file" name="file" />
+	<input type="submit" class="btn" value="Charger le fichier" />
+	
+#{/form}

@@ -1,0 +1,944 @@
+# Pour les templates, remplace les ' par \\'
+# Exemple : L\\'utilisateur a modifié...
+
+# Divers
+validation.invalid=Format incorrect
+members=membres
+member=membre
+title=Les herbonautes
+
+# Language
+lang.fr=Français
+lang.en=Anglais
+
+# Template
+templates.activities.MISSION_JOIN={{{link.user}}} vient de rejoindre la mission {{{link.mission}}}
+templates.activities.MISSION_PUBLISH=La mission {{{link.mission}}} vient d\\'être publiée
+templates.activities.CONTRIBUTION_ADD={{{link.user}}} a identifié {{i18n.contribution.type}} pour le spécimen {{{link.contribution.specimen}}} dans la mission {{{link.contribution.mission}}}
+templates.activities.CONTRIBUTION_V2_ADD={{{link.user}}} a identifié le champ {{{question.label}}} pour le spécimen {{{link.specimen}}} dans la mission {{{link.mission}}}
+templates.activities.BADGE_WIN={{{link.user}}} a obtenu le badge <b>{{i18n.badge.type}}</b>
+templates.activities.COMMENT_MISSION={{{link.comment.user}}} a posté un message sur la mission {{{link.comment.mission}}}
+templates.activities.COMMENT_SPECIMEN={{{link.comment.user}}} a posté un message sur le spécimen {{{link.comment.specimen}}}
+templates.activities.SIGN_UP={{{link.user}}} vient de rejoindre les Herbonautes
+template.contribution.value.date=Le {{collectDate}}
+template.contribution.value.date.period= Entre {{collectStartDate}} et  {{collectEndDate}}
+template.deducted=Je l\\'ai déduit
+templates.badge.unlock=Vous avez débloqué le badge <b>{{type}}</b>
+
+# Divers
+btn.loading=Chargement...
+
+# Links
+link.new=Nouveau lien
+link.lang=Langue
+link.title=Titre
+link.url=URL
+link.modify=Editer lien
+link.add=Nouveau
+link.edit=Modifier
+link.delete=Supprimer
+
+# Contributions
+contribution.help=Aide
+
+contribution.type.country=le pays
+contribution.type.region_1=la région
+contribution.type.region_2=la sous-région
+contribution.type.date=la date
+contribution.type.botanists=les botanistes
+contribution.type.locality=la Localité
+contribution.type.geolocalisation=la Géolocalisation
+contribution.type.unusable=le spécimen inutilisable
+contribution.type.collector= le récolteur
+contribution.type.identifiedby= le déterminateur
+
+specimen.collector=récolté
+specimen.determiner=déterminé
+
+contribution.country.short=Pays
+contribution.region_1.short=Rég.
+contribution.region_2.short=/s Rég.
+contribution.date.short=Date
+contribution.botanists.short=Bot.
+contribution.collector.short=Réc.
+contribution.identifiedby.short=Dét.
+contribution.locality.short=Loc.
+contribution.geolocalisation.short=Géo.
+contribution.unusable.short=Inut.
+
+no.contribution.yet=Aucune contribution pour l'instant
+no.more.contributions.to.show=Toutes les contributions sont affichées
+
+contribution.help.title.unusable=Marquer une photo inutilisable
+contribution.help.content.unusable=<p>Cliquer sur ce bouton si la photo représente une plante cultivée, a plusieurs étiquettes, plusieurs dates de récoltes ou aucune donnée.</p>
+
+contribution.help.title.country=Pays
+contribution.help.content.country=<p>Dans la liste déroulante, sélectionner le pays dans lequel la plante a été Récoltée.</p> \
+<p><strong>Attention</strong> : le pays sélectionné est le <span style="text-decoration: underline;">pays actuel</span></p>\
+<p style="padding-left: 30px;">Exemples : <br/> \
+1/ pour une plante de Nouvelle-Hollande (nom de l\\'Australie au 17e et 18e siècle), le pays correct est Australie<br/>\
+2/ pour une plante de Tchécoslovaquie, pays réunissant l\\'actuelle République tchèque et la Slovaquie entre 1918 et 1992, il est nécessaire de rechercher sur les étiquettes une information plus précise quant à la localité de récolte de la plante, afin de déterminer si le pays à sélectionner est la République Tchèque ou la Slovaquie.<br/>\
+Dans ces 2 exemples, le nom du pays actuel n\\'apparaissant pas sur les étiquettes, la case \\'Je l\\'ai déduit\\' doit être cochée.</p>\
+<p>Si aucune information ne permet de connaître le pays, ou si il s\\'agit d\\'une plante cultivée, cochez la case "Pas d\\'information".</p>
+
+contribution.help.title.region_1=région
+contribution.help.content.region_1=<p>Dans la liste déroulante, sélectionner la région/district/province dans laquelle la plante a été Récoltée.<br/>\
+Explorez bien tous les recoins de la photo pour rechercher si la région/district/province est mentionnée quelque part.</p><p>Cochez la case \\'Je l\\'ai déduit\\' si le nom de la région/district/province n\\'apparaît pas tel quel sur les étiquettes, et résulte de votre interprétation d\\'une autre information (telle que le département ou la ville).</p>\
+<p>Si aucune information ne permet de connaître la région/district/province, cochez la case "Pas d\\'information".</p>
+
+contribution.help.title.region_2=Sous-région
+contribution.help.content.region_2=<p>Dans la liste déroulante, sélectionner la sous-région (ou entité équivalente comme le département) dans lequel la plante a été Récoltée.<br/>\
+ Explorez bien tous les recoins de la photo pour rechercher si la sous-région ou le département est mentionné quelque part.</p><p>Cochez  la case \\'Je l\\'ai déduit\\' si le nom de la sous-région ou le département  n\\'apparaît pas tel quel sur les étiquettes, et résulte de votre  interprétation d\\'une autre information (telle que la ville).</p><p>Si aucune information ne permet de connaître la sous-région ou département, cochez la case "Pas d\\'information".</p>
+
+contribution.help.title.date=Date
+contribution.help.content.date=<p>Entrer la date de la récolte. Vous pouvez rencontrez trois cas de figure :</p>\
+<ol><li>la date exacte est indiquée sur l\\'étiquette : renseigner alors la date sous le format JJ/MM/AAAA (exemple 27/12/1934).</li>\
+<li>une date est indiquée mais elle recouvre une Période donnée renseigner alors la date sous la forme d\\'une Période sous la forme \\'Entre JJ/MM/AAAA et JJ/MM/AAAA\\'.<br/>\
+Exemples : pour l\\'indication de date \\'mars 1875\\', on entre la Période \\'Entre 01/03/1875 et 30/03/1875\\'.<br/>\
+pour l\\'indication de date \\'missions 1870-1872\\', on entre la Période \\'Entre 01/01/1870 et 31/12/1872\\'.</li>\
+<li>aucune information de date n\\'est mentionnée sur la ou les étiquettes : cocher \\'Pas d\\'information\\'.</li></ol>
+
+contribution.help.title.botanists=Botanistes
+contribution.help.content.botanists=<p><span style="text-decoration: underline;">Récolté par</span> :</p>\
+<p>Entrer le nom du botaniste qui a Récolté la plante, comme indiqué sur l\\'étiquette, sous la forme "Nom, Initiale du Prénom.", (ex.: Dupont, T.). En validant, cette contribution sera enregistrée. Rentrer les premières lettres du nom, une liste de noms apparaît, sélectionner le nom adéquat; </p>\
+<p>Si plusieurs récolteurs sont indiqués sur l\\'étiquette, il est possible de les indiquer successivement de la même façon en cliquant sur \\'Ajouter un récolteur\\'.</p>\
+<p>Si aucun nom de récolteur n\\'est mentionné sur l\\'étiquette : cocher \\'Pas d\\'information\\'.</p>\
+<p> </p><p><span style="text-decoration: underline;">Déterminé par</span> :</p>\
+<p>Entrer le nom du botaniste qui a Déterminé/identifié la plante.<br/>\
+<strong>Attention</strong> : le récolteur et le déterminateur sont souvent deux personnes différentes ! L\\'abréviation \\'det.\\' devant un nom de personne indique clairement le déterminateur, mais cette abréviation n\\'apparaît hélas pas systématiquement...</p>
+
+contribution.help.title.collector=Récolteurs
+contribution.help.content.collector=<p><span style="text-decoration: underline;">Récolté par</span> :</p>\
+<p>Entrer le nom du botaniste qui a Récolté la plante, comme indiqué sur l\\'étiquette, sous la forme "Nom, Initiale du Prénom.", (ex.: Dupont, T.). En validant, cette contribution sera enregistrée. Une aide existe en tapant les premières lettres du nom, une liste apparaît, il suffit alors de le sélectionner en transformant les Prénoms en initiales; </p>\
+<p>Si plusieurs récolteurs sont indiquées sur l\\'étiquette, il est possible de les indiquer successivement de la même façon en cliquant sur \\'Ajouter un récolteur\\'.</p>\
+<p>Si aucun nom de récolteur n\\'est mentionné sur l\\'étiquette : cocher \\'Pas d\\'information\\'.</p><br/>\
+<strong>Attention</strong> : le récolteur et le déterminateur sont souvent deux personnes différentes ! L\\'abréviation \\'det.\\' devant un nom de personne indique clairement le déterminateur, mais cette abréviation n\\'apparaît hélas pas systématiquement...</p>
+
+contribution.help.title.identifiedby=Déterminateur
+contribution.help.content.identifiedby= <p> </p><p><span style="text-decoration: underline;">Déterminé par</span> :</p>\
+<p>Entrer le nom du botaniste qui a Déterminé/identifié la plante.<br/>\
+<strong>Attention</strong> : le récolteur et le déterminateur sont souvent deux personnes différentes ! L\\'abréviation \\'det.\\' devant un nom de personne indique clairement le déterminateur, mais cette abréviation n\\'apparaît hélas pas systématiquement...</p>
+
+contribution.help.title.locality=Localité
+contribution.help.content.locality=<p>Recopier avec fidélité les données géographiques de la Localité de récolte figurant sur  l\\'étiquette.<br/>\
+Respecter l\\'ordre des mots, la langue, l\\'orthographe, et les abréviations.</p>\
+<p>Exemples :<br/>\
+<ol><li>\\'Massif de Manongarivo, versant ouest du Mt. Bekolosy, sur les berges de la rivière.\\'</li>\
+<li>\\'Above the village of Ambodisakoana  E of Ankaramy\\'.</li></ol></p>
+
+contribution.help.title.geolocalisation=Géolocalisation
+contribution.help.content.geolocalisation=<p>Renseigner la Géolocalisation de la récolte de cette plante. Vous avez 2 possibilités.\
+<ol><li>Entrer directement les coordonnées géographiques figurant sur l\\'étiquette.<br/>\
+Les deux cases correspondent à Latitude (Nord/Sud) et Longitude (Est/Ouest). <br/>\
+Formats acceptés :<br/>\
+      case Latitude: 43 16 40 N  - case Longitude: 0 23 41 O<br/>\
+ou, case Latitude: 43º16\\'40"N - case Longitude: 0º23\\'41"W<br/>\
+ou, case Latitude: 43º16\\'40"N - case Longitude: 0º23\\'41"O<br/>\
+ou, case Latitude: 43,15651    - case Longitude: 0,15871<br/></li>\
+<li>Situer le plus précisément possible  le lieu sur une carte cliquez à droite sur \\'Carte\\'.<br/>\
+Cliquez sur la carte à l\\'endroit le plus  précis correspondant à la Localité figurant sur l\\'étiquette. Il est possible d\\'utiliser le champs de  recherches en haut à gauche de la carte.</li></ol></p>
+
+bubble.contribution.to.be.completed=à valider par un autre herbonaute
+bubble.contribution.empty=à completer
+
+btn.unusable.picture=Photo inutilisable
+btn.unusable.picture.disable=Vous ne pouvez pas marquer la photo comme inutilisable car vous avez saisi des valeurs pour d'autres questions.
+btn.next.specimen=spécimen suivant
+contribution.locked.country=Pays
+
+deducted=Je l'ai déduit
+not.sure=J'hésite
+not.present=Pas d'information
+not.geolocalisable=Photo non géolocalisable
+template.not.present=Pas d\\'information
+template.not.sure=J\\'hésite
+
+collected.by=Récolté par
+determined.by=Déterminé (<strong><em>%s</em></strong>) par
+btn.add.collector=Ajouter un récolteur
+collector.placeholder=Tapez un nom
+determiner.placeholder=Tapez un nom
+
+lat.lng=Coordonnées
+lat.placeholder=Lat (41.5, 41º11N)
+lng.placeholder=Lng (-2.34, 2º23W)
+precision.placeholder=Précision
+btn.map=Carte
+
+unusable.modal.title=Pour quelle raison la photo est-elle inutilisable ?
+unusable.cause.no.specimen=Pas de spécimen
+unusable.cause.too.many.specimens=Trop de spécimens
+unusable.cause.no.label=Pas d'étiquette
+unusable.cause.too.many.labels=Trop d'étiquettes
+unusable.cause.growned.plant= Plante cultivée
+alert.unusable.picture=spécimen marqué comme inutilisable
+
+button.cancel=Annuler
+button.confirm=Confirmer
+
+validation.required.level=Niveau %s requis
+validation.match=Format non valide (caractères autorisés : lettres, chiffres, '_')
+
+connect.to.join=Connectez-vous pour participer
+
+modal.conflicts.title=Votre proposition est en conflit avec d'autres
+//modal.conflicts.comments= voir le(s) %1$s commentaire(s) lié(s) au spécimen %2$s.
+modal.conflicts.comments= Il y a %s commentaires sur ce spécimen.
+modal.conflicts.comment= Il y a 1 commentaire sur ce spécimen.
+btn.comment.specimen= Afficher les commentaires du specimens
+btn.keep.proposition=Je maintiens ma proposition
+btn.validate.proposition=ou je valide la proposition d'un autre herbonaute
+btn.validate=Valider
+
+alert.pass.quiz=Passez le quiz "%s" pour débloquer
+select.country=Sélectionnez un pays
+select.region=Sélectionnez une région
+
+no.more.contributions=Il n'y a plus de contributions
+
+contributions=contributions
+contribution=contribution
+
+contribution.conflict.error.message=Pour résoudre le conflit, cliquer sur le symbole
+
+# Content
+contents.edition=Modification du contenu
+content.url=URL
+content.title=Titre
+button.save=Enregistrer
+content.text=Texte du message
+content.new=Nouveau contenu
+content.available=Contenu disponible
+content.add=Nouveau
+
+# Dates
+date.format=JJ/MM/AAAA
+date=Date
+period=Période
+date.from=Entre
+date.to=et 
+since.now = À l'instant
+since.seconds = %s seconde%s
+since.minutes = %s minute%s
+since.hours   = %s heure%s
+since.days    = %s jour%s
+since.months  = %s mois
+since.years   = %s an%s
+since.format  = dd MMMM yyyy
+message.since = Il y a %s
+
+# Activities
+activities.no.more=Plus d'activités
+activities.charging=Chargement ...
+
+# Admin
+admin.chief=Chefs de mission
+admin.login=Login
+admin.name=Nom
+admin.add.chief=Ajouter un chef de mission
+admin.list=Liste des missions
+admin.move=Déplacer pour trier
+
+# Application
+application.who.are.we=Qui sommes-nous ?
+application.who=qui
+application.are=sommes-
+application.we=nous ?
+
+# Général
+activity=Activité
+my.activity=Mon activité
+his.activity=Son activité
+contributor=contributeur
+contributors=contributeurs
+for=pour
+activity.no.data=Toute l'activité est affichée
+mark.as.read=Marquer comme lu
+
+
+
+# Badges
+modal.badge.congratulations=Nouveau badge ! Félicitations !
+badge.night=Noctambule
+badge.sherlock=Sherlock
+badge.ender=Finisseur
+badge.explorer=Eclaireur
+badge.cool=Cool
+badge.podium=Podium
+badge.night.explained=Vous avez contribué la nuit
+badge.sherlock.explained=Vous avez déduit une information
+badge.ender.explained=Vous avez complété toutes les contributions pour un spécimen
+badge.explorer.explained=Vous faites partie des premiers contributeurs  pour la mission
+badge.cool.explained=Vous avez ajouté votre image à votre profil
+badge.podium.explained=Vous avez atteint le podium sur une mission
+badge.pioneer=Pionnier
+badge.classifier=Classificateur
+badge.pedagogue=Pédagogue
+badge.writer=Ecrivain
+badge.animator=Animateur
+badge.sharer=Partageur
+badge.solidary=Solidaire
+badge.candle=Bougie
+badge.invitation=Parrain
+
+# Errors
+validation.required=Obligatoire
+validation.exists=déjà utilisé
+validation.email=Adresse e-mail invalide
+validation.min.lat=La latitude doit être supérieure à -90º
+validation.max.lat=La latitude doit être inférieure à 90º
+validation.min.lng=La longitude doit être supérieure à -180º
+validation.max.lng=La longitude doit être inférieure à 180º
+
+error.no.blank.specimen=Vous ne pouvez pas contribuer
+error.title=Erreur
+error.apologies=Une erreur est survenue
+
+error.bad.login.or.password=Mauvais identifiants
+error.unknow.login=Idenfiant inconnu
+error.contribution.period.invalid=Date de fin antérieure à la date de début
+error.404= Message d'erreur : <code>%s</code> <br/> </span>Nous sommes désolés pour la gène occasionnée.</span>
+error.not.found=Not found
+error.occured=Oops, an error occured
+error.exception=This exception has been logged with id <strong>%s</strong>.
+error.application=Application error
+content.not.found=Page introuvable
+error.content.title=La page que vous demandez est introuvable.
+error.no.more.specimen=Il n'y a plus de spécimen à tirer au sort pour cette mission
+
+error.mandatory=Obligatoire
+error.bad.format=Format incorrect
+error.bad.period=Période incorrecte
+
+# Alertes 
+alert.conflict=L'interprétation de %1$s (%4$s : %5$s) sur le spécimen %2$s diffère de la votre (%4$s : %6$s). Rendez vous sur <a href="%3$s">la page spécimen</a> pour en discuter ou "contribuer" à une correction.
+alert.conflict.v2=L'interprétation de %1$s sur la question %3$s du spécimen %2$s (%6$s) diffère de la votre (%5$s). Rendez vous sur <a href="%4$s">la page spécimen</a> pour en discuter ou "contribuer" à une correction.
+#alert.conflict.v2=L'interprétation de %1$s sur la question %3$s du spécimen %2$s diffère de la votre. Rendez vous sur <a href="%4$s">la page spécimen</a> pour en discuter ou "contribuer" à une correction.
+alert.announce=Nouvelle annonce dans la mission %1$s
+alert.mission.published=Une nouvelle mission vient d'être publiée : %1$s
+alert.password.sent=Votre mot de passe vient d'être envoyé
+alert.mission.comment=%1$s a posté un message sur la mission %2$s
+alert.specimen.comment=%1$s a posté un message sur le spécimen %2$s :<br/> %3$s
+
+# Header
+header.about=Qui sommes-nous
+header.other=Liens utiles
+header.missions=Missions
+header.mission.propositions=Propositions
+header.mission.leader=Mes missions (chef)
+header.search.placeholder=Accès rapide
+header.profile=Mon profil
+header.deconnection=Déconnexion
+header.connection=Se connecter
+header.my.missions=Mes missions
+header.my.missions.validated=Mes missions validées
+header.missions.propositions=Propositions de missions
+header.all.missions=Toutes les missions
+header.tagline=L'herbier numérique collaboratif citoyen
+header.no.mission=Aucune mission
+
+# Search
+search.results=Recherche
+search.results.for=Résultats de recherche pour
+next.results=Résultats suivants
+prev.results=Résultats précédents
+
+# Category
+category.specimens=Spécimens
+category.herbonauts=Herbonautes
+category.botanists=Botanistes
+category.missions=Missions
+category.scientificnames=Noms scientifiques
+category.discussions=Discussions
+category.tags=Tags
+
+# Result
+all.results=Tous les Résultats
+no.result=Aucun résultat
+no.possible.contribution=Aucun spécimen
+
+# Login
+modal.login.title=Se connecter
+modal.login.signup=S'inscrire
+modal.login.use.fb.Account=Connectez-vous en utilisant votre compte Facebook
+placeholder.login.or.email=Votre pseudo ou email
+placeholder.password=Mot de passe
+btn.login=Se connecter
+placeholder.signup.login=Choisissez un pseudo
+placeholder.signup.email=Indiquez votre email
+placeholder.signup.password=Choisissez un mot de passe
+btn.signup=S'inscrire
+forgotten.password=J'ai oublié mon mot de passe
+btn.send.password=Envoyer mon mot de passe par mail
+from.facebook=Email fourni par votre compte Facebook
+
+# Footer
+footer.line=Les herbonautes est proposé par
+footer.poweredby=Conçu et développé par
+url.footer.mnhn=http://www.mnhn.fr
+title.footer.mnhn=Site du Muséum national d'Histoire naturelle
+url.footer.tela=http://www.tela-botanica.org
+title.footer.tela=Site de Tela Botanica
+url.footer.erec=http://recolnat.org
+title.footer.erec=Site de Recolnat
+
+# Index visiteur
+index.specimen.question=Saurez-vous identifier le pays de ce spécimen ?
+contribute=Participer
+index.first.mission=Choisissez votre première mission
+mission.goal=Objectif
+mission.contributions=contributions
+mission.btn.participate=Participer
+
+# Index herbonaute
+index.link.show.mission=Voir la mission
+index.my.other.mission=Mes autres missions
+index.news.title=Actualités
+index.link.add.mission=Ajouter une mission
+herbonauts.activity=activité des herbonautes
+index.contributions.title=Mes dernières contributions
+activity.tabs.site=Tout le site
+activity.my.missions=Mes missions
+activity.my.actions=Mes actions
+index.btn.all.missions=Afficher toutes les missions
+index.alerts.title=Mes alertes
+
+# Botanists
+botanist.period=Période d'activité
+botanist.herborarium=Herborarium
+botanist.country=Pays
+botanist.harvard.id=ID Harvard
+botanist.speciality=Spécialité
+botanist.collector=récolte
+botanist.determiner=Détermination
+collected.specimen=spécimen récolté
+collected.specimens=spécimens récoltés
+determined.specimen=spécimen déterminé
+determined.specimens=spécimens déterminés
+no.specimen.for.botanist=Aucun spécimen pour ce botaniste
+no.more.specimen.for.botanist=Tous les spécimens sont affichées
+btn.more.specimens=Afficher plus de spécimens
+warning.no.active.mission.for.specimen=Aucune mission en cours pour ce spécimen
+
+# Missions
+mission.created=La mission '%s' est maintenant créée
+mission.propositions.no.result=Aucune proposition
+mission.proposed.by=Proposée par
+mission.proposition.view=Voir la proposition
+mission.proposition.submit=La proposition de la mission '%s' a été soumise
+mission.proposition.validated=La proposition de mission '%s' a été validée
+mission.proposition.rejected=La proposition de mission '%s' a été rejetée
+mission.proposition.already.validated=Le chef de mission '%s' a déjà validé cette mission
+mission.proposition.already.rejected=La proposition de mission a été rejetée par un chef de mission
+mission.modified=Modification effectuée
+mission.banned.user=L'utilisateur %s a été banni de la mission
+
+alert.quit.mission.success=Vous ne faites désormais plus partie de la mission
+not.opened.yet.mission=La mission n'est pas encore ouverte
+not.opened.yet.member=Merci de vous être inscrit à la mission, cependant, celle-ci n'est pas encore ouverte, vous recevrez un e-mail de la part de son responsable dès sa mise en ligne.
+
+mission.show.specimens.count=Nombre de spécimens
+mission.show.tiles.creation=Génération des tuiles
+mission.show.leader=Chef de mission
+mission.show.opening.date=Ouverture
+mission.already.member=Je suis déjà membre
+mission.quit.mission=Quitter la mission
+mission.only.contributors.list=Seuls les membres ayant contribué au moins une fois apparaissent dans le classement.
+
+mission.state=Avancement de la mission
+contributors.top=Top contributeurs
+
+mission.tab.errors=Veuiller corriger les erreurs
+mission.tab.description=Description
+mission.tab.mission.publish=Mission publiée
+mission.tab.visible=(visible par les utilisateurs)
+mission.tab.image.small=Image (petite)
+mission.tab.image.big=Image (grande)
+mission.tab.presentation=Présentation
+mission.tab.rapport=Rapport
+mission.tab.showRapport=Afficher le rapport sur la page de mission
+mission.tab.configuration=Configuration
+mission.tab.langue=Langue principale
+mission.tab.contribution=contributions
+mission.tab.country.unique=Pays unique
+mission.tab.ponderation=Pondération
+mission.tab.addSpecimen=Ajout de spécimens
+mission.tab.announcementTitle=Titre
+mission.tab.date=Date
+mission.tab.contenu=Contenu
+mission.tab.modify=Modifier
+mission.tab.cancel=Annuler
+mission.tab.delete=Supprimer
+mission.tab.published=publié
+mission.tab.specimen.file=Fichier de spécimens
+mission.tab.publish=publiée
+mission.tab.save=Enregistrer
+mission.tab.back=Retour
+mission.tab.reopen=Rouvrir mission
+mission.tab.close=Clore la mission
+mission.tab.mission.presentation.edit=Présentation de la mission <small>édition</small>
+mission.tab.mission.presentation.visualize=Présentation de la mission <small>visualiser</small>
+mission.tab.reportMission=Rapport de la mission <small>édition</small>
+mission.tab.confirmationClosure=Confirmer la cloture ?
+mission.tab.confirmationReopen=Confirmer la rouverture ?
+mission.tab.new.mission=Nouvelle mission
+mission.tab.proposition.mission=Proposition de mission
+mission.tab.proposition.mission.validation=Validation de mission
+mission.tab.error=Erreur!
+mission.btn.mission.create=Créer la mission
+mission.btn.mission.propose=Proposer la mission
+mission.btn.mission.proposition.validate=Valider la proposition
+mission.btn.mission.reject=Rejeter
+mission.nb.specimens.one=Il y a %s spécimen dans cette mission.
+mission.nb.specimens.many=Il y a %s spécimens dans cette mission.
+
+tab.mission=Missions
+tab.presentation=Presentation
+tab.report=Rapport
+tab.timeline=Journal
+tab.map=Carte
+tab.tags=Tags
+tab.discussions=Discussions
+tab.contributions=Contributions
+tab.contributions.details=Contributions (détail)
+tab.user.tags=Mes tags
+
+modal.join.to.contribute=Vous devez faire partie de la mission pour contribuer
+btn.join=Je rejoins la mission
+
+missions.list.title=Toutes les missions
+missions.list.tab.current=En cours
+missions.list.tab.next=Prochainement
+missions.list.tab.closed=Missions terminées
+closed.mission=Mission terminée
+
+mission.show.last.comments=Derniers messages
+mission.show.btn.show.comments=Afficher la discussion
+mission.show.btn.join=Rejoindre la mission
+mission.show.btn.join.soon=S'inscrire en attendant l'ouverture
+mission.confirm.quit.title=Voulez-vous quitter la mission ?
+mission.confirm.quit.text=Vos contributions ne seront pas effacées
+mission.confirm.quit.no=Non
+mission.confirm.quit.yes=Oui
+alert.join.mission.success=Merci et bienvenue
+mission.published=publiée
+mission.not.published=Non publiée
+mission.show.btn.edit=Gérer la mission
+btn.visit=Visiter
+index.add.missions=Rejoindre une autre mission
+index.no.mission=Vous ne participez à aucune mission
+connect.to.comment=Vous devez être connecté pour pouvoir déposer un commentaire
+mission.title=Titre
+mission.principalTagString=Tag principal
+mission.shortDescription=Description courte
+tab.parameters=Paramètres
+tab.specimens=Spécimens
+tab.questions=Questions
+tab.export=Export données
+tab.recolnat=Recolnat
+tab.announcements=Annonces
+tab.members=Membres
+tab.stats=Stats
+only.conflicts=Conflits uniquement
+mission.join.forbidden=Vous ne pouvez pas vous inscrire à cette mission
+btn.no.more.ratings=Tous les membres sont affichés
+btn.more.ratings=Afficher les membres suivants
+mission.openingDate=Date d'ouverture
+
+mission.create=Créer une mission
+mission.propose=Proposer une mission
+
+# Menu
+menu.mission.leader=Chef de mission
+menu.admin=Administration
+menu.admin.leaders=Chefs de mission
+menu.admin.link=Liens du menu
+nemu.admin.content=Contenus
+menu.admin.mission.priority=Priorités missions
+menu.admin.quiz=Gestion des quiz
+menu.categories.management=Gestion des catégories
+
+# Comments
+comment.answer.placeholder=Votre commentaire
+no.comment=Aucun commentaire pour l'instant
+show.all.comments=Afficher tous les commentaires
+
+# Specimens
+to.be.determined=à déterminer
+no.contribution=Aucune contribution
+contribution.country=Pays
+contribution.region_1=Région
+contribution.region_2=Sous-région
+contribution.date=Date
+contribution.botanists=Botanistes
+contribution.locality=Localité
+contribution.geolocalisation=Géolocalisation
+contribution.collector=Récolteurs
+contribution.identifiedby=Déterminateur
+
+specimen.show.missions=Missions
+specimen.show.tropicos.link=Lien Tropicos
+specimen.title=Specimen
+specimen.institute=Institut
+specimen.collection=Collection
+specimen.code=Code
+specimen.last.messages=Derniers messages
+specimen.show.source.img=Image originelle
+
+complete.specimen=Informations complètes pour ce spécimen
+
+displayed.specimens=spécimens vus
+displayed.specimen=spécimen vu
+completed.specimens=spécimens complets
+completed.specimen=spécimen complet
+goal=Objectif
+user.herbonaute=Herbonaute
+total=Total
+
+specimen=spécimen
+specimen.of=spécimen de %s
+no.specimen=Aucun spécimen
+
+specimen.list= Liste des spécimens
+
+mission.box.specimens=spécimens
+mission.box.contributions=contributions
+mission.box.date=Ouverture
+
+# Users
+user.name=Nom
+user.city=Ville
+user.member.since=Membre depuis
+user.level=Niveau
+btn.settings=Modifier mon compte
+btn.message=Envoyer un message
+user.change.password=Modifier mon mot de passe
+user.settings.informations=Mes informations
+user.avatar=Mon avatar
+btn.delete=Supprimer mon avatar
+user.settings.email=Email
+receive.mails=Recevoir les alertes par email
+user.firstName=Prénom
+user.lastName=Nom
+user.description=Description
+user.badges=Badges
+message.user.profile.saved=Vos informations ont été enregistrées
+modal.type.password.to.save=Veuillez entrer votre mot de passe
+btn.continue=Continuer
+bad.password=Mot de passe incorrect
+user.no.mission=Vous n'êtes encore inscrit à aucune mission
+message.user.image.ignored=Le fichier image que vous avez choisi n'est pas compatible
+user.doesnt.exists=L'utilisateur %s n'existe pas
+bad.password=Mot de passe incorrect
+sent.message=Votre message a été envoyé
+
+user.settings.change.password=Changer de mot de passe
+password=Mot de passe actuel
+newPassword=Nouveau mot de passe
+newPasswordConfirm=Confirmez
+
+signuped.modal.title=Bienvenue
+signuped.modal.content=Vous faites maintenant partie des herbonautes
+
+# Message
+message.new=Nouveau message
+message.to=Destinataire
+
+# Quiz
+about.to.take.quiz=Vous allez passer le quiz
+take.quiz.before=Vous devez passer le quiz %s avant le quiz %s
+quiz.quiz=Quiz
+quiz.information.general=Informations générales
+quiz.email=Email
+quiz.remember=Remember me
+quiz.signin=Sign in
+quiz.name=Nom
+quiz.level=Niveau
+quiz.mission.out=Hors mission
+quiz.title=Titre
+quiz.description=Description
+quiz.description.edit=Editer la description
+quiz.congratulation=Félicitations
+quiz.congratulation.edit=Editer les félicitations
+quiz.description.firstpage=Description (première page) <small>édition</small>
+quiz.description.lastpage=Félicitations (dernière page) <small>édition</small>
+quiz.questions=Questions
+quiz.move=Déplacer pour trier
+quiz.no.question=Aucune question
+quiz.new.question=Nouvelle question
+
+quiz.modal.title=Bravo
+quiz.modal.btn.later=Plus tard
+quiz.modal.btn.now=Passer le quiz
+quiz.modal.text=Vous venez d'accèder au quiz "%1$s". Ce quiz vous permettra de passer au niveau supérieur (%2$s).
+
+question.correct=Correct
+question.not.correct=Incorrect
+next.question=Question suivante
+quiz.results= Résultats
+errors=erreurs
+error=erreur
+quiz.congratulations.title=Félicitations
+retake.quiz=Repasser le quiz
+quiz.end.title=Vous venez de terminer le quiz
+
+quiz.question.image=Image
+quiz.question.name=Intitulé
+quiz.question.answer=Détails réponse
+quiz.question.proposition=Propositions
+quiz.question.proposition.add=Ajouter proposition
+quiz.question.cancel=Annuler
+quiz.question.save=Enregistrer
+quiz.question.edit=Modifier la question
+
+quiz.new=Nouveau quiz
+quiz.save=Sauvegarder les informations
+
+
+# Boutons
+activity.btn.more=Afficher plus d'activité
+btn.more.contributions=Afficher plus de contributions
+btn.answer=Répondre
+btn.send=Envoyer
+btn.loading=Chargement
+btn.sending=Envoi...
+btn.contribute=Contribuer
+btn.save=Enregistrer
+btn.save.in.progress=Sauvegarde en cours...
+btn.cancel=Annuler
+activity.loading=Chargement
+btn.start=Commencer
+btn.valid=Valider
+btn.user.change.image=Modifier mon avatar
+btn.add=Ajouter
+btn.close=Fermer
+btn.edit=Editer
+btn.visualize=Visualiser
+btn.delete.account=Supprimer mon compte
+
+# Mails
+mail.welcome.subject=[Les herbonautes] Bienvenue sur les Herbonautes
+mail.welcome.content=Bienvenue %s, <br />Vous êtes désormais inscrit sur les site Les herbonautes (%s), sous le pseudo : <br />%s
+mail.welcome.content.more=Grâce aux Herbonautes, vous pouvez participer à la création d'une base de données scientifique à partir des millions de photos des plantes de l'herbier de Paris. A vous d'explorer ces plantes et leurs étiquettes pour déterminer quand et où elles ont été Récoltées. Les données que vous trouverez sont des éléments prècieux pour mieux connaitre la biodiversité et mesurer et prévoir son érosion.
+
+mail.goodbye.subject=[Les herbonautes] Désinscription
+mail.goodbye.content=Votre compte %s a bien été supprimé  du site http://lesherbonautes.mnhn.fr Nous vous remercions pour votre participation à l'herbier collaboratif citoyen !
+
+mail.alerts.subject=[Les herbonautes] Nouvelles alertes
+mail.alerts.title=Vos dernières alertes
+mail.alerts.content=Voici la liste des dernières alertes (conflits, commentaires, nouvelles missions) :
+
+mail.welcome.mission.subject=[Les herbonautes] 
+mail.welcome.mission.title=Bienvenue sur la mission '%s'
+mail.welcome.mission.content=Merci pour votre participation.
+
+mail.announcement.subject=[Les herbonautes] Nouvelle annonce dans la mission %1$s
+mail.announcement.title=%1$s a posté une annonce dans la mission %2$s
+
+mail.discussion.new.message.subject.with.title=[Les herbonautes] Nouveau message dans la discussion %1$s
+mail.discussion.new.message.subject.without.title=[Les herbonautes] Nouveau message dans une discussion
+mail.mission.proposition.subject=[Les herbonautes] Proposition de nouvelle mission
+mail.mission.proposition.validated=[Les herbonautes] Validation de la mission '%s'
+
+mail.password.subject=[Les herbonautes] Rappel de vos identifiants
+mail.password.title=[Les herbonautes] Rappel de vos identifiants
+mail.password.content=Voici vos identifiants de connexion aux Herbonautes
+mail.password.login=Votre login
+mail.password.password=Votre mot de passe
+
+mail.discussion.response.content=<h3>Un nouveau message a été posté dans la discussion %2$s</h3><p>Vous pouvez y accéder depuis l'url suivante: <a href="%1$s">%1$s</a></p>
+mail.mission.proposition.content=<h3>Une mission a été proposée par %1$s</h3><p>Vous pouvez consulter cette proposition depuis l'url suivante: <a href="%2$s">%2$s</a> </p>
+mail.mission.proposition.validation.content=<h3>Votre mission "%1$s" a été validée par %2$s</h3><p>Vous pouvez accéder au paramétrage de celle-ci depuis l'url suivante: <a href="%3$s">%3$s</a> </p>
+
+mail.message.subject=[Les herbonautes] Message de %s
+mail.message.from=Message de la part de %s
+
+validation.reserved.name=Nom déjà utilisé
+validation.different.passwords=Mot de passe différents
+validation.bad.password=Mot de passe incorrect
+
+# V2
+admin.references.title=Gestion des référentiels
+admin.references.th.name=Nom
+admin.references.th.parent=Référentiel parent
+admin.references.th.edit=Modifier
+admin.references.th.delete=Supprimer
+admin.references.th.info=Infos complémentaires
+admin.references.button.new=Nouveau référentiel
+admin.references.button.new.record=Nouvelle entrée
+admin.references.edit.title=Gestion du référentiel
+admin.references.th.value=Valeur (technique)
+admin.references.th.label=Libellé
+admin.references.th.lastUpdateDate=MAJ
+admin.references.th.parent.record=Entrée parente
+button.edit.records=Enregistrements
+button.edit=Modifier
+button.back=Retour
+button.delete=Supprimer
+button.undeletable=Utilisé dans une ou plusieurs questions
+
+admin.questions.btn.new=Nouveau modèle question
+admin.questions.btn.save=Enregistrer
+admin.questions.btn.delete=Supprimer
+admin.questions.nodelete=Utilisé dans une mission
+admin.questions.title=Gestion des modèles de question
+admin.questions.list=Liste
+admin.questions.edit=Gestion de la question
+admin.questions.preview=Aperçu question
+admin.question.answer.preview=Aperçu réponse
+admin.question.answer.preview.tech=Aperçu réponse (technique)
+
+admin.users=Gestion des utilisateurs
+admin.users.login=Pseudo
+admin.users.firstname=Prénom
+admin.users.lastName=Nom
+admin.users.leader=Chef
+admin.users.team=Équipe
+admin.users.admin=Admin
+admin.users.filter=Recherche (pseudo ou nom)
+
+menu.admin.users=Droits utilisateurs
+menu.admin.questions=Modèles de questions
+menu.admin.references=Référentiels
+
+menu.team=Équipe
+
+quiz.name.already.exists=Nom de quiz déjà utilisé
+
+discussion.newDiscussion=Nouvelle discussion
+discussion.close=La discussion est close
+discussion.post=Poster
+discussion.resolve=Marquer comme solution
+discussion.resolved=Discussion résolue
+discussion.placeholder.title=Titre
+discussion.placeholder.message=Message
+discussion.placeholder.tag.add=Ajouter un tag
+discussion.placeholder.reply=Répondre
+discussion.filter=Filtrer par catégorie
+discussion.loadMore=Charger plus de discussions
+discussion.tags.modify=Modifier les tags
+
+tag.subscribe=S'abonner
+tag.unsubscribe=Se désabonner
+tag.noResults=Aucun résultat
+tag.specimen.consult=Consulter
+tag.noSubscription=Aucun abonnement
+tag.already.used=Ce tag est déjà utilisé
+tag.placeholder.add=Ajouter un tag
+tags.modify=Modifier les tags
+
+message.delete=Supprimer
+message.moderator=Ce message a été modéré par
+message.delete.confirmation=Etes-vous sûr de vouloir supprimer ce message?
+message.resolution.confirmation=Etes-vous sûr de vouloir choisir ce message comme solution?
+
+connect.need.display.page=Vous devez être connecté pour visualiser cette page.
+
+mission.specimens.cart.btn=Sélectionner les spécimens
+
+stats.legend.validated=Validé
+stats.legend.inProgress=En cours
+stats.legend.conflicts=Conflits
+stats.legend.MEMBERS=Membres
+stats.legend.CONFLICTS=En conflit
+stats.legend.COMPLETE_SPECIMENS=Spécimens complets
+stats.legend.CONTRIBUTIONS=Contributions
+
+categories.management=Gestion des catégories de discussions
+categories.newCategory=Nouvelle catégorie
+categories.create=Créer une catégorie
+categories.list=Liste des catégories
+categories.placeholder.label=Libellé de la catégorie
+categories.delete.confirmation=conversation(s) seront impactée(s) par cette modification. Etes-vous sûr de vouloir continuer?
+categories.no.category=Aucune catégorie
+
+stats.herbonautes=contributeurs
+stats.contributions=contributions
+stats.missions=missions
+stats.specimens=spécimens
+stats.index.title=Les herbonautes en chiffres
+
+cookies.message=Ce site utilise des cookies
+cookies.ok=OK
+
+map.user.geo=Carte des spécimens localisés par %s
+
+specimen.list.institute=Nom de l'institution détentrice de la collection
+specimen.list.collection=Numéro de la collection
+specimen.list.code=Numéro du spécimen dans la collection
+
+specimen.title.specimen=Spécimens
+specimen.title.institute=Spécimens pour l'institution
+specimen.title.collection=Spécimens pour la collection
+
+
+stats.title=Statistiques des herbonautes
+stats.title.welcome=Bienvenue aux nouveaux
+stats.title.top.herbonautes=Top herbonautes
+stats.title.specimens=Détail des spécimens
+stats.title.used.tags=Tags les plus utilisés
+stats.title.last.tags=Derniers tags utilisés
+stats.title.specimens.dist=Répartition des spécimens renseignés par les herbonautes
+stats.title.top.botanists=Top des botanistes renseignés
+stats.title.top.institutions=Top des institutions
+stats.title.centuries=Les siècles
+stats.title.country=Pays
+stats.title.region=Régions
+stats.title.activity=Activité des herbonautes
+
+
+#transfert
+transfer.question.country=Pays
+transfer.question.region=Région
+transfer.question.date=Date
+transfer.question.collect=Récolteur
+transfer.question.identified=Déterminateur
+transfer.question.locality=Localité
+transfer.question.geo=Géolocalisation
+transfer.question.unusable=Inutilisable
+transfer.question.collect_number=Numéro de récolte
+
+transfer.cause.RECOLNAT_MISSING_ROW=Colonne manquante
+transfer.cause.HERBONAUTES_NO_DATA=Pas de donnée Herbonautes
+transfer.cause.CONFLICT_RECOLNAT_HERBONAUTES=Conflit Herbonautes/Recolnat
+transfer.cause.RECOLNAT_ALREADY_EXISTS=Donnée Recolnat existante
+transfer.cause.MULTIPLE_DETERMINATIONS=Plusieurs déterminations
+
+
+message.user.deleted.account=Votre compte a été supprimé.
+user.deleted.account=[compte supprimé]
+
+user.alert.mission=Recevoir un mail lorsqu'un message est posté sur une mission à laquelle je participe
+user.alert.specimen=Recevoir un mail lorsqu'un message est posté sur une spécimen sur lequel j'ai contribué
+
+user.confirm.email=Vous avez changez votre adresse e-mail. Un message de confirmation vous a été envoyé à <b>%s</b>.
+
+mission.goal.specimens=sur %d spécimens
+
+invitation.menu=Parrainer
+invitation.title=Parrainez de nouveaux Herbonautes
+invitation.text=Saisissez les adresses emails des personnes que vous souhaitez inviter (une adresse par ligne).
+invitation.send.button=Envoyer les invitations
+message.invitation.sent=Merci ! Les invitations ont été envoyées
+
+mail.invitation.subject=[Les herbonautes] %s vous invite à rejoindre les Herbonautes
+mail.invitation.content=<b>%s</b> vous invite à rejoindre les Herbonautes
+mail.invitation.content.more1=<a href="%s">les Herbonautes</a>, l'herbier numérique collaboratif citoyen...
+mail.invitation.content.more2=Pour vous inscrire, suivez ce  <a href="%s">lien</a>
+mail.invitation.content.more3=Si le lien ne s'ouvre pas, copier cette adresse dans cotre navigateur %s
+message.email.invalid=L'adresse '%s' est invalide
+
+invitation.invalid.token=Lien invalide
+invitation.invalid.token.text=Ce lien est invalide
+
+invitation.validate.title=Rejoignez les Herbonautes
+invitation.validate.text=%s vous invite à rejoindre les herbonautes, l'herbier numérique collaboratif citoyen
+invitation.validate.btn=Je m'inscris
+message.invitation.welcome=Merci d'avoir rejoint les Herbonautes
+
+mail.email.change.subject=[Les herbonautes] Confirmation de votre nouvelle adresse
+mail.email.change.content=Veuillez confirmer votre nouvelle adresse
+mail.email.change.subject.more1=Confirmer en cliquant sur le <a href="%s">lien</a>
+mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigateur %s
+
+message.email.change.success=Votre adresse mail a été modifiée

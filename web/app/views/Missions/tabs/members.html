@@ -1,0 +1,82 @@
+<table
+	id="ratings-table"
+	class="table contributions paginable"
+	data-paginate-url="@{Missions.allMembers(mission.id)}">
+    		
+	<thead>
+		<tr>
+			<th class="rank">Login</th>
+			<th class="rank">Nom</th>
+			<th class="rank">Email</th>
+			<th class="rank">FB</th>
+			<th class=""></th>
+		</tr>
+	</thead>
+	
+	<tbody>
+	</tbody>
+	        
+	<tfoot>
+	</tfoot>
+	        
+</table>
+   		
+   		
+ <div class="modal hide" id="ban-modal">
+	<div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal">x</button>
+	    <h3>Bannir l'utilisateur <span id="ban-login"></span></h3>
+	  </div>
+	  
+	  #{form 
+	  		class: 'hide',
+	  		method: 'POST',
+	  		id: 'ban-form',
+			action: @Missions.banMember(mission.id)}
+	  <input type="hidden" name="login" id="ban-login-field" />
+	  #{/form}
+	  
+	  <div class="modal-footer">
+	  	<a href="#" class="btn" data-dismiss="modal">&{'mission.confirm.quit.no'}</a>
+	    <button type="button" onclick="confirmBanUser()" class="btn btn-success">&{'mission.confirm.quit.yes'}</button>
+	    
+	  </div>	
+</div>  		
+   		
+<script>
+
+	function banUser(login) {
+		$('#ban-modal #ban-login').text(login);
+		$('#ban-modal #ban-login-field').val(login);
+		$('#ban-modal').modal('show');
+	}
+	
+	function confirmBanUser() {
+		$('#ban-form').submit();
+	}
+
+	$('#ratings-table').bind('page-received', function(event, datas) {
+      		
+      		$.each(datas, function(index, member) {
+      			
+      			var tds = [];
+      			
+      			tds[0] = '<td class="rank"><a href="' + herbonautes.actions.toUser({login: member.login}) + '">' + member.login + '</a></td>';
+      			tds[1] = '<td class="rank">' + member.fullName + '</td>';
+      			tds[2] = '<td class="rank"><a href="' + herbonautes.actions.toMessages({login: member.login}) + '">&{'btn.message'}</a></td>';
+      			tds[3] = '<td class="rank">' + (member.isFB ? '<i class="icon-ok"></i>' : '') + '</td>';
+      			tds[4] = '<td class="rank"><a href="#" class="ban-btn" data-user-login="' + member.login + '">Bannir</a></td>';
+      			
+      			$('<tr/>').html(tds.join(''))
+      				.appendTo('#ratings-table');
+      			
+      		});
+      		
+      		$('.ban-btn').click(function() {
+  				banUser($(this).data('user-login'));
+  			})
+
+      		return false;
+      		
+      	});
+</script>

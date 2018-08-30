@@ -1,0 +1,48 @@
+{
+    "type" : "jdbc",
+    "jdbc" : {
+        "url" : "jdbc:oracle:thin:@//localhost/XE",
+        "user" : "HERBOTEST",
+        "password" : "HERBOTEST",
+        "sql" : [      
+            {
+                "statement" : "select t.id as \"_id\", 'tags' as \"_type\", t.id as \"tag.tagId\", t.label as \"tag.tagLabel\", t.label as \"tag.tagLabelRaw\", t.tag_type as \"tag.tagType\" from h_tags t WHERE (t.last_update_date + 2/1440) > ? AND t.published = 1",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            },
+            {
+                "statement" : "select d.id as \"_id\", 'discussions' as \"_type\", d.id as \"discussion.id\", d.title as \"discussion.title\", c.label as \"discussion.categories\", t.label as \"discussion.tags\", m.text as \"discussion.messages\" from h_discussion d LEFT JOIN H_DISCUSSION_CATEGORIES dc on dc.discussion_id = d.id LEFT JOIN H_CATEGORIES c ON c.id = dc.category_id LEFT JOIN H_TAGS_LINKS tl ON tl.target_id = d.id LEFT JOIN H_TAGS t ON t.id = tl.tag_id LEFT JOIN H_MESSAGE m ON m.discussion_id = d.id WHERE (d.last_update_date + 2/1440) > ? order by d.id",
+                "parameter" : [ "$metrics.lastexecutionstart"]
+            },
+            {
+                "statement" : "select distinct sp.id as \"_id\", 'specimens' as \"_type\", sp.code as \"specimen.code\", sp.family as \"specimen.family\", sp.genus as \"specimen.genus\", sp.collection as \"specimen.collection\", sp.institute as \"specimen.institute\", t.label as \"specimen.tags\", country.text_value as \"specimen.country\", region1.text_value as \"specimen.region1\", region2.text_value as \"specimen.region2\" FROM H_SPECIMEN sp INNER JOIN H_MISSION m ON m.id = sp.mission_id LEFT JOIN H_TAGS_LINKS tl ON tl.target_id = sp.id LEFT JOIN H_TAGS t ON t.id = tl.tag_id LEFT JOIN H_CONTRIBUTION_STATIC_VALUE country ON country.specimen_id = sp.id AND country.type = 'COUNTRY' LEFT JOIN H_CONTRIBUTION_STATIC_VALUE region1 ON region1.specimen_id = sp.id AND region1.type = 'REGION1' LEFT JOIN H_CONTRIBUTION_STATIC_VALUE region2 ON region2.specimen_id = sp.id AND region2.type = 'REGION2' WHERE (m.proposition = 0 OR (m.proposition = 1 and m.proposition_validated = 1)) AND (sp.last_update_date + 2/1440) > ?",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            },
+            {
+                "statement" : "select distinct s.family || s.genus as \"_id\", 'scientificnames' as \"_type\", s.family as \"scientificname.genus\", s.genus as \"scientificname.specificepithet\" FROM H_SPECIMEN s WHERE where specificepithet is null and (s.last_update_date + 2/1440) > ? UNION ALL select distinct s.genus || s.specificepithet as \"_id\", 'scientificnames' as \"_type\", s.genus as \"scientificname.genus\", s.specificepithet as \"scientificname.specificepithet\" FROM H_SPECIMEN s WHERE where specificepithet is not null and (s.last_update_date + 2/1440) > ?",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            },
+            {
+                "statement" : "select m.id as \"_id\", 'missions' as \"_type\", m.id as \"mission.id\", m.title as \"mission.title\", m.shortdescription as \"mission.description\", t.label as \"mission.tags\" FROM H_MISSION m LEFT JOIN H_TAGS t ON t.id = m.principal_tag WHERE m.published = 1 AND (m.last_update_date + 2/1440) > ? order by m.id",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            },            
+            {
+                "statement" : "select rr.id as \"_id\", 'botanists' as \"_type\", rr.id as \"botanist.id\", rr.label as \"botanist.name\" from H_REFERENCE_RECORD rr INNER JOIN H_REFERENCE r ON r.ID = rr.REFERENCE_ID AND r.NAME = 'botanist' WHERE (rr.last_update_date + 2/1440) > ?",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            },
+            {
+                "statement" : " select u.id as \"_id\", 'herbonautes' as \"_type\", u.id as \"herbonaute.id\", u.firstname as \"herbonaute.firstName\", u.lastname as \"herbonaute.lastName\", u.login as \"herbonaute.login\" from h_user u WHERE (u.last_update_date + 2/1440) > ?",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            },
+            {
+                "statement" : "select a.id as \"_id\", 'news' as \"_type\", a.id as \"news.id\", a.title as \"news.title\", a.text as \"news.text\" from h_announcement a WHERE (a.last_update_date + 2/1440) > ?",
+                "parameter" : [ "$metrics.lastexecutionstart" ]
+            }             
+        ],
+        "elasticsearch" : {
+            "host" : "127.0.0.1",
+            "autodiscover" : true
+        },
+        "index" : "herbonautes_prod",
+        "schedule" : "0/5 * * * * ?"
+    }
+}

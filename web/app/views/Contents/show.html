@@ -1,0 +1,13 @@
+#{extends 'main.html' /}
+#{set title: content.title + herbonautes.titleSep + herbonautes.title  /}
+
+<div class="row">
+
+	
+	<div class="span12">
+	<h2>${content.title}</h2>
+	
+	${content.text?.raw()}
+	
+	</div>
+</div>

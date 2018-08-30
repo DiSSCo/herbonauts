@@ -1,0 +1,549 @@
+#{extends 'main.html' /}
+#{set title: mission.title /}
+
+
+
+<div ng-controller="ContributionBoard" ng-init="init(${mission.id}, '${herbonautes.tilesRootURL}', ${herbonautes.tilesDefaultZoom})">
+
+    <div id="left-bar">
+        <div ng-cloak>
+
+            <div class="infos-box" ng-show="firstLoading">
+                <em>Chargement...</em>
+            </div>
+
+            <div class="infos-box" ng-hide="firstLoading">
+
+            *{ ---------- Récap mission & spécimen ---------- }*
+
+                <table>
+                    <tr>
+                        <td style="width: 80px; padding-right: 1em">
+                            <a href="@{Missions.show(mission.id)}" title="${mission.title}">
+                            #{missionImg mission /}
+                            </a>
+                        </td>
+                        <td>
+
+                            <a href="@{Missions.show(mission.id)}">${mission.title}</a>
+                            <hr/>
+                            *{
+                                <i class="icon-leaf"></i> <a href="@{Specimens.list(specimen.family, specimen.genus)}">${specimen.family} ${specimen.genus}</a><br/>
+                                <a target="_blank" href="${specimen.sonneratURL}"><i class="icon-picture"></i></a> <a href="@{Specimens.show(specimen.institute, specimen.collection, specimen.code)}">${specimen.institute}/${specimen.collection}/${specimen.code}</a>
+                            }*
+                            <i class="icon-leaf"></i> <a ng-href="{{ specimenFamilyUrl(specimen) }}">{{specimen.genusSpecies}}</a><br/>
+                            <a target="_blank" ng-href="{{specimen.sonneratURL}}"><i class="icon-picture"></i></a> <a ng-href="{{ specimenUrl(specimen) }}">{{specimen.institute}}/{{specimen.collection}}/{{specimen.code}}</a>
+
+                        </td>
+                    </tr>
+                </table>
+
+                <br/>
+
+                *{
+                <a ng-click="openUnusableModal()" ng-class="{'btn btn-small' : true, 'btn-danger': unusableOver}" ng-mouseover="mouseoverUnusable()" ng-mouseout="mouseoutUnusable()"><i ng-class="{'icon-trash' : true, 'icon-white': unusableOver}"></i> Photo inutilisable</a>
+                }*
+
+                <question-unusable-box
+                              question="questionUnusable"
+                              user="user"
+                              check-status="checkStatus"
+                              context="context"
+                              on-submit="submitUnusable"
+                              on-cancel="cancelUnusable"
+                              ng-hide="questionLoading"
+                              disable="hasSubmittedAnswer"
+                              causes="causesUnusable">
+                </question-unusable-box>
+
+
+                <a ng-click="nextSpecimen()" ng-hide="questionLoading" class="next-specimen-btn pull-right btn btn-small btn-info">spécimen suivant
+                    <i class="icon-step-forward icon-white"></i>
+                </a>
+
+
+
+            </div>
+
+            <div ng-hide="firstLoading || questionLoading || emptyQuestionsLeft()" class="alert alert-success" id="complete-specimen">Informations complètes pour ce spécimen</div>
+
+            <div ng-show="markedUnusable()" class="alert alert-error">&{'alert.unusable.picture'}</div>
+
+
+            *{ ----- QUESTIONS ------
+
+            <div class="contribution-box empty opened" ng-repeat="question in questions">
+
+
+
+            </div>
+
+            }*
+
+
+
+            *{ ----- QUESTIONS TEST ------ }*
+
+            <div class="contribution-box" ng-repeat="q in questions" ng-if="q.name != 'unusable'" ng-hide="firstLoading || markedUnusable()"
+                    ng-class="{ 'lock' : checkStatus('lock', q), 'done': checkStatus('done', q), 'complete': checkStatus('complete', q), 'conflicts': checkStatus('conflicts', q) }">
+                <question-box question="q"
+                              user="user"
+                              specimen="specimen"
+                              check-status="checkStatus"
+                              context="context"
+                              on-submit="submitQuestion"
+                              on-cancel="cancelQuestion"
+                              show-map="showMap"
+                              show-conflicts="showConflicts"
+                              reference-records="referenceRecordsByQuestion"
+                              update-reference-records="updateReferenceRecords"
+                              init-reference-records="initReferenceRecords"
+                              suggest="suggestReferenceRecord"></question-box>
+            </div>
+
+            <div ng-hide="firstLoading"  class="contribution-box"></div> *{ divider only }*
+
+            <a ng-hide="firstLoading || questionLoading" ng-click="nextSpecimen()" class="next-specimen-btn pull-right btn btn-small btn-info">spécimen suivant
+                <i class="icon-step-forward icon-white"></i>
+            </a>
+
+            <br/><br/>
+        </div>
+
+    </div><!-- left-bar -->
+
+    <div id="map-container"></div>
+
+    <div ng-repeat="g in geoQuestions">
+        <geolocalisation-map question="g.question" conf="g.conf" specimen="specimen"></geolocalisation-map>
+    </div>
+
+    *{ <geolocalisation-map map="geolocalisationMap"></geolocalisation-map> }*
+
+    *{ --- GEOLOC ---
+    <div id="geolocalisation-wrapper" ng-class="{ 'full': checkMapStyle('full') , 'half': checkMapStyle('half') , 'hidden' : checkMapStyle('hidden')  }">
+
+        *{ DIRECTIVE !!!
+        <div id="geolocalisation-map-container"></div>
+
+
+        <div id="geolocalisation-keywords-container" class="small">
+            <input type="text" id="geolocalisation-keywords" value=""/>
+        </div>
+        <div id="geolocalisation-buttons" >
+            <a ng-hide="checkMapStyle('full') || checkMapStyle('hidden')" ng-click="mapStyle = 'full'"><i class="icon-resize-full"></i></a>
+            <a ng-hide="checkMapStyle('half')" ng-click="mapStyle = 'half'"><i class="icon-resize-small"></i></a>
+            <a ng-hide="checkMapStyle('hidden')" ng-click="mapStyle = 'hidden'"><i class="icon-remove"></i></a>
+        </div>
+    </div>
+    }*
+
+</div>
+
+<div ng-controller="contributionDiscussionsCtrl" id="contributionDiscussionsDiv">
+    <div id="openDiscussionIcon" ng-click="showDiscussionModule()" ng-hide="isDiscussionModuleOpened" ng-cloak>
+        <div class="icomoon-bubbles2"><span id="spanNbDiscussionsIcon">{{$root.nbDiscussionsBubble}}</span></div>
+    </div>
+    <div id="control-discussions" ng-show="isDiscussionModuleOpened" ng-cloak>
+        <div class="pull-right"><a class="btn btn-info" href="#" onclick="return false;" ng-click="hideDiscussionModule()" title="&{'btn.close'}" style="margin-bottom: 10px;">&{'btn.close'}</a></div>
+    #{discussionBox connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, isLeader: isLeader, imageId: connectedImageId, allowCreation: true}
+    #{/discussionBox}
+    </div>
+</div>
+
+<button id="openTagsButton" class="btn btn-info" data-toggle="modal" data-keyboard="false" data-backdrop="static" data-target="#specimenTagsModal">&{'tags.modify'}</button>
+<div class="modal hide" id="specimenTagsModal">
+    <div class="modal-header">
+        #{if !connectedLogin || (!isAdmin && (connectedLevel < play.configuration.get("herbonautes.elements.tags.save.minimum.level").toInteger()))}
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="reloadTags()">&times;</button>
+        #{/if}
+        #{else}
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        #{/else}
+        <h3>Tags</h3>
+    </div>
+    <div class="modal-body">
+    #{elementTags connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, hideCancelButton: true}
+    #{/elementTags}
+    </div>
+</div>
+
+*{
+<script type="text/javascript">
+
+
+   var keyup = false;
+   initializeGeolocalisationMap({ editable: true });
+   function initializeGeolocalisationMap(options, position) {
+
+        var _options = options || {
+            editable: false,
+            otherMarkers: []
+        };
+
+        var default_center;
+        var default_zoom;
+        var place_marker = false;
+
+        if (position) {
+            default_center = new google.maps.LatLng(position.lat, position.lng);
+            default_zoom = 8;
+            place_marker = true;
+
+        } else {
+            // si pays
+            default_center = new google.maps.LatLng(45, 2);
+            default_zoom = 2;
+        }
+
+        var map_options = {
+            center: default_center,
+            zoom: default_zoom,
+            mapTypeId: google.maps.MapTypeId.TERRAIN,
+            streetViewControl: false,
+            panControl: false,
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.TOP_CENTER
+            },
+            zoomControlOptions: {
+                position: google.maps.ControlPosition.RIGHT_BOTTOM
+            }
+        };
+
+        var map = new google.maps.Map(document.getElementById('geolocalisation-map-container'), map_options);
+
+        var defaultBounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(-6, 106.6),
+                new google.maps.LatLng(-6.3, 107)
+        );
+
+
+
+        var input = document.getElementById('geolocalisation-keywords');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        var marker = new google.maps.Marker({map: map});
+
+        marker.setDraggable(_options.editable);
+
+        if (place_marker) {
+            marker.setPosition(map.getCenter());
+        }
+
+        // On ajoute les listeners si la map est ��ditable
+        if (_options.editable) {
+            // On centre le marker au changement de recherche
+            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                var place = autocomplete.getPlace();
+
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(15);
+                }
+
+                marker.setPosition(place.geometry.location);
+
+            });
+
+            google.maps.event.addListener(marker, 'position_changed', function() {
+                if (!keyup) {
+                    console.log("Position changed", marker.getPosition());
+                    // latField.value = marker.getPosition().lat();
+                    // lngField.value = marker.getPosition().lng();
+                    // latFieldUI.value = toFormat(latField.value, 'lat', latType.value);
+                    // lngFieldUI.value = toFormat(lngField.value, 'lng', lngType.value);
+                }
+                keyup = false;
+                return true;
+            });
+
+            // On place le marker au clic
+            google.maps.event.addListener(map, 'click', function(event) {
+                marker.setPosition(event.latLng);
+            });
+
+            // override
+            recenter = function() {
+                marker.setPosition(new google.maps.LatLng(latField.value, lngField.value));
+                map.setCenter(marker.getPosition());
+            }
+
+        }
+
+        return map;
+    }
+
+    var geoMap = null;
+
+
+</script>
+}*
+
+<script type="text/ng-template" id="modal-no-specimen.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">×</button>
+        <h3>Plus de spécimen</h3>
+    </div>
+    <div class="modal-body">
+        <p><b>Merci</b> pour votre participation, mais vous ne pouvez pas nous aider plus sur cette mission pour le moment.</p>
+    </div>
+    <div class="modal-footer">
+        <a class="btn" ng-click="cancel()">Rester sur cette page</a>
+        <a href="@{Missions.list()}" class="btn btn-success">Choisir une autre mission</a>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modal-connection.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">×</button>
+        <h3>Vous devez vous connecter</h3>
+    </div>
+    <div class="modal-body">
+        <p>Vous devez vous connecter ou vous inscrire pour participer.</p>
+        <a href="@{modules.cas.SecureCAS.login()}" class="btn" ng-click="connect()">Connexion / Inscription CAS</a>
+
+   </div>
+
+</script>
+
+<script type="text/ng-template" id="modal-level.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">×</button>
+        <h3>Félicitations !</h3>
+    </div>
+    <div class="modal-body">
+        <p>Vous atteignez le niveau <b>{{level}}</b></p>
+        <a  class="btn" ng-click="ok()">Continuer</a>
+
+    </div>
+
+</script>
+
+
+<script type="text/ng-template" id="modal-join-mission.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">×</button>
+        <h3>Vous n'êtes pas encore membre</h3>
+    </div>
+    <div class="modal-body">
+        <p>Vous devez rejoindre la mission avant de poster</p>
+        <a class="btn btn-success" ng-click="join()">Rejoindre la mission</a>
+        <a class="btn btn-danger" ng-click="cancel()">Annuler</a>
+    </div>
+
+</script>
+
+
+<script type="text/ng-template" id="modal-conflicts-unusable.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="keep()">×</button>
+        <h3>&{'modal.conflicts.title'}</h3>
+    </div>
+    <div class="modal-body">
+
+        <p>D'autres utilisateurs ont marqué cette photo comme inutilisable</p>
+
+        <a class="btn btn-success" ng-click="keep()">Je maintiens ma proposition</a>
+        <a class="btn btn-danger" ng-click="cancel()">J'annule ma proposition</a>
+
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="modal-conflicts-usable.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="keep()">×</button>
+        <h3>&{'modal.conflicts.title'}</h3>
+    </div>
+    <div class="modal-body">
+
+        <p>D'autres utilisateurs ont saisi des informations pour ce spécimen</p>
+
+        <a class="btn btn-success" ng-click="keep()">Je maintiens ma proposition</a>
+        <a class="btn btn-danger" ng-click="cancel()">J'annule ma proposition</a>
+
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="modal-conflicts.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="keep()">×</button>
+        <h3>&{'modal.conflicts.title'}</h3>
+    </div>
+    <div class="modal-body">
+            <br/>
+            <table style="width:100%">
+                <tr>
+                    <td style="width: 10%">
+                        <img class="conflict-avatar" ng-src="{{ userImageUrl(userQuestion) }}" />
+
+                    </td>
+                    <td style="width: 15%;padding-left:1em"><a href="{{ userProfileUrl(userQuestion) }}">{{ userQuestion.userLogin  }}</a></td>
+                    <td style="padding-left:1em">
+                        <answer-box question="userQuestion" answer="userQuestion._answer" specimen="specimen"></answer-box>
+                    </td>
+                    <td style="width: 40%">
+                        <a class="btn btn-info" ng-click="keep()">&{'Je maintiens ma proposition'}</a>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <h3>&{'btn.validate.proposition'}</h3>
+            <br/>
+            <table style="width:100%">
+                <tr ng-repeat="q in conflicts">
+                    <td ng-if="q.userLogin != '_'" style="width: 10%">
+                        <img class="conflict-avatar" ng-src="{{ userImageUrl(q) }}" />
+                    </td>
+                    <td ng-if="q.userLogin != '_'" style="width: 15%;padding-left:1em"><a href="{{ userProfileUrl(q) }}">{{ q.userLogin }}</a></td>
+
+                    <td ng-if="q.userLogin == '_'" style=width:25%;padding-left:1em">&{'user.deleted.account'}</td>
+
+                    <td style="padding-left:1em" >
+                        <answer-box question="q" answer="q._answer" specimen="specimen"></answer-box>
+                    </td>
+                    <td style="width: 10%">
+                        <a class="btn" ng-click="copyAnswer(q._answer)">Choisir</a>
+                    </td>
+                 </tr>
+             </table>
+
+
+
+            <hr ng-if="noConflicts.length > 0" />
+
+            <table style="width:100%">
+                <tr ng-repeat="q in noConflicts">
+                    <td style="width: 10%">
+                        <img class="conflict-avatar" ng-src="{{ userImageUrl(q) }}" />
+                    </td>
+                    <td style="width: 15%;padding-left:1em"><a href="{{ userProfileUrl(q) }}">{{ q.userLogin }}</a></td>
+                    <td style="padding-left:1em">
+                        <answer-box question="q" answer="q._answer" specimen="specimen"></answer-box>
+                    </td>
+                    <td style="width: 10%">
+                        <a class="btn" ng-click="copyAnswer(q._answer)">Choisir</a>
+                    </td>
+                </tr>
+            </table>
+
+
+    </div>
+
+</script>
+
+
+
+#{include 'angularTemplates.html' /}
+
+#{set 'moreStyles'}
+<style>
+    .geolocalisation-wrapper {
+        visibility: visible;
+        display: block;
+    }
+    .geolocalisation-keywords-container {
+        position: absolute;
+        left: 360px;
+        z-index: 20;
+    }
+    .full .geolocalisation-keywords-container {
+        top: 110px;
+        display: block;
+    }
+    .half .geolocalisation-keywords-container {
+        top: 51%;
+        display: block;
+    }
+    .hidden .geolocalisation-keywords-container {
+        display: none;
+    }
+    .geolocalisation-map-container {
+        position: absolute;
+        left: 350px;
+        right: 0px;
+
+        bottom: 0px;
+        z-index: 8;
+        border-top: 1px solid #000;
+    }
+    .full .geolocalisation-map-container {
+        top: 99px;
+        display: block;
+    }
+    .half .geolocalisation-map-container {
+        top: 50%;
+        display: block;
+    }
+    .hidden .geolocalisation-map-container {
+        display: none;
+    }
+    .geolocalisation-buttons {
+        position: absolute;
+        display: block;
+        z-index: 100;
+        right: 5px;
+    }
+    .full .geolocalisation-buttons {
+        top: 110px;
+    }
+    .half .geolocalisation-buttons {
+        top: 51%;
+    }
+    .hidden .geolocalisation-buttons {
+        bottom: 5px;
+        visibility: visible;
+    }
+
+</style>
+<style>
+    .sort-handle {
+        cursor: move;
+    }
+    .infos-box td a {
+        color: #666;
+    }
+    html {
+        overflow: hidden;
+    }
+</style>
+<style>
+    input.searching {
+        background: white url('@{'/public/img/ajax-loader-autocomplete.gif'}')  98% center no-repeat;
+    }
+</style>
+<link rel="stylesheet" href="@{'/public/leaflet/leaflet.css'}">
+
+#{/set}
+
+#{set 'moreScripts'}
+
+*{ ---------- Librairies JS supplémentaires (JQuery UI, Google Maps) ---------- }*
+*{
+<script src="https://maps.googleapis.com/maps/api/js?key=${play.configuration.get("herbonautes.google.api.key")}&libraries=places" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+}*
+
+<script src="@{'/public/leaflet/leaflet.js'}" type="text/javascript"></script>
+
+*{ ---------- JS spécifique contributions ---------- }*
+*{ <script src="@{'/public/js/herbonautes-contributions.js'}" type="text/javascript"></script> }*
+
+*{ ---------- Affichage du specimen avec API Google Maps v3 ---------- }*
+*{ <script src="@{'/public/js/herbonautes-google-maps.js'}" type="text/javascript"></script> }*
+
+
+*{<script src="@{'/public/js/herbonautes-google-maps.js'}" type="text/javascript"></script>}*
+
+
+<script src="@{'/public/js/herbonautes-leaflet.js'}?20160118" type="text/javascript"></script>
+
+
+<script src="@{'/public/js/herbonautes-app.js'}?20160118" type="text/javascript"></script>
+#{/set}

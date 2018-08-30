@@ -1,0 +1,11 @@
+# Users
+
+User(admin):
+    login: admin
+    firstName: Admin
+    lastName: Admin
+    email: admin@admin.fr
+    registrationDate: 01/09/2012
+    password: changeme
+    lastUpdateDate: 01/09/2012
+    admin: true

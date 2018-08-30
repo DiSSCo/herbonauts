@@ -1,0 +1,49 @@
+<html>
+
+<head>
+    <style>
+        .brand  {
+            text-decoration: none;
+        }
+        .brand img {
+
+        }
+
+
+        body {
+            background: #EEE;
+
+        }
+
+        .wrapper {
+            background: #FFF;
+            padding: 1em;
+            border: 1px solid #999;
+            margin: 20px 50px;
+        }
+
+        #footer {
+            text-align: center;
+            margin: 10px 50px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+#{doLayout /}
+
+</div>
+
+<div id="footer">
+    <a class="brand" href="@@{Application.index()}">
+        <img alt="logo" src="@@{Application.getLogo()}">
+    </a>
+</div>
+</body>
+
+</html>

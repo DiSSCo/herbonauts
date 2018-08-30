@@ -1,0 +1,56 @@
+<div id="timeline" style="width:100%;height: 300px"></div>
+    
+<script type="text/javascript">
+
+	var tl;
+	SimileAjax.History.enabled = false;
+
+	function initializeTimeline() {
+
+		var eventSource = new Timeline.DefaultEventSource();
+
+		var bandInfos = [
+			Timeline.createBandInfo({
+				width:          '70%', 
+				intervalUnit:   Timeline.DateTime.MONTH, 
+				intervalPixels: 100,
+				eventSource: eventSource,
+				timeZone:	2
+			}),
+			Timeline.createBandInfo({
+				width:          '30%', 
+				intervalUnit:   Timeline.DateTime.YEAR, 
+				intervalPixels: 200,
+				eventSource: eventSource,
+				timeZone:	2
+			})
+		];
+
+		bandInfos[1].syncWith = 0;
+		
+		tl = Timeline.create(document.getElementById("timeline"), bandInfos, Timeline.HORIZONTAL);
+  
+		tl.loadJSON(herbonautes.actions.toDatesForMission({id: ${mission.id}}), 
+				function(json, url) {
+					eventSource.loadJSON(json, url);
+				});	
+		//tl.getBand(0).setCenterVisibleDate(Timeline.DateTime.parseGregorianDateTime(date))
+  
+ 	}
+	
+	var default_fillInfo = Timeline.DefaultEventSource.Event.prototype.fillInfoBubble;
+	Timeline.DefaultEventSource.Event.prototype.fillInfoBubble = function (element, theme, labeller) {
+
+		$.ajax({
+			url: this.getLink(),
+			success: function(html) {
+				$(element).html(html);
+			}
+		});
+		
+		
+	};
+
+ 
+</script>
+    

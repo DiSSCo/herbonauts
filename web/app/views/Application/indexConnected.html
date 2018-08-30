@@ -1,0 +1,281 @@
+#{extends 'main.html' /}
+#{set title: herbonautes.title /}
+
+#{set 'moreScripts'}
+	<script src="@{'/public/js/jquery.carousel.js'}" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+	
+		$(document).ready(function() {
+			$("#missions-carousel").carouFredSel({
+				items: 3,
+				auto: false,
+				prev	: {	
+					button	: "#carousel_prev"
+				},
+				next	: { 
+					button	: "#carousel_next"
+				},
+				scroll : {
+					items: 1
+				}, 
+				width: "100%"
+			});
+		});
+
+	</script>
+#{/set}
+
+ <div class="row">
+ 
+   		<div class="span8">
+   
+   			#{if missions.size() > 0}
+   			
+   
+   			#{if mainMission}
+            #{if mainMission.bigImageId}
+   			<div id="main-mission" style="background-image:url(@{Missions.bigImage(id: mainMission.id, imageId: mainMission.bigImageId)})">
+   				<a href="@{Missions.show(mainMission.id)}">
+	   				<div class="inner-shadow"><!--  --></div>
+	   				<div class="mission-infos">
+	   					<h4>${mainMission.title}</h4>
+	   					<p class="mission-desc">&{'index.link.show.mission'}</p>
+	   				</div>
+   				</a>
+   			</div>
+            #{/if}
+            #{else}
+                <div id="main-mission">
+                    <a href="@{Missions.show(mainMission.id)}">
+                        <div class="inner-shadow"><!--  --></div>
+                        <div class="mission-infos">
+                            <h4>${mainMission.title}</h4>
+                            <p class="mission-desc">&{'index.link.show.mission'}</p>
+                        </div>
+                    </a>
+                </div>
+            #{/else}
+   			#{/if}
+   			
+   
+		   	<div id="missions">
+			    
+			    #{if missions}
+				    #{if missions.size() > 1}
+				   	 <h3>&{'index.my.other.mission'}</h3>
+				    #{/if}
+				    #{else}
+				    	<h3>&{'index.add.missions'}</h3>
+				    #{/else}
+			    #{/if}
+			    #{else}
+			    	<h3>&{'index.no.mission'}</h3>
+			    #{/else}
+			    
+			    <div id="missions-carousel">
+		   		#{list items:missions, as:'mission'}
+		   			
+		   			 #{if mission.id != mainMission?.id}
+		   			 <div class="mission-carousel-item">
+		   			 
+		   				 #{missionBoxCarousel mission /}
+		   				 
+		   			  </div>
+		   			  #{/if}
+			   		
+				#{/list}
+		   			
+		   		     #{set 'addMissionBox'}
+		   			 <div class="mission-carousel-item">
+		   			 
+						<a href="@{Missions.list()}">
+						<img alt="mission" src="@{'/public/img/mission-plus.jpg'}">
+							<p class="mission-title">
+								&{'index.link.add.mission'}
+							</p>
+						</a>
+		   				 
+		   			  </div>
+		   			  #{/set}
+		   			  
+		   			  ${addMissionBox.raw()}
+		   			  #{if missions.size() <= 2}
+		   			  	${addMissionBox.raw()}
+		   			  #{/if}
+		   			  #{if missions.size() <= 1}
+		   			  	${addMissionBox.raw()}
+		   			  #{/if}
+		   			  	${addMissionBox.raw()}
+		   			  
+			    </div>
+			    
+			    <div class="clearfix"><!--  --></div>
+			    
+			    <div>
+			    <a href="#" id="carousel_prev"></a>
+			    <a href="#" id="carousel_next"></a>
+			    </div>
+			    
+			</div>
+		#{/if}
+		#{else}
+			
+				<div class="row">
+		    		<div class="span8">
+		    	
+			    	 	<h2>&{'index.first.mission'}</h2>
+			    	 	
+			    	 	<div class="row">
+			    	 		<div class="span8 mission-box">
+							#{list items:allMissions, as:'mission'}
+							 	#{if mission.published}
+									#{missionBoxIndex mission /}
+								#{/if}
+							#{/list}
+							</div>
+						</div>
+		    	
+		    			<div class="centered">
+		    				<a href="@{Missions.list()}" class="btn btn-small">&{'index.btn.all.missions'}</a>
+		    			</div>
+		    			
+		    		</div>
+		    	</div>
+		#{/else}
+
+   		
+   		<div class="activities">
+	   		<h2>&{'herbonauts.activity'}</h2>
+	   		
+	   		
+	   		<div class="tabbable"> <!-- Only required for left/right tabs -->
+	   		
+	  			<ul class="nav nav-tabs">
+	    			<li class="active"><a href="#tab1" data-toggle="tab">&{'activity.tabs.site'}</a></li>
+	    			#{if missions}<li><a href="#tab2" data-toggle="tab">&{'activity.my.missions'}</a></li>#{/if}
+	    			<li><a href="#tab3" data-toggle="tab">&{'activity.my.actions'}</a></li>
+	  			</ul>
+	 			
+	 			 <div class="tab-content">
+	 			 
+	    			<div class="tab-pane active" id="tab1">
+	  					#{activitiesBox id: 'all', filter: 'view=all' /}
+	    			</div>
+	    			
+	    			#{if missions}
+	    			<div class="tab-pane" id="tab2">
+	      				#{activitiesBox id: 'mission', filter: 'view=missions&login=' + connectedLogin  /}
+	    			</div>
+	    			#{/if}
+	    			
+	    			<div class="tab-pane" id="tab3">
+	      				#{activitiesBox id: 'me', filter: 'view=user&login=' + connectedLogin /}
+	    			</div>
+	    			
+	    		</div>
+	    		
+	    	</div>
+		</div>
+	</div><!-- /.span8 -->
+	
+	<div class="span4">
+
+		#{if alerts}
+		<div class="content-box alert-box">
+			<h3>&{'index.alerts.title'}</h3>
+			
+			<ul class="alert-list">
+			#{list items: alerts, as: 'alert'}
+				<li data-alert-id="${alert.id}" class="${alert_index > herbonautes.pageLength ? 'hide' : ''}">#{alertText alert /}</li>
+			#{/list}
+			</ul>
+			
+		</div>
+		#{/if}
+	
+
+
+		#{if announcements}
+		<div class="announcements indexConnected">
+		<div class="pull-right">
+					<a href="#" class="prev"><i class="icon-chevron-left"></i></a> 
+					<a href="#" class="next"><i class="icon-chevron-right"></i></a>
+				</div>
+			<h3>
+				
+				&{'index.news.title'}
+			</h3>
+			
+			
+			#{list items: announcements, as: 'announcement'}
+			<div class="announcement ${announcement_isFirst ? '' : 'hide'}">
+				<a href="@{Missions.show(announcement.mission.id)}">
+					<em>${announcement.date?.format('d MMMM YYYY')}</em>
+					<h4>${announcement.mission.title} : ${announcement.title}</h4>
+					<p>${announcement.text}</p>
+				</a>
+			</div>
+			#{/list}
+		</div>
+		#{/if}
+
+	
+		<div id="short-contributions-box">
+			<h3>&{'index.contributions.title'}</h3>
+			
+			<ul 
+				id="short-contributions-list" 
+				class="contributions list paginable"
+				data-paginate-url="@{Users.lastContributions(login: connectedLogin)}">
+				<li id="no-contribution-yet" class="hide">&{'no.contribution.yet'}</li>
+			</ul>
+			
+			<div class="clearfix"></div>
+			
+			<script type="text/javascript">
+			$(function() {
+				$('#short-contributions-list').bind('page-received', function(event, contributions) {
+					$.each(contributions, function(i, contribution) {
+						herbonautes
+							.htmlizeContribution(contribution)
+							.appendTo('#short-contributions-list');
+					});
+					return false;
+				}).bind('page-no-data', function(event, contributions) {
+					$('#no-contribution-yet').show();
+					return false;
+				}).paginate();
+			})
+			</script>
+		
+		</div>
+		
+	</div><!-- /.span4 -->
+</div>
+
+
+<script>
+	// Chargement de la première page 
+	$(function() {
+		var retrieveFirstActivitiesForPane = function(selector) {
+			var visibleActivities = $('.activities', selector);
+			if ($('li', visibleActivities).length == 0) {
+				visibleActivities.paginate();
+			}
+		}
+		
+		retrieveFirstActivitiesForPane('.tab-pane.active');
+		
+		$('.nav-tabs a').on('shown', function (e) {
+			retrieveFirstActivitiesForPane($(e.target).attr('href'));
+		});
+		
+		#{if announcements}
+		initAnnouncementsBox();
+		#{/if}
+		
+	});
+
+</script>
+

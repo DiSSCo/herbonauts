@@ -1,0 +1,131 @@
+#{extends 'mailLayout.html' /}
+<html>
+	<body>
+
+		<style>
+            .tag {
+				padding: 2px 5px;
+                background-color: #a1dbff;
+				text-decoration: none;
+				color: #000;
+				border-radius: 2px;
+            }
+
+            .tag.SPECIMEN {
+                background-color: #ffcb59;
+            }
+
+            .tag.MISSION {
+                background-color: #85ff79;
+            }
+
+            .text {
+                background: #FAFAFA;
+                font-weight: normal;
+                border: 1px solid #E0E0E0;
+                border-top-width: 0;
+                margin: 0;
+                padding: 10px;
+                border-left: 5px solid #E0E0E0;
+                color: #666;
+            }
+
+            .first {
+                border-top-width: 1px;
+                color: #666;
+            }
+            .last {
+                border-left-color: #8ca01b;
+                background: #FFF;
+                color: #000;
+            }
+
+            .user {
+                font-weight: bold;
+            }
+            .text table td {
+                vertical-align: top;
+            }
+            .text td.avatar {
+                width: 50px;
+                vertical-align: top;
+                padding-right: 10px;
+            }
+            .text td.avatar img {
+                width :100%;
+            }
+			.text .date {
+				color: #AAA;
+				font-size: 0.8em;
+			}
+
+
+		</style>
+
+		
+		
+
+		<div>
+
+
+			#{if uniqueContextTag != null}
+				#{if uniqueContextTag.tagType.toString() == 'SPECIMEN'}
+					#{set 'discussionUrl'}@@{Specimens.show(specimen.institute, specimen.collection, specimen.code)}?discussion=${discussion.id}#{/set}
+					#{set 'discussionContext'}(spécimen "${specimen.code}")#{/set}
+				#{/if}
+				#{if uniqueContextTag.tagType.toString() == 'MISSION'}
+					#{set 'discussionUrl'}@@{Missions.show(mission.id)}?discussion=${discussion.id}#{/set}
+					#{set 'discussionContext'}(mission "${mission.title}")#{/set}
+				#{/if}
+
+			#{/if}
+			#{else}
+				#{set discussionUrl: url /}
+				#{set discussionContext: '' /}
+			#{/else}
+
+
+			&{'mail.discussion.response.content', discussionUrl, discussionContext}
+			
+			<br>
+			
+			<h4>Résumé :</h4>
+
+			#{list items: discussionMessages, as: 'msg'}
+
+			#{set position: '' /}
+			#{if msg_isFirst}
+				#{set position: 'first' /}
+			#{/if}
+			#{if msg_isLast}
+				#{set position: 'last' /}
+			#{/if}
+
+			<p class="text ${position}">
+                <table><tr><td class="avatar"> <img src="@@{Users.imageByUserId(msg.getAuthor().id)}" /></td><td>
+				<a href="@@{Users.show(msg.author.login)}"><span class="user">${msg.getAuthor().getLogin()}</span></a><br>
+				${msg.text}
+				<br/>
+				<span class="date">${msg.creationDate.format('dd MMM yyyy, HH:mm')}</span>
+				</td></tr></table>
+			</p>
+			#{if msg_isFirst && nMessages > (nMessagesMax + 1)}
+				<p class="text">...</p>
+			#{/if}
+
+
+
+			#{/list}
+
+
+
+			<h4>Tags :</h4>
+
+			#{list items: tags, as: 'tag'}
+                <a href="@@{controllers.Application.index}tags/show/${libs.EncodingUtil.encodeURIComponent(tag.tagLabel)}?discussion=${discussion.id}" class="tag ${tag.tagType}">${tag.tagLabel}</a>
+			#{/list}
+
+		</div>
+	</body>
+</html>
+

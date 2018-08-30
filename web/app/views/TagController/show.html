@@ -1,0 +1,58 @@
+#{extends 'main.html' /}
+
+<div id="tagPageContent" ng-controller="tagCtrl" class="row-fluid" ng-init="init('${tag.tagType}', '${tag.tagLabel}', ${subscribedTag}, ${forceDiscussion != null ? forceDiscussion : 'null'})">
+    <div class="row-fluid header">
+        <div class="span6 tag_title" ng-cloak>
+            <i ng-class="currentTag.tagType == 'MISSION' ? 'icon-book' : currentTag.tagType == 'SPECIMEN' ? 'icon-leaf' : 'icon-tag'"></i> {{currentTag.tagLabel}}
+        </div>
+        <div class="span6" ng-cloak>
+            #{if connectedLogin}
+                <button class="btn btn-success pull-right" ng-hide="subscribedTag" ng-click="subscribeTag()">&{'tag.subscribe'}</button>
+                <button class="btn btn-danger pull-right" ng-show="subscribedTag" ng-click="unsubscribeTag()">&{'tag.unsubscribe'}</button>
+            #{/if}
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                #{if nbDiscussions > 0}
+                    <li #{if tagType == 'USER' || forceDiscussion != null}class="active"#{/if}><a href="#tabDiscussions" data-toggle="tab">&{'tab.discussions'}</a></li>
+                #{/if}
+                #{if missions.size() > 0}
+                    <li #{if tagType == 'MISSION' && forceDiscussion == null}class="active"#{/if}><a href="#tabMissions" data-toggle="tab">&{'tab.mission'}</a></li>
+                #{/if}
+                #{if nbSpecimens > 0}
+                    <li #{if tagType == 'SPECIMEN' && forceDiscussion == null}class="active"#{/if}><a href="#tabSpecimens" data-toggle="tab">&{'tab.specimens'}</a></li>
+                #{/if}
+            </ul>
+            <div class="tab-content">
+                #{if nbDiscussions > 0}
+                    <div class="tab-pane #{if tagType == 'USER' || forceDiscussion != null}active#{/if}" id="tabDiscussions">
+                        #{discussionBox connectedLogin: connectedLogin, isAdmin: isAdmin, isLeader: isLeader, imageId: connectedImageId, tagType: tag.tagType, tagLabel: tag.tagLabel, allowCreation: false, forceDiscussion: forceDiscussion}
+                    #{/discussionBox}
+                    </div>
+                #{/if}
+                #{if missions.size() > 0}
+                    <div class="tab-pane  #{if tagType == 'MISSION' && forceDiscussion == null}active#{/if}" id="tabMissions">
+                        #{list items:missions, as:'mission'}
+                            #{missionBoxIndex mission /}
+                        #{/list}
+                        #{if missions.size() == 0}
+                            <span class="noResults">&{'tag.noResults'}</span>
+                        #{/if}
+                    </div>
+                #{/if}
+                #{if nbSpecimens > 0}
+                    <div class="tab-pane  #{if tagType == 'SPECIMEN' && forceDiscussion == null}active#{/if}" id="tabSpecimens">
+                        #{specimensList herbonautes: herbonautes, tagLabel: tag.tagLabel}
+                    #{/specimensList}
+                    </div>
+                #{/if}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

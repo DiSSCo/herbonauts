@@ -1,0 +1,200 @@
+#{extends 'main.html' /}
+#{set 'title'}&{'search.results'} ${herbonautes.titleSep} ${herbonautes.title}#{/set}
+
+<h2><small>&{'search.results.for'}</small> "${term}"</h2>
+
+<div class="row" ng-controller="searchCtrl" ng-init="init('${term}')">
+	<div class="span12">
+
+        <ul class="pager">
+            <li class="previous" ng-class="page == 1 ? 'disabled' : ''" ng-disabled="page == 1" ng-click="previousPage()"><a href="#">&{'prev.results'}</a></li>
+            <li class="next" ng-class="isNextButtonActive() ? '' : 'disabled'" ng-disabled="!isNextButtonActive()" ng-click="nextPage()"><a href="#">&{'next.results'}</a></li>
+        </ul>
+
+		<div class="row">
+            <div class="span3">
+                <h3>&{'category.missions'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="missions.length == 0">
+                    <tr ng-repeat="mission in missions" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{mission.url}}">{{mission.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="missions.length == 0">&{'no.result'}</span>
+
+            </div>
+
+            <div class="span3">
+                <h3>&{'category.botanists'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="botanists.length == 0">
+                    <tr ng-repeat="botanist in botanists" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{botanist.url}}">{{botanist.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="botanists.length == 0">&{'no.result'}</span>
+
+            </div>
+
+            <div class="span3">
+                <h3>&{'category.specimens'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="specimens.length == 0">
+                    <tr ng-repeat="specimen in specimens" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{specimen.url}}">{{specimen.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="specimens.length == 0">&{'no.result'}</span>
+
+            </div>
+
+            <div class="span3">
+                <h3>&{'category.herbonauts'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="herbonautes.length == 0">
+                    <tr ng-repeat="herbonaute in herbonautes" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{herbonaute.url}}">{{herbonaute.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="herbonautes.length == 0">&{'no.result'}</span>
+            </div>
+		</div>
+        <div class="row" style="margin-top: 25px;">
+            
+			<div class="span3">
+                <h3>&{'category.tags'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="tags.length == 0">
+                    <tr ng-repeat="tag in tags" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{tag.url}}">{{tag.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="tags.length == 0">&{'no.result'}</span>
+
+            </div>
+
+            <div class="span3">
+                <h3>&{'category.discussions'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="discussions.length == 0">
+                    <tr ng-repeat="discussion in discussions" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{discussion.url}}">{{discussion.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="discussions.length == 0">&{'no.result'}</span>
+
+            </div>
+
+            <div class="span3">
+                <h3>&{'category.scientificnames'}</h3>
+                <br/>
+
+                <table class="table table-condensed" ng-hide="scientificnames.length == 0">
+                    <tr ng-repeat="scientificname in scientificnames" ng-hide="$index == searchResultsNumber - 1">
+                        <td class="wordBreak"><a href="{{scientificname.url}}">{{scientificname.text}}</a></td>
+                    </tr>
+                </table>
+                <span class="ng-cloak" ng-show="scientificnames.length == 0" class="ng-cloak">&{'no.result'}</span>
+
+            </div>
+			
+		</div>
+    </div>
+</div>
+
+
+
+	*{<div class="span3">
+		<h3>&{'category.missions'}</h3>
+		<br/>
+		#{if result.missions}
+			<table class="table table-condensed">
+			#{list items: result.missions, as: 'mission'}
+				<tr><td><a href="@{Missions.show(mission.id)}">${mission.title}</a></td></tr>
+			#{/list}
+			</table>
+		#{/if}
+		#{else}
+			<span class="ng-cloak" class="disabled" class="ng-cloak">&{'no.result'}</span>
+		#{/else}
+		
+	</div>
+	
+	<div class="span3">
+		<h3>&{'category.botanists'}</h3>
+		<br/>
+		#{if result.botanists}
+			<table class="table table-condensed">
+			#{list items: result.botanists, as: 'botanist'}
+				<tr><td><a href="@{Botanists.show(botanist.id)}">${botanist.name}</a></td></tr>
+			#{/list}
+			</table>
+		#{/if}
+		#{else}
+			<span class="ng-cloak" class="disabled" class="ng-cloak">&{'no.result'}</span>
+		#{/else}
+	</div>
+
+	<div class="span3">
+		<h3>&{'category.specimens'}</h3>
+		<br/>
+		#{if result.familiesGenuses}
+			<table class="table table-condensed">
+			#{list items: result.familiesGenuses, as: 'familyGenus'}
+				<tr><td><a href="@{Specimens.list(family: familyGenus.family, genus: familyGenus.genus)}">${familyGenus.family} ${familyGenus.genus}</a></td></tr>
+			#{/list}
+			</table>
+		#{/if}
+		#{else}
+			<span class="ng-cloak" class="disabled" class="ng-cloak">&{'no.result'}</span>
+		#{/else}
+	</div>
+	
+	<div class="span3">
+		<h3>&{'category.users'}</h3>
+		<br/>
+		#{if result.users}
+			<table class="table table-condensed">
+			#{list items: result.users, as: 'user'}
+				<tr><td><a href="@{Users.show(user.login)}">${user.login}</a></td></tr>
+			#{/list}
+			</table>
+		#{/if}
+		#{else}	
+			<span class="ng-cloak" class="disabled" class="ng-cloak">&{'no.result'}</span>
+		#{/else}
+	</div>
+	
+</div>
+
+<hr/>
+<ul class="pager">
+#{if !result.familiesGenuses 
+	&& !result.users
+	&& !result.botanists
+	&& !result.missions}
+	
+	#{if currentPage > 1}
+		<li class="previous"><a href="@{Search.search(term: term, page: currentPage - 1)}">&{'prev.results'}</a></li>
+	#{/if}
+	#{else}
+		<li class="previous disabled"><a href="#">&{'prev.results'}</a></li>
+	#{/else}
+	<li class="next disabled"><a href="#">&{'next.results'}</a></li>
+#{/if}
+#{else}
+	#{if currentPage > 1}
+		<li class="previous"><a href="@{Search.search(term: term, page: currentPage - 1)}">&{'prev.results'}</a></li>
+	#{/if}
+	#{else}
+		<li class="previous disabled"><a href="#">&{'prev.results'}</a></li>
+	#{/else}
+	<li class="next"><a href="@{Search.search(term: term, page: currentPage + 1)}">&{'next.results'}</a></li>
+#{/else}
+</ul>}*

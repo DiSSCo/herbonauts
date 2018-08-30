@@ -1,0 +1,363 @@
+#%RAML 0.8
+---
+title: Herbonautes API
+baseUri: http://lesherbonautes.mnhn.fr/v2
+version: v1
+
+/api:
+    /getSpecimenDatas:
+        /{code}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                   "id": 1287609,
+                                   "family": "Iris",
+                                   "genus": "unguicularis",
+                                   "institute": "MHNAIX",
+                                   "collection": "AIX",
+                                   "code": "AIX015957",
+                                   "sonneratURL": "http://dsiphoto.mnhn.fr/sonnerat/AIX/FOUILLOY/08/AIX015957.jpg",
+                                   "tw": 429,
+                                   "th": 348
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+
+    /getDiscussionsBySpecimenCode:
+        /{code}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                                "data": {
+                                    [
+                                        {
+                                            "id": 4065318,
+                                            "title": "Anciens commentaires",
+                                            "resolved": true,
+                                            "author": "DBF",
+                                            "messages": [
+                                                {
+                                                   "id": 4085329,
+                                                   "author": "DBF",
+                                                   "discussionId": 4065318,
+                                                   "resolution": false,
+                                                   "date": 1391635489225,
+                                                   "imageId": 1442213,
+                                                   "moderator": "",
+                                                   "text": "Spécimen provenant d'un jardin, donc cultivé, pas de mention de pays, ni de région, ni de géolocalisation.",
+                                                   "first": true
+                                                }
+                                            ],
+                                            "tags": [
+                                                {
+                                                    "tagId": 3882074,
+                                                    "tagLabel": "AIX015957",
+                                                    "tagType": "SPECIMEN"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "id": 4009788,
+                                            "resolved": true,
+                                            "author": "DBF",
+                                            "messages": [
+                                                {
+                                                    "id": 4029799,
+                                                    "author": "DBF",
+                                                    "discussionId": 4009788,
+                                                    "resolution": false,
+                                                    "date": 1391635489225,
+                                                    "imageId": 1442213,
+                                                    "moderator": "",
+                                                    "text": "Spécimen provenant d'un jardin, donc cultivé, pas de mention de pays, ni de région, ni de géolocalisation.",
+                                                    "first": true
+                                                }
+                                            ],
+                                            "tags": [
+                                                {
+                                                    "tagId": 3882074,
+                                                    "tagLabel": "AIX015957",
+                                                    "tagType": "SPECIMEN"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "success": true,
+                                "status": 200
+                             }
+    /getMessagesBySpecimenCode:
+        /{code}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                   [
+                                       {
+                                           "id": 4029799,
+                                           "author": "DBF",
+                                           "discussionId": 4009788,
+                                           "resolution": false,
+                                           "date": 1391635489225,
+                                           "imageId": 1442213,
+                                           "moderator": "",
+                                           "text": "Spécimen provenant d'un jardin, donc cultivé, pas de mention de pays, ni de région, ni de géolocalisation.",
+                                           "first": true
+                                       },
+                                       {
+                                           "id": 4085329,
+                                           "author": "DBF",
+                                           "discussionId": 4065318,
+                                           "resolution": false,
+                                           "date": 1391635489225,
+                                           "imageId": 1442213,
+                                           "moderator": "",
+                                           "text": "Spécimen provenant d'un jardin, donc cultivé, pas de mention de pays, ni de région, ni de géolocalisation.",
+                                           "first": true
+                                       }
+                                   ]
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+    /getTagsBySpecimenCode:
+        /{code}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                    [
+                                        {
+                                            "tagId": 3882074,
+                                            "tagLabel": "AIX015957",
+                                            "tagType": "SPECIMEN"
+                                        }
+                                    ]
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+    /getAllMissions:
+        get:
+            200:
+                body:
+                    application/json:
+                        example: |
+                         {
+                           "data": {
+                                [
+                                    {
+                                        "id": 184987,
+                                        "imageId": 302819,
+                                        "title": "TST Les Ficus"
+                                    },
+                                    {
+                                        "id": 201766,
+                                        "imageId": 211318,
+                                        "title": "TST Suivez Benjamin Balansa"
+                                    },
+                                    {
+                                        "id": 70794,
+                                        "imageId": 70792,
+                                        "title": "TST Mission impossible"
+                                    },
+                                    {
+                                        "id": 574447,
+                                        "imageId": 574592,
+                                        "title": "TST Juste le pays (épisode 2)"
+                                    },
+                                    {
+                                        "id": 762,
+                                        "imageId": 734,
+                                        "title": "TST Orchidées de France, Le genre Platanthera"
+                                    },
+                                    {
+                                        "id": 1565,
+                                        "title": "TST Cypripedium de France"
+                                    }
+                                ]
+                           },
+                           "success": true,
+                           "status": 200
+                         }
+    /getMissionById:
+        /{missionId}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                    "id": 184987,
+                                    "imageId": 302819,
+                                    "title": "TST Les Ficus"
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+    /getSpecimensByMissionId:
+        /{missionId}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                    [
+                                        {
+                                            "id": 194902,
+                                            "family": "Ficus",
+                                            "genus": "austro-caledonica",
+                                            "institute": "MNHN",
+                                            "collection": "P",
+                                            "code": "P06751015",
+                                            "sonneratURL": "http://sonneratphoto.mnhn.fr/2012/11/12/13/P06751015.jpg",
+                                            "tw": 207,
+                                            "th": 325
+                                        },
+                                        {
+                                            "id": 194903,
+                                            "family": "Ficus",
+                                            "genus": "nitidifolia",
+                                            "institute": "MNHN",
+                                            "collection": "P",
+                                            "code": "P06753795",
+                                            "sonneratURL": "http://sonneratphoto.mnhn.fr/2012/11/09/8/P06753795.jpg",
+                                            "tw": 209,
+                                            "th": 323
+                                        },
+                                        {
+                                            "id": 194904,
+                                            "family": "Ficus",
+                                            "genus": "nitidifolia",
+                                            "institute": "MNHN",
+                                            "collection": "P",
+                                            "code": "P06753797",
+                                            "sonneratURL": "http://sonneratphoto.mnhn.fr/2012/11/09/8/P06753797.jpg",
+                                            "tw": 207,
+                                            "th": 327
+                                        }
+                                    ]
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+    /getDiscussionsByMissionId:
+        /{missionId}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                    [
+                                    {
+                                        "id": 4056574,
+                                        "title": "Anciens commentaires",
+                                        "resolved": true,
+                                        "author": "MarcP",
+                                        "messages": [
+                                            {
+                                                "id": 4056822,
+                                                "author": "MarcP",
+                                                "discussionId": 4056574,
+                                                "resolution": false,
+                                                "date": 1363367451873,
+                                                "imageId": 82528,
+                                                "moderator": "",
+                                                "text": "Chers participants, cette mission vous surprend peut-être. On vous promet des Ficus et vous voyez apparaitre des Malva... En fait nous avons utilisé un logiciel de reconnaissance de caractères. Il suffit que le mot Ficus figure sur l'étiquette pour qu'elle soit sélectionnée!",
+                                                "first": true
+                                            },
+                                            {
+                                                "id": 4056848,
+                                                "author": "tkoffel",
+                                                "discussionId": 4056574,
+                                                "resolution": false,
+                                                "date": 1364035722843,
+                                                "imageId": 399761,
+                                                "moderator": "",
+                                                "text": "D'une manière générale, lorsque l'on renseigne la localisation, faut-il inclure les précisions sur l'altitude exacte (ou approximative) et l'allure générale du milieu du prélèvement (ceux-ci donnant tous les deux des précisions sur la localisation) ?",
+                                                "first": false
+                                            }
+                                        ],
+                                        "tags": [
+                                            {
+                                                "tagId": 3875256,
+                                                "tagLabel": "MISSION 184987",
+                                                "tagType": "MISSION"
+                                            }
+                                        ]
+                                    }
+                                   ]
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+    /getMessagesByMissionId:
+        /{missionId}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                    {
+                                        "id": 4001505,
+                                        "author": "chlorofil",
+                                        "discussionId": 4001044,
+                                        "resolution": false,
+                                        "date": 1381852585487,
+                                        "imageId": 137,
+                                        "moderator": "",
+                                        "text": "La mission s'est terminée sans que j'y contribue beaucoup ... je me rattraperai sur les suivantes.",
+                                        "first": false
+                                    },
+                                    {
+                                        "id": 4057035,
+                                        "author": "chlorofil",
+                                        "discussionId": 4056574,
+                                        "resolution": false,
+                                        "date": 1381852585487,
+                                        "imageId": 137,
+                                        "moderator": "",
+                                        "text": "La mission s'est terminée sans que j'y contribue beaucoup ... je me rattraperai sur les suivantes.",
+                                        "first": false
+                                    }
+                               },
+                               "success": true,
+                               "status": 200
+                             }
+    /getTagsByMissionId:
+        /{missionId}:
+            get:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                             {
+                               "data": {
+                                    "tagId": 3875256,
+                                    "tagLabel": "MISSION 184987",
+                                    "tagType": "MISSION"
+                               },
+                               "success": true,
+                               "status": 200
+                             }

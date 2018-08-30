@@ -1,0 +1,7 @@
+#{extends 'mailLayout.html' /}
+
+
+#{set 'indexUrl'}@@{Application.index()}#{/set}
+<p>&{'mail.welcome.content', user.login, indexUrl, user.login}</p>
+<p>&{'mail.welcome.content.more'}</p>
+

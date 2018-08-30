@@ -1,0 +1,100 @@
+#{extends 'main.html' /}
+#{set title: herbonautes.title /}
+
+		 <div class="row">
+		   <div class="span8">
+		    
+		    	<div class="row bloc">
+		    		<div class="span8">
+		    			<h2>${presentation?.title?.raw()}</h2>
+		    			${presentation?.text?.raw()}
+		    		</div>
+		    	</div>
+				
+			
+				<div class="row">
+		    		<div class="span8">
+		    	
+			    	 	<h2>&{'index.first.mission'}</h2>
+			    	 	
+			    	 	<div class="row">
+			    	 		<div class="span8 mission-box">
+							#{list items:missions, as:'mission'}
+							 	#{if mission.published}
+									#{missionBoxIndex mission /}
+								#{/if}
+							#{/list}
+							</div>
+						</div>
+		    	
+		    			<div class="centered">
+		    				<a href="@{Missions.list()}" class="btn btn-small">&{'index.btn.all.missions'}</a>
+		    			</div>
+		    			
+		    		</div>
+		    	</div> 
+		   
+			
+		</div><!-- /.span8 (2/3 gauche)-->
+
+
+
+		<div class="span4">
+
+            <h2>&{'stats.index.title'}</h2>
+
+            <div class="row bloc">
+
+                <div class="span4 specimen-crop">
+                    <div class="inner">
+
+						<p><span class="count">${String.format("%,d", herbonautesCount)}</span> &{'stats.herbonautes'}</p>
+                        <p><span class="count">${String.format("%,d", missionsCount)}</span> &{'stats.missions'}</p>
+                        <p><span class="count">${String.format("%,d", specimensCount)}</span> &{'stats.specimens'}</p>
+
+						<p style="text-align:right"><a href="@{Application.stats()}">Plus de chiffres</a></p>
+
+					</div>
+				</div>
+			</div>
+
+			*{<div class="row bloc">
+				<div class="span4 specimen-crop">
+					<div class="inner">
+						#{if randomMission && randomSpecimen}
+						<h3><a href="@{Missions.contributionBoard(randomMission.id, randomSpecimen.id)}">&{'index.specimen.question'}</a></h3>
+						<a href="@{Missions.contributionBoard(randomMission.id, randomSpecimen.id)}"> 
+							<img alt="mission" src="${herbonautes.tilesRootURL}/${randomSpecimen.institute}/${randomSpecimen.collection}/${randomSpecimen.code}/crop.jpg" />
+						</a>
+						<br/><br/>
+						<a href="@{Missions.contributionBoard(randomMission.id, randomSpecimen.id)}" class="btn btn-primary">&{'contribute'}</a>
+						#{/if}
+					</div>	
+				</div>
+			</div>}*
+
+            <br/><br/>
+
+			<div id="activity-box">
+				<h3>&{'activity'}</h3>
+			
+				#{activitiesBox id:'index', filter: 'view=all' /}
+			
+					<script>
+						$(function() {
+							$('#activity-box .activities').paginate();
+						});
+						visitorIndex=true;
+					</script>
+			</div>
+		</div>
+			
+	</div>
+		
+</div><!-- /.span4 -->
+</div>
+
+
+
+
+

@@ -1,0 +1,16 @@
+#{extends 'main.html' /}
+#{set 'title'}
+&{'invitation'} ${herbonautes.titleSep + herbonautes.title}
+#{/set}
+
+<div class="row">
+    <div class="span12">
+
+        <h2>&{'invitation.validate.title'}</h2>
+
+        <p>&{'invitation.validate.text', invitation.fromUser.login}</p>
+
+        <a href="@{Invitation.sign(invitation.token)}" class="btn btn-success">&{'invitation.validate.btn'}</a>
+
+    </div>
+</div>

@@ -1,0 +1,26 @@
+# Contributions
+
+contributions.CountryContribution(con1):
+    user: jon
+    mission: bonite
+    country: FR
+    specimen: P001
+    
+contributions.GeolocalisationContribution(con2):
+    user: jon
+    mission: bonite
+    latitude: 1.0
+    longitude: 2.0
+    specimen: P002
+    
+contributions.CountryContribution(con3):
+    user: tim
+    mission: bonite
+    country: DE
+    specimen: P002
+        
+contributions.CountryContribution(con4):
+    user: jon
+    mission: orchidees
+    country: IT
+    specimen: P003

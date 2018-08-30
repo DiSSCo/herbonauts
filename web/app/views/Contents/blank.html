@@ -1,0 +1,89 @@
+#{extends 'main.html' /}
+#{set title: 'Les herbonautes' /}
+
+   
+<script type="text/javascript" src="@{'/public/ckeditor/ckeditor.js'}"></script>
+<script type="text/javascript" src="@{'/public/ckeditor/adapters/jquery.js'}"></script>
+
+<script type="text/javascript">
+	/*tinyMCE.init({
+	        mode : 'exact',
+	        elements: 'presentation-field, report-field'
+	});*/
+
+	$(function() {
+		var config = {
+			toolbar:
+			[
+				['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink'],
+				['UIColor'], [ 'Image' ]
+			],
+			
+			*{ filebrowserImageBrowseUrl: '/contents/images/browse', }*
+			filebrowserImageUploadUrl: '@{Contents.imagesUpload()}'
+		};
+	
+		// Initialize the editor.
+		// Callback function can be passed and executed after full instance creation.
+		$('.ckeditor').ckeditor(config);
+	});
+
+	
+</script>
+
+
+
+<div class="row">
+	<div class="span12">
+	
+
+		<h2><small>&{'content.new'}</small></h2>
+		
+		#{form action: @Contents.create(), method: 'POST'}
+		
+			#{field 'content.url'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<input 
+						name="${field.name}" 
+						type="text" 
+						id="${field.id}" 
+						value="${flash[field.name]}"/>
+					<span class="help-inline">${field.error}</span>
+				</div>
+			</div>
+			#{/field}	
+		
+			#{field 'content.title'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<input 
+						name="${field.name}" 
+						type="text" 
+						id="${field.id}" 
+						value="${flash[field.name]}"/>
+					<span class="help-inline">${field.error}</span>
+				</div>
+			</div>
+			#{/field}
+			
+			#{field 'content.text'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<textarea class="ckeditor" name="${field.name}" style="width:100%; height: 400px">${flash[field.name]}</textarea>
+				</div>
+			</div>
+			#{/field}	
+			
+		
+			<input type="submit" value="&{'button.save'}" class="btn btn-success" />
+			
+		#{/form}
+	
+	</div>
+	<div class="span2">
+	</div>
+</div>

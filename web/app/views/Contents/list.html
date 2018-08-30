@@ -1,0 +1,32 @@
+#{extends 'main.html' /}
+#{set title: 'Contenus · Les herbonautes' /}
+
+<div class="row">
+	<div class="span10">
+
+		<h2>&{'content.available'}</h2>
+				
+		<a href="@{Contents.blank()}" class=" btn btn-small"><i class="icon-plus"></i> &{'content.add'}</a>
+	
+		<table class="table">
+			<thead>
+				<th>&{'content.url'}</th>
+				<th>&{'content.title'}</th>
+				<th></th>
+			</thead>
+			<tbody>
+				#{list items: contents, as: 'content'}
+				<tr>
+					<td>${content.url}</td>
+					<td>${content.title?.raw()}</td>
+					<td><a href="@{Contents.edit(content.url)}">Modifier</a></td>
+				</tr>
+				#{/list}
+			</tbody>
+		</table>
+		
+	
+	</div>
+	<div class="span2">
+	</div>
+</div>

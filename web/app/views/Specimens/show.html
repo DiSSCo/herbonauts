@@ -1,0 +1,498 @@
+#{extends 'main.html' /}
+#{set title: specimen.getGenusSpecies() + herbonautes.titleSep + herbonautes.title /}
+
+
+
+<div class="row" ng-controller="ShowSpecimenCtrl" ng-init="specimen = {
+	family: '${specimen.family?.escapeJavaScript()}',
+	genus: '${specimen.genus?.escapeJavaScript()}',
+	#{if specimen.specificEpithet != null} specificEpithet: '${specimen.specificEpithet.escapeJavaScript()}',#{/if}
+	code: '${specimen.code?.escapeJavaScript()}',
+	institute: '${specimen.institute?.escapeJavaScript()}',
+	collection: '${specimen.collection?.escapeJavaScript()}'
+}">
+
+	<div class="span3">
+		#{if specimen.hasActiveMission()}
+			<a title="&{'btn.contribute'}" href="@{ContributionBoard.showBoard(specimen.mission.id, specimen.id)}"><img class="bordered avatar" alt="&{'specimen.of', specimen.getGenusSpecies()}" src="${herbonautes.tilesRootURL}${specimen.institute}/${specimen.collection}/${specimen.code}/tile_0_0_0.jpg" />
+            </a>
+		#{/if}
+		#{else}
+			<img class="bordered avatar" alt="&{'specimen.of', specimen.getGenusSpecies()}" src="${herbonautes.tilesRootURL}${specimen.institute}/${specimen.collection}/${specimen.code}/tile_0_0_0.jpg" />
+		#{/else}
+	</div>
+	<div class="span9">
+
+
+
+
+		#{if hasActiveMission}
+
+
+			#{if multipleActiveSpecimen}
+                <div class="btn-group pull-right">
+                    <a class="btn btn-success dropdown-toggle" data-toggle="dropdown" href="#">
+					&{'btn.contribute'}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+						#{list items: specimens, as: 'specimen'}
+                            <li><a href="@{ContributionBoard.showBoard(specimen.mission.id, specimen.id)}">${specimen.mission.title}</a></li>
+						#{/list}
+                    </ul>
+                </div>
+			#{/if}
+			#{else}
+				#{set specimen: defaultSpecimen /}
+				<a href="@{ContributionBoard.showBoard(defaultSpecimen.mission.id, defaultSpecimen.id)}" class="btn btn-success pull-right">&{'btn.contribute'}</a>
+			#{/else}
+		#{/if}
+		#{else}
+			<p class="pull-right"><b>&{'warning.no.active.mission.for.specimen'}</b></p>
+		#{/else}
+	
+		<h2>
+			#{if specimen.specificEpithet}
+				<a href="@{Specimens.list(genus: specimen.genus, specificEpithet: specimen.specificEpithet)}">${specimen.getGenusSpecies()}</a>
+			#{/if}
+			#{else}
+                <a href="@{Specimens.list(genus: specimen.family, specificEpithet: specimen.genus)}">${specimen.getGenusSpecies()}</a>
+			#{/else}
+			<small>(${specimen.institute}/${specimen.collection}/${specimen.code})</small>
+		</h2>
+		
+		<dl class="clearfix">
+
+
+		#{list items: attributes, as: 'attribute'}
+
+            <dt>${attribute.label}</dt>
+            <dd>
+				#{if attribute.todo}
+					<em style="color:#999">&{'to.be.determined'}</em>
+				#{/if}
+				#{else}
+					#{list items: attribute.validatedValue, as: 'val'}
+						#{if val.isBoolean}
+							#{if val.booleanValue}
+								<em>
+									<dynamic-content template="'${val.label.escapeJavaScript()}'" context="{specimen: specimen}"></dynamic-content>
+								</em>
+                                <br/>
+							#{/if}
+						#{/if}
+						#{else}
+						${val.textValue}<br/>
+						#{/else}
+
+					#{/list}
+				#{/else}
+            </dd>
+ 
+		#{/list}
+		
+			<dt class="divider"></dt>
+			<dd class="divider"></dd>
+		
+			<dt>&{'specimen.show.missions'}</dt>
+			<dd>
+				#{list items: missions, as: 'mission'}
+					<a href="@{Missions.show(mission.id)}">${mission.title}</a><br/>
+				#{/list}
+			</dd>
+			
+			<dt>&{'specimen.show.tropicos.link'} </dt>
+			<dd><a href="${specimen.tropicosURL}">${specimen.tropicosURL}</a></dd>
+
+				<dt>&{'specimen.show.source.img'} </dt>
+				<dd><a target="_blank" href="${specimen.sonneratURL}">${specimen.sonneratURL}</a></dd>
+			
+		</dl>
+		
+		<div class="row">
+			<div class="span8 page-stats specimen-stats">
+			
+				<div class="row">
+			
+					<div class="span2">
+		
+						<div class="first stat">
+							#{set contributionsCount: models.SpecimenMaster.getContributionsCount(specimens) /}
+							<span class="count">${contributionsCount}</span> 
+							<span class="item">&{contributionsCount <= 1 ? 'contribution' : 'contributions'}</span>
+						</div>
+					</div>
+					<div class="span2">
+						
+						<div class="stat">
+							#{set contributorsCount: models.SpecimenMaster.getContributorsCount(specimens) /}
+							<span class="count">${contributorsCount}</span> 
+							<span class="item">&{contributorsCount <= 1 ? 'contributor' : 'contributors'}</span>
+						</div>
+				
+					</div>
+			
+				</div>
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+
+<br/>
+
+
+
+<div class="row">
+<div class="span8">
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li><a id="contributions-tab" href="#tab1" data-toggle="tab">&{'tab.contributions'}</a></li>
+	#{if isLeader}
+		<li><a href="#tab-contributions-details" data-toggle="tab">&{'tab.contributions.details'}</a></li>
+	#{/if}
+	<li><a id="map-tab" href="#map-tab-pane" data-toggle="tab">&{'tab.map'}</a></li>
+    <li><a href="#tags-tab-pane" id="tags-tab" data-toggle="tab">&{'tab.tags'} (<span ng-controller="nbTagsCtrl" ng-cloak>{{$root.nbTagsTab}}</span>)</a></li>
+	<li><a href="#comments-tab-pane" id="comments-tab" data-toggle="tab">&{'tab.discussions'} (<span ng-controller="nbDiscussionsCtrl" ng-cloak>{{$root.nbDiscussionsTab}}</span>)</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane horizontal_scrollable" id="tab1">
+
+		#{if missions.size() > 1}
+			<select ng-model="missionOnly" ng-change="questionNameOnly = null">
+				<option value="" ng-selected="!missionOnly">Toutes les missions</option>
+				#{list items: missions, as: 'mission'}
+
+					<option value="${mission.id}">${mission.title}</option>
+
+				#{/list}
+			</select>
+		#{/if}
+
+		<br/>
+		#{list items: missions, as: 'mission'}
+
+			<div ng-if="!missionOnly || missionOnly == '${mission.id}'">
+
+			#{set questions: missionsQuestions[mission.id] /}
+			#{set answersByLogin: missionsAnswers[mission.id] /}
+
+			<h5>${mission.title}</h5>
+
+			<table class="table contributions">
+			<thead>
+			  <tr>
+				<th></th>
+				#{list items: questions, as: 'question'}
+					<th class="contribution">${question.shortLabel}</th>
+				#{/list}
+			  </tr>
+			</thead>
+			<tbody>
+
+
+
+				#{list items: answersByLogin, as: 'userAnswers'}
+				<tr>
+					<td>
+						<img src="@{Users.image(login: userAnswers.key, imageId: 'id')}" />
+						${userAnswers.key}
+					</td>
+					#{list items: questions, as: 'question'}
+					<td class="contribution">
+						 #{if question.name != 'unusable' && userAnswers.value['unusable']}
+							 <i class="icon-ban-circle"></i>
+						 #{/if}
+						 #{else}
+							 #{if userAnswers.value[question.name]}
+								 <i class="icon-ok"></i>
+							 #{/if}
+							 #{else}
+								&middot;
+							 #{/else}
+						 #{/else}
+
+					</td>
+					#{/list}
+				</tr>
+
+				#{/list}
+
+
+			</tbody>
+		  </table>
+
+            </div>
+
+		#{/list}
+
+    </div>
+    
+
+
+    #{if isLeader}
+      <div class="tab-pane" id="tab-contributions-details">
+
+
+          <div>
+			  #{if missions.size() > 1}
+              <select ng-model="missionOnly" ng-change="questionNameOnly = null">
+                  <option value="" ng-selected="!missionOnly">Toutes les missions</option>
+				  #{list items: missions, as: 'mission'}
+
+					<option value="${mission.id}">${mission.title}</option>
+
+				  #{/list}
+              </select>
+			  #{/if}
+
+              <div>
+                  <select ng-model="questionNameOnly">
+                      <option value="" ng-selected="!questionNameOnly">Toutes les questions</option>
+					  #{list items: allQuestions, as: 'q'}
+						  #{if q.name != 'unusable'}
+                              <option ng-if="!missionOnly || missionOnly == '${q.missionId}'" value="${q.name}">${q.label}</option>
+						  #{/if}
+					  #{/list}
+                  </select>
+              </div>
+
+		  </div>
+
+		  #{list items: missions, as: 'mission'}
+
+
+		  #{set answersByLogin: missionsAnswers[mission.id] /}
+		  #{set questions: missionsQuestions[mission.id] /}
+
+
+          <table class="table contributions" ng-if="!missionOnly || missionOnly == '${mission.id}'">
+              <thead>
+              <tr>
+                  <th></th>
+				  <th>Question</th>
+				  <th>Réponse</th>
+				  <th>Date</th>
+				  *{
+				  #{list items: questions, as: 'question'}
+                      <th class="contribution">${question.shortLabel}</th>
+				  #{/list}
+				  }*
+              </tr>
+              </thead>
+              <tbody>
+
+				  #{list items: answersByLogin, as: 'userAnswers'}
+
+					  #{if userAnswers.value['unusable']}
+					  <tr>
+						  <td>
+							  <img src="@{Users.image(login: userAnswers.key, imageId: 'id')}" />
+						  ${userAnswers.key}
+						  </td>
+						  <td class="contribution-details">
+							  Inutilisable
+						  </td>
+
+						  <td class="contribution-details">
+							 <span class="value">
+								 #{contributionHumanValue answer: userAnswers.value['unusable']  /}
+							 </span>
+						  </td>
+						  <td class="contribution-details">
+							  <span class="date">${userAnswers.value['unusable'].createdAt.format('dd/MM/yyyy')}</span>
+
+							  <span class="date">${userAnswers.value['unusable'].createdAt.format('HH:mm:ss')}</span>
+						  </td>
+                      </tr>
+					  #{/if}
+					  #{else}
+
+                      <tr>
+                          <td rowspan="{{ !!questionNameOnly ? 2 : ${questions.size()} }}">
+                              <img src="@{Users.image(login: userAnswers.key, imageId: 'id')}" />
+						  ${userAnswers.key}
+                          </td>
+						  </tr>
+						  #{list items: questions, as: 'question'}
+							  #{if question.name != 'unusable'}
+						  <tr ng-if="!questionNameOnly || questionNameOnly == '${question.name}'">
+                          <td class="contribution-details">
+
+							  ${question.label}
+
+
+                          </td>
+							  <td class="contribution-details">
+
+
+									  #{if userAnswers.value[question.name]}
+                                          <span class="value">#{contributionHumanValue answer: userAnswers.value[question.name] /}</span>
+                                          <br/>
+
+									  #{/if}
+									  #{else}
+                                          &middot;
+									  #{/else}
+
+							  </td>
+							  <td class="contribution-details">
+							  #{if userAnswers.value[question.name]}
+                                  <span class="date">${userAnswers.value[question.name].createdAt.format('dd/MM/yyyy')}</span>
+
+                                  <span class="date">${userAnswers.value[question.name].createdAt.format('HH:mm:ss')}</span>
+								  #{/if}
+
+								  #{else}
+                                      &middot;
+								  #{/else}
+							  </td>
+						  </tr>
+						  #{/if}
+						  #{/list}
+					  #{/else}
+                  </tr>
+
+
+
+				  #{/list}
+
+
+              </tbody>
+          </table>
+
+		 #{/list}
+    
+    </div>
+    #{/if}
+
+    
+     <div class="tab-pane" id="map-tab-pane">
+		#{mapTab
+			url: @Specimens.geolocalisationContributions(master.id),
+			tabId: 'map-tab' /}
+    </div>
+
+      <div class="tab-pane" id="tags-tab-pane">
+	  #{elementTags connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, tagLinkType: 'SPECIMEN', targetId: specimen.id, principalTagLabel: specimen.code}
+        #{/elementTags}
+      </div>
+
+     <div class="tab-pane" id="comments-tab-pane">
+		*{#{commentsTab
+			commentsURL: @Comments.lastSpecimenComments(id: specimen.id),
+			formId: 'comment-form',
+			tabId: 'comments-tab'}
+			
+			#{if connectedLogin}
+				#{form 
+					action: @Comments.addSpecimenComment(id: specimen.id), 
+					method: 'POST',
+					class: 'comment-form clearfix',
+					id: 'comment-form'}
+					
+					<div class="avatar">
+						#{userImg connectedLogin, imageId: connectedImageId /}
+					</div>
+					<div class="text">
+						<input type="hidden" name="comment.user.id" value="${connectedId}" />
+						<input type="hidden" name="comment.specimen.id" value="${specimen.id}" />
+						<textarea id="comment-field" maxlength="1000" name="comment.text" placeholder="&{'comment.answer.placeholder'}"></textarea>
+						<br/>
+						<input type="submit" class="btn btn-small" value="&{'btn.send'}" />
+					</div>
+			
+				#{/form}	
+			#{/if}	
+			#{else}
+				<a href="#" class="login-button">&{'connect.to.comment'}</a>
+			#{/else}
+		#{/commentsTab}}*
+		 #{discussionBox connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, isLeader: isLeader, imageId: connectedImageId, tagType: 'SPECIMEN', tagLabel: specimen.code, allowCreation: true, forceDiscussion: forceDiscussion}
+		#{/discussionBox}
+    </div>
+    
+  </div>
+  
+</div>
+
+	</div>
+
+	<div class="span4">
+
+        <div id="short-comments-box">
+            <h3>&{'specimen.last.messages'}</h3>
+
+		#{lastMessagesBox connectedLogin: connectedLogin, tagType: 'SPECIMEN', tagLabel: specimen.code}
+		#{/lastMessagesBox}
+
+        </div>
+
+		<div id="activity-box">
+			<h3>&{'activity'}</h3>
+			
+			#{activitiesBox id:'specimen', filter: 'view=specimen&id=' + master.id /}
+			
+			<script>
+			$(function() {
+				$('#activity-box .activities').paginate();
+			})
+			</script>
+			
+		</div>
+	</div>
+
+</div>
+
+<style>
+	td.contribution-details.val {
+		vertical-align: top !important;
+	}
+</style>
+
+<script type="text/javascript">
+
+// Positionnement sur l'onglet par défaut
+$(function() {
+	
+	var initialized = {
+		ratings: false
+	}
+	
+	
+	$('#contributions-tab').on('shown', function() {
+		if(!initialized.contributions) {
+			initialized.contributions = true;
+			$('#contributions-table').paginate();
+		}
+	})
+	
+	$('#map-tab').on('shown', function() {
+		if(!initialized.map) {
+			initialized.map = true;
+			$('#map-table').paginate();
+		}
+	})
+	
+	$('#${tab}-tab').tab('show');
+	$('#${tab}-tab').trigger('shown');
+	
+	
+	$('#show-comments-tab-button').click(function() {
+		$('#comments-tab').tab('show');
+		return false;
+	});
+	
+	herbonautes.needReload = true;
+	
+});
+
+</script>
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+#{/set}
+
+
+

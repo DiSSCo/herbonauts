@@ -1,0 +1,255 @@
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Contribution Botanistes
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+
+#{contributionBox type: 'BOTANISTS', mission: mission}
+
+	<div class="contribution-values">
+		<br/>
+		<h5>
+			<i class="icon-leaf"></i> &{'collected.by'} 
+			<span data-value="collector"></span>
+			<span data-value="otherCollectors"></span>
+			<span data-value="collectorNotPresent"></span>
+			<span data-value="collectorNotSure"></span>
+		</h5>
+		<br/>
+		
+		<h5><i class="icon-pencil"></i> &{'determined.by', specimen.family + ' ' + specimen.genus}
+			<span data-value="determiner"></span>
+			<span data-value="determinerNotPresent"></span>
+			<span data-value="determinerNotSure"></span>
+		</h5>
+	</div>
+		
+	#{form 
+		action: @Contributions.addBotanists(specimenId: specimen.id), 
+		method: 'POST',
+		id: 'botanist-form',
+		class: 'contribution-form' }
+
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+		
+		<div class="collector-select">
+			
+			<h5><i class="icon-leaf"></i> &{'collected.by'} : </h5>
+			
+			<div id="collector-select">
+				
+				<input type="hidden" name="contribution.collector.id" id="collector-id" />
+				<input id="collector-field"  maxlength="255" name="contribution.collector.name" type="text" placeholder="&{'collector.placeholder'}" />
+				
+				
+				<div id="other-collectors">
+				</div>
+				
+				<a href="#" class="btn btn-small" onclick="addOtherCollectorField()"><i class="icon-plus-sign"></i> &{'btn.add.collector'}</a>
+				<br/>
+				<br/>
+				<!--
+				<input 
+					id="otherCollector-field-1"  
+					name="contribution.otherCollectors[0].name" 
+					type="text" 
+					placeholder="Recherche" />
+				
+				
+				<input 
+					type="hidden" 
+					name="contribution.otherCollectors[3].id" 
+					id="otherCollector-id-4" />
+				<input 
+					id="otherCollector-field-4"  
+					name="contribution.otherCollectors[3].name" 
+					type="text" 
+					placeholder="Recherche" />  -->
+				
+				<script>
+				
+				$(function() {
+					/*$('#botanist-form').submit(function() {
+						
+						console.log('test');
+						
+						if ($('#collector-field').val() == '&{'collector.placeholder'}') {
+							console.log('del tapez for collector');
+							$('#collector-id').val('');
+							$('#collector-field').val('');
+						}
+						
+						if ($('#determiner-field').val() == '&{'determiner.placeholder'}') {
+							console.log('del tapez for determiner');
+							$('#determiner-id').val('');
+							$('#determiner-field').val('');
+						}
+						
+						return true;
+					});*/
+					
+					$('#botanist-form').bind('clean', function() {
+						if ($('#collector-field').val() == '&{'collector.placeholder'}') {
+							$('#collector-id').val('');
+							$('#collector-field').val('');
+						}
+						
+						if ($('#determiner-field').val() == '&{'determiner.placeholder'}') {
+							$('#determiner-id').val('');
+							$('#determiner-field').val('');
+						}
+					});
+				});
+				
+				var nextCollectorIndex = 0;
+				
+				function addOtherCollectorField() {
+					
+					var idInput = 
+						$('<input/>')
+							.attr('type', 'hidden')
+							.attr('name', 'contribution.otherCollectors[' + nextCollectorIndex + '].id')
+							.attr('id', 'otherCollector-id-' + nextCollectorIndex);
+					
+					var fieldInput = 
+						$('<input/>')
+							.attr('type', 'text')
+							.attr('maxLength', '255')
+							.attr('name', 'contribution.otherCollectors[' + nextCollectorIndex + '].name')
+							.attr('id', 'otherCollector-field-' + nextCollectorIndex);
+							
+					var removeBtn = 
+						$('<a/>')
+							.attr('href', '#')
+							.attr('id', 'otherCollector-remove-' + nextCollectorIndex)
+							.html('<i class="icon-minus-sign"></i>');
+					
+					$('#other-collectors')
+						.append(idInput) 
+						.append(fieldInput)
+						.append(removeBtn);
+					
+					initAutocompleteOn(fieldInput, idInput);
+					
+					var removeId = nextCollectorIndex;
+					$('#otherCollector-remove-' + nextCollectorIndex).click(function() {
+						$('#otherCollector-id-' + removeId).remove();
+						$('#otherCollector-field-' + removeId).remove();
+						$(this).remove();
+						return false;
+					});
+					
+					fieldInput.focus();
+					
+					nextCollectorIndex++;
+						
+					/* '<input type="hidden" 
+						name="contribution.otherCollectors[0].id" 
+						id="otherCollector-id-1" /> */
+					
+				}
+				
+				function initAutocompleteOn(nameField, idField) {
+					$(nameField).autocomplete({
+						source: '@{References.searchBotanists()}',
+						minLength: 0,
+						select: function(event, ui) {
+							$(idField).val(ui.item.id);
+							$(nameField).val(ui.item.name);
+							return false;
+						}
+						
+					}).data('autocomplete')._renderItem = function(ul, item) {
+						return $('<li></li>')
+						.data('item.autocomplete', item)
+						.append('<a>' + item.name + '</a>')
+						.appendTo(ul);
+					}
+					
+					$(nameField).bind('change keyup', function(e) { 
+						if(e.keyCode != 13) {
+							$(idField).val('') 
+						}
+					});
+				}
+				
+				$(function() {
+			
+					initAutocompleteOn('#collector-field', '#collector-id');
+					
+				});
+				</script>
+				
+				<label>
+					<input type="checkbox" name="contribution.collectorNotSure" value="true" /> &{'not.sure'}
+				</label>
+			</div>
+			
+			<label>
+				<input type="checkbox" value="true" data-oncheck-hide="#collector-select" name="contribution.collectorNotPresent" />
+				&{'not.present'}
+			</label>
+			
+		</div>
+		
+		
+		<hr/>
+		
+		<div class="determiner-select">
+			
+			<h5><i class="icon-pencil"></i> &{'determined.by', specimen.family + ' ' + specimen.genus} : </h5>
+			
+			<div id="determiner-select">
+				
+				<style>
+				.ui-autocomplete-loading { 
+					background: white url('@{'/public/img/ajax-loader-autocomplete.gif'}')  98% center no-repeat; 
+				}
+				</style>
+				
+				<input type="hidden" name="contribution.determiner.id" id="determiner-id" />
+				<input id="determiner-field"  maxlength="255" name="contribution.determiner.name" type="text" placeholder="&{'determiner.placeholder'}" />
+
+				<script>
+				
+				$(function() {
+			
+					$('#determiner-field').autocomplete({
+						source: '@{References.searchBotanists()}',
+						minLength: 0,
+						select: function(event, ui) {
+							$('#determiner-id').val(ui.item.id);
+							$('#determiner-field').val(ui.item.name);
+							return false;
+						}
+						
+					}).data('autocomplete')._renderItem = function(ul, item) {
+						return $('<li></li>')
+						.data('item.autocomplete', item)
+						.append('<a>' + item.name + '</a>')
+						.appendTo(ul);
+					}
+				});
+				</script>
+				
+				<label>
+					<input type="checkbox" name="contribution.determinerNotSure" value="true" /> &{'not.sure'}
+				</label>
+			</div><!-- /#determiner-select -->
+			
+			<label>
+				<input type="checkbox" value="true" data-oncheck-hide="#determiner-select" name="contribution.determinerNotPresent" />
+				&{'not.present'}
+			</label>
+			
+		</div>
+		
+		<div class="buttons">
+			<input type="submit" id="botanist-validate" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+		
+	#{/form}
+	
+#{/contributionBox}

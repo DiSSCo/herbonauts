@@ -1,0 +1,62 @@
+#{extends 'main.html' /}
+#{set title: 'Missions' + herbonautes.titleSep + herbonautes.title /}
+
+<style>ul { margin-left: 0 }</style>
+
+<h2>&{'missions.list.title'}</h2>
+
+<div class="row">
+
+	<div class="span12">
+	
+	   	<div class="tabbable">
+   		
+  			<ul class="nav nav-tabs">
+    			<li class="active"><a href="#tab1" data-toggle="tab">&{'missions.list.tab.current'}</a></li>
+    			<li><a href="#tab2" data-toggle="tab">&{'missions.list.tab.next'}</a></li>
+    			<li><a href="#tab3" data-toggle="tab">&{'missions.list.tab.closed'}</a></li>
+  			</ul>
+ 			
+ 			 <div class="tab-content">
+ 			 
+    			<div class="tab-pane active" id="tab1">
+					<ul>
+					#{list items:presentMissions, as: 'mission'}
+						#{if isLeader || mission.published}
+							#{missionBoxIndex mission, mission: mission, isLeader: isLeader, userLogin: connectedLogin /}	
+						#{/if}
+					#{/list}
+					</ul>
+    			</div>
+    			
+    			<div class="tab-pane" id="tab2">
+					<ul>
+					#{list items:nextMissions, as: 'mission'}
+						#{if isLeader || mission.published}
+							#{missionBoxIndex mission, mission: mission, isLeader: isLeader, userLogin: connectedLogin  /}	
+						#{/if}
+					#{/list}
+					</ul>
+    			</div>
+    			
+    			<div class="tab-pane" id="tab3">
+					<ul>
+					#{list items:closedMissions, as: 'mission'}
+						#{if isLeader || mission.published}
+							#{missionBoxIndex mission, mission: mission, isLeader: isLeader, userLogin: connectedLogin  /}	
+						#{/if}
+					#{/list}
+					</ul>
+    			</div>
+    			
+    		</div>
+    		
+    	</div>
+	
+	</div>
+
+</div>
+
+
+
+

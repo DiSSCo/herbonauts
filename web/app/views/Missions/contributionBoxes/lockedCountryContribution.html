@@ -1,0 +1,10 @@
+<div class="contribution-box lock">
+	<h4 class="title">&{'contribution.locked.country'} : </h4> ${mission.country.name}
+	*{ On position countryId en hidden pour mettre à jour la liste Region 1 }*
+	<input type="hidden" id="country-field" value="${mission.country.id}" />
+	<div class="status lock"><i class="icon-lock"></i></div>
+</div>
+
+<script>
+	updateRegionsLevel1(${mission.country.id});
+</script>

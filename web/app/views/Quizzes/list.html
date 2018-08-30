@@ -1,0 +1,40 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+
+<div class="row">
+	<div class="span12">
+	
+		<h2><small>Liste des quiz</small></h2>
+		
+		<p>
+		<a href="@{Quizzes.blankQuiz()}" class="btn">Nouveau quiz</a>
+		</p>
+		
+		<table class="table">		
+		
+			<thead>
+				*{<th>Langue</th>}*
+				<th>Quiz</th>
+				<th>Titre</th>
+				<th>URL quiz autonome</th>
+				*{<th>Niveau débloqué</th>}*
+				<th></th>
+			</thead>
+		
+			#{list items: quizzes, as: 'quiz'}
+			<tbody>
+				<tr>
+					*{<td>${quiz.lang}</td>}*
+					<td><a href="@{Quizzes.edit(quiz.name)}">${quiz.name}</a></td>
+					<td>${quiz.title}</td>
+					<td>${play.configuration.get("application.baseUrl")}quiz/${quiz.name}/start</td>
+					*{<td>${quiz.unlockingLevel > 0 ? 'niveau' + quiz.unlockingLevel : 'Hors mission'}</td>}*
+					<td><a href="@{Quizzes.edit(quiz.name)}">Modifier</a></td>
+				</tr>
+			</tbody>
+			#{/list}
+		</table>
+
+	</div>
+</div>

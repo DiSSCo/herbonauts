@@ -1,0 +1,14 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+
+
+<h2>Contribuer</h2>
+
+<ul>
+#{list items: mission.specimens, as: 'specimen'}
+	<li><a href="@{Missions.contributionBoard(mission.id, specimen.id)}">${specimen.institute}/${specimen.collection}/${specimen.code}</a></li>
+#{/list}
+</ul>
+
+

@@ -1,0 +1,905 @@
+#{extends 'main.html' /}
+#{set title: herbonautes.title /}
+
+
+<style>
+    table.stat-table td img {
+        width: 20px;
+    }
+</style>
+
+<div ng-controller="StatsController">
+
+ <div class="row">
+     <div class="span12">
+         <h2>&{'stats.title'}</h2>
+     </div>
+ </div>
+
+
+<div class="row">
+    <div class="span12 page-stats user-stats counts">
+        <div class="row">
+
+            <div class="span3 big-stat">
+                <div class="stat">
+                    <span class="count">${String.format("%,d", herbonautesCount)}</span>
+                    <span class="item">&{'stats.herbonautes'}</span>
+                </div>
+            </div>
+            <div class="span3 big-stat">
+                <div class="stat">
+                    <span class="count">${String.format("%,d", contributionsCount)}</span>
+                    <span class="item">&{'stats.contributions'}</span>
+                </div>
+            </div>
+            <div class="span3 big-stat">
+                <div class="stat">
+                    <span class="count">${String.format("%,d", missionsCount)}</span>
+                    <span class="item">&{'stats.missions'}</span>
+                </div>
+            </div>
+            <div class="span3 big-stat">
+                <div class="stat">
+                    <span class="count">${String.format("%,d", specimensCount)}</span>
+                    <span class="item">&{'stats.specimens'}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <div class="stat-box">
+            <h3><i class="icon-user"></i> &{'stats.title.welcome'}</h3>
+
+            <table class="stat-table" style="width:100%;margin-top:10px" ng-cloak>
+                <tr ng-repeat="u in lastRegisteredList">
+                    <td style="width: 20px;padding-right: 10px">
+                        <a href="{{ userProfileUrl(u) }}">
+                            <img ng-src="{{ userImageUrl(u) }}" alt="" />
+                        </a>
+                    </td>
+                    <td><a href="{{ userProfileUrl(u) }}">{{ u.login }}</a></td>
+                    <td style="text-align:right">
+                        <span class="since" h-time-ago="u.registrationDate" server-time="${new Date().getTime()}"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="span4">
+
+        <div class="stat-box">
+            <h3><i class="icon-star"></i> &{'stats.title.top.herbonautes'} <small><a ng-click="openTopContributorModal()">(suite du classement)</a></small></h3>
+
+            <table class="stat-table" style="width:100%" ng-cloak>
+                <tr ng-repeat="u in topContributorList" ng-if="!u.user.deleted">
+                    <td style="width: 20px;padding-right: 10px">
+                        <a href="{{ userProfileUrl(u.user) }}">
+                        <img ng-src="{{ userImageUrl(u.user) }}" alt="" />
+                            </a>
+                    </td>
+                    <td><a href="{{ userProfileUrl(u.user) }}">{{ u.user.login }}</a></td>
+                    <td style="text-align:right"><span class="number">{{ formatNumber(u.answerCount) }}</span> contributions</td>
+                </tr>
+            </table>
+        </div>
+
+
+
+    </div>
+    <div class="span4">
+        <div class="stat-box">
+            <h3><i class="icon-leaf"></i> &{'stats.title.specimens'}</h3>
+
+            <table class="stat-table" ng-cloak>
+                <tr>
+                    <td style="text-align: right"><span class="number">{{ formatNumber(completeSpecimensCount) }}</span></td>
+                    <td style="text-align:left;padding-left:1em">spécimens complets</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right"><span class="number">{{ formatNumber(unusableSpecimensCount) }}</span></td>
+                    <td style="text-align:left;padding-left:1em">spécimens inutilisables</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right"><span class="number">{{ formatNumber(conflictSpecimensCount) }}</span></td>
+                    <td style="text-align:left;padding-left:1em">spécimens en conflit</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="span6">
+        <div class="stat-box">
+            <h3><i class="icon-tags"></i> &{'stats.title.used.tags'}</h3>
+
+
+            <table class="stat-table" style="width:100%" ng-cloak>
+                <tr ng-repeat="tag in topTagList" ng-if="$index < 10">
+                    <td>
+                        <div class="tag {{tag.tagType}} small-tag">
+                            <a ng-href="{{ tagUrl(tag.tagLabel)}}" ><i ng-class="tag.tagType == 'MISSION' ? 'icon-book' : tag.tagType == 'SPECIMEN' ? 'icon-leaf' : 'icon-tag'"></i> {{tag.tagLabel}}</a>
+                        </div>
+                    </td>
+                    <td style="text-align:right"><span class="number">{{ tag.countUsage }}</span></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="span6">
+        <div class="stat-box">
+            <h3><i class="icon-time"></i> &{'stats.title.last.tags'}</h3>
+
+            <table class="stat-table" style="width:100%" ng-cloak>
+                <tr ng-repeat="tag in lastTagList" ng-if="$index < 10">
+                    <td>
+                        <div class="tag {{tag.tagType}} small-tag">
+                            <a ng-href="{{tagUrl(tag.tagLabel)}}" ><i ng-class="tag.tagType == 'MISSION' ? 'icon-book' : tag.tagType == 'SPECIMEN' ? 'icon-leaf' : 'icon-tag'"></i> {{tag.tagLabel}}</a>
+                        </div>
+                    </td>
+                    <td style="text-align:right">
+                        <span class="since" h-time-ago="tag.lastUsage" server-time="${new Date().getTime()}"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<br><br><br>
+<div class="row">
+    <div class="span12">
+        <h2>&{'stats.title.specimens.dist'}</h2>
+    </div>
+</div>
+<br><br>
+
+
+<div class="row">
+    <div class="span12" id="chart-box-full">
+    </div>
+    <div class="span6" id="chart-box-half">
+    </div>
+    <div class="span4" id="chart-box-third">
+    </div>
+</div>
+
+
+
+    <div class="row">
+        <div class="span4">
+            <div class="stat-box">
+                <h3>&{'stats.title.top.botanists'}</h3>
+
+                <table class="stat-table" style="width:100%" ng-cloak>
+                    <tr>
+                        <th style="text-align:left">Nom</th>
+                        <th style="text-align:right">Nombre d'entrées validées</th>
+                    </tr>
+                    <tr ng-repeat="botanist in topBotanistList" ng-if="$index < 10">
+                        <td>
+                            <a ng-href="{{ botanistUrl(botanist[1]) }}">{{ botanist[0] }}</a>
+
+                        </td>
+
+                        <td style="text-align:right"><span class="number">{{ formatNumber(botanist[2]) }}</span></td>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="span4">
+            <div class="stat-box">
+                <h3>&{'stats.title.top.institutions'}</h3>
+
+
+
+                <table class="stat-table" style="width:100%" ng-cloak>
+                    <tr>
+                        <th style="text-align:left">Nom</th>
+                        <th style="text-align:right">Nombre de spécimens</th>
+                    </tr>
+                    <tr ng-repeat="institution in topInstitutionList" ng-if="$index < 10">
+                        <td>
+                            {{ institution[0] }}
+                        </td>
+
+                        <td style="text-align:right"><span class="number">{{ formatNumber(institution[1]) }}</span></td>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="span4">
+            <div class="stat-box">
+                <div id="chart-centuries" class="chart">
+                    <h3>&{'stats.title.centuries'}</h3>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    *{
+        Pays / Region
+     }*
+
+<div class="row stat-row">
+
+    <div class="span6">
+        <div class="stat-box">
+            <div id="chart-countries" class="chart">
+                <h3>&{'stats.title.country'}</h3>
+
+
+
+
+            </div>
+            <div id="control-countries" style="display:none">
+
+                <a class="btn btn-mini btn-default" ng-show="showMoreCountries()" ng-click="moreCountries()">Afficher plus de pays</a>
+                <a class="btn btn-mini btn-default reset" style="display:none" href="javascript:$('#control-countries .reset').hide();countryChart.filterAll();dc.redrawAll();">Annuler la selection</a>
+                <a class="btn btn-mini btn-default" ng-show="showTopOnlyCountries()" ng-click="topCountriesOnly()">Top 10 uniquement</a>
+                <br><br/>
+                <em>Sélectionnez un pays pour voir le détail de ses régions</em>
+                <hr/>
+            </div>
+
+            <div id="legend-countries" class="legend-box">
+
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="span6">
+        <div class="stat-box">
+            <div id="chart-regions" class="chart">
+                <h3>&{'stats.title.region'} <span id="unique-country" style="display:none">(<span></span>)</span></h3>
+            </div>
+
+
+            <div id="control-regions" style="display:none">
+
+                <a class="btn btn-mini btn-default" ng-show="showMoreRegions()" ng-click="moreRegions()">Afficher plus de régions</a>
+                <a class="btn btn-mini btn-default reset" style="display:none" href="javascript:$('#control-regions .reset').hide();regionChart.filterAll();dc.redrawAll();">Annuler la sélection</a>
+                <a class="btn btn-mini btn-default" ng-show="showTopOnlyRegions()" ng-click="topRegionsOnly()">Top 10 uniquement</a>
+                <br><br/>
+                <em>Sélectionnez un pays pour voir le détail de ses régions</em>
+                <hr/>
+            </div>
+
+            <div id="legend-regions" class="legend-box"></div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+
+    *{
+           contributions par jour
+     }*
+    <div class="row stat-row">
+        <div class="span12">
+            <div class="stat-box">
+
+                <div id="chart-contributions-day" class="chart">
+                    <h3>&{'stats.title.activity'}
+                        <small><a style="display:none" class="reset" href="javascript:contributionZoomChart.filterAll();dc.redrawAll();">(annuler la sélection)</a></small>
+                    </h3>
+
+                </div>
+                <div id="chart-zoom-chart"></div>
+
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /stat-ctrl -->
+
+*{--------------------------------------------------------------------------------------------------------------------
+
+   Scripts
+
+  --------------------------------------------------------------------------------------------------------------------}*
+
+<script type="text/ng-template" id="modal-top-herbonautes.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">×</button>
+        <h3>&{'stats.title.top.herbonautes'}</h3>
+    </div>
+    <div class="modal-body">
+
+        <table class="stat-table" style="width:100%" ng-cloak>
+            <tr ng-repeat="u in topContributorList">
+                <td style="width: 40px;padding-right: 10px">
+                    <a ng-if="!u.user.deleted" href="{{ userProfileUrl(u.user) }}">
+                        <img ng-src="{{ userImageUrl(u.user) }}" alt="" />
+                    </a>
+                    <a ng-if="u.user.deleted">
+                        <img ng-src="{{ userImageUrl(u.user) }}" alt="" />
+                    </a>
+                </td>
+                <td><a ng-if="!u.user.deleted" href="{{ userProfileUrl(u.user) }}">{{ u.user.login }}</a>
+                    <em ng-if="u.user.deleted" >&{'user.deleted.account'}</em>
+                    </td>
+                <td style="text-align:right"><span class="number">{{ formatNumber(u.answerCount) }}</span> contributions</td>
+            </tr>
+
+            <tr>
+                <td colspan="3" style="text-align:center">
+                    <a ng-click="nextTopContributorPage()" ng-disabled="loading" class="btn btn-default" ng-hide="noMore">
+                        <span ng-hide="loading">Afficher plus</span>
+                        <span ng-show="loading">Chargement</span>
+                    </a>
+                    <em ng-show="noMore">Tout le classement est affiché</em>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+    <div class="modal-footer">
+        <a class="btn" ng-click="cancel()">Fermer</a>
+    </div>
+</script>
+
+
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+
+
+<script type="text/javascript" src="@{'/public/js/d3.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/crossfilter.js'}"></script>
+
+<script type="text/javascript" src="@{'/public/js/dc.js'}"></script>
+
+
+<script type="text/javascript" src="@{'/public/js/colorbrewer.js'}"></script>
+
+<script>
+
+   // (function() {
+
+       function romanize (num) {
+           if (!+num)
+               return false;
+           var digits = String(+num).split(""),
+                   key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+                       "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+                       "","I","II","III","IV","V","VI","VII","VIII","IX"],
+                   roman = "",
+                   i = 3;
+           while (i--)
+               roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+           return Array(+digits.join("") + 1).join("M") + roman;
+       }
+
+        function toObjectArray(data) {
+            var res = [];
+
+            for (var i = 0; i < data.length; i++) {
+                res.push({ label: data[i][0], refId: data[i][1], value: data[i][2] })
+            }
+            return res;
+        }
+
+        function topCountries(data, limit) {
+
+            var topArray = [];
+            var other = [otherCat, 0];
+            for (var i = 0; i < data.length; i++) {
+                if (i < limit) {
+                    topArray.push(data[i]);
+                } else {
+                    other[1] = other[1] + data[i][1];
+                }
+            }
+            if (other[1] > 0) {
+                topArray.push(other);
+            }
+            return topArray;
+        }
+
+        var countries, regions;
+        var countryChart = dc.pieChart("#chart-countries");
+        var regionChart = dc.pieChart("#chart-regions");
+        var centuryChart = dc.rowChart("#chart-centuries");
+        var contributionByDayChart = dc.lineChart('#chart-contributions-day');
+        var contributionZoomChart = dc.barChart('#chart-zoom-chart');
+
+        // Les siècles
+        d3.json(herbonautes.ctxPath + '/stats/global/centuries', function (data) {
+
+            function toObjectArray(data) {
+                var res = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i][1]) {
+                        res.push({century: data[i][0], value: data[i][1]})
+                    }
+                }
+                return res;
+            }
+
+            var arr = toObjectArray(data);
+            var ndx = crossfilter(arr);
+
+            var centuryDim = ndx.dimension(function(d) {
+                var y = d3.time.year(new Date(d.century));
+                var c =  Math.floor(y.getFullYear() / 100) + 1;
+                return -c;
+
+            });
+
+            var centuryGroup = centuryDim.group().reduceSum(function(d) { return d.value });
+
+            var newWidth = document.getElementById('chart-box-third').offsetWidth;
+
+            centuryChart
+                    .width(newWidth)
+                    .height(250)
+                    .margins({top: 20, left: 10, right: 50, bottom: 20})
+                    .group(centuryGroup)
+                    .dimension(centuryDim)
+                    .renderLabel(true)
+                    .ordinalColors(["grey"] /*['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'] */)
+                    .keyAccessor(function(d) {
+                        return -d.key;
+                    })
+                    .label(function (d) {
+                        //return d.key;
+                        return romanize(-d.key) + "ème";
+                    })
+
+//
+                    .title(function (d) {
+                        return d.value + " spécimens";
+                        //return romanize(c) + "ème";
+                    })
+                    .elasticX(true)
+                    .xAxis().ticks(4);
+
+            centuryChart.filter = function() {};
+
+            console.log(centuryDim.group().all());
+
+        });
+
+
+       /*
+        * Contributions par jours
+        *
+        */
+
+       var fr = d3.locale({
+           dateTime: "%A, le %e %B %Y, %X",
+           date: "%d/%m/%Y",
+           time: "%H:%M:%S",
+           periods: ["AM", "PM"], // unused
+           days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+           shortDays: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+           months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+           shortMonths: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."]
+       });
+
+       var tickFormat = fr.timeFormat.multi([
+           ["%H:%M", function(d) { return d.getMinutes(); }],
+           ["%H:%M", function(d) { return d.getHours(); }],
+           ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
+           ["%b %d", function(d) { return d.getDate() != 1; }],
+           ["%B", function(d) { return d.getMonth(); }],
+           ["%Y", function() { return true; }]
+       ]);
+
+
+        var timeData;
+       d3.time.format = fr.timeFormat;
+
+           d3.json(herbonautes.ctxPath + '/stats/global/contributionsByDay', function (data) {
+
+               timeData = [];
+
+               for (var i = 0; i < data.length; i++) {
+                   timeData.push({ date: new Date(data[i][0]),
+                       day: d3.time.day(new Date(data[i][0])),
+                       week: d3.time.week(new Date(data[i][0])),
+                       time: data[i][0], value: data[i][1] })
+               }
+
+              //  console.log(timeData);
+
+               var ndxTime = crossfilter(timeData);
+
+               var contribDayDim = ndxTime.dimension(function(d) {
+                   return d.day;
+               });
+
+               var contribWeekDim = ndxTime.dimension(function(d) {
+                   return d.week;
+               });
+               //dayDim.group().reduceSum(function(d) { return d.value }).all()
+               var contribDayGroup = contribDayDim.group().reduceSum(function(d) {
+                   return +d.value;
+               });
+               var contribWeekGroup = contribWeekDim.group(function(d) { return d3.time.week(new Date(d)) }).reduceSum(function(d) {
+                   return +d.value;
+               });
+
+               var dateFormat = d3.time.format('%d/%m/%Y');
+
+               var newWidth = document.getElementById('chart-box-full').offsetWidth;
+
+               //var timeScale = d3.time.scale().domain([new Date(2012, 10, 1), new Date()]);
+
+               contributionZoomChart.width(newWidth)
+                       .height(40)
+                       .margins({top: 0, right: 50, bottom: 20, left: 40})
+                       .dimension(contribDayDim)
+                       .group(contribWeekGroup)
+                       .centerBar(true)
+                       .gap(1)
+                       .x(d3.time.scale().domain([new Date(2012, 10, 1), new Date()]))
+                       .round(d3.time.month.round)
+                       .alwaysUseRounding(true)
+                       .xUnits(d3.time.months);
+               contributionZoomChart.yAxis().ticks(0);
+               contributionZoomChart.xAxis().tickFormat(tickFormat);
+
+
+
+               contributionByDayChart
+                       .renderArea(false)
+                       .width(newWidth)
+                       .height(200)
+                       .transitionDuration(1000)
+                       .margins({top: 30, right: 50, bottom: 25, left: 40})
+                       .dimension(contribDayDim)
+                       .mouseZoomable(true)
+                   // Specify a "range chart" to link its brush extent with the zoom of the current "focus chart".
+                       .rangeChart(contributionZoomChart)
+                       .x(d3.time.scale().domain([new Date(2012, 10, 1), new Date()]))
+                       .round(d3.time.month.round)
+                       .xUnits(d3.time.months)
+                       .elasticY(true)
+                       .renderHorizontalGridLines(true)
+
+                   // Position the legend relative to the chart origin and specify items' height and separation.
+                       .legend(dc.legend().x(50).y(10).itemHeight(13).gap(5))
+                       .brushOn(false)
+                   // Add the base layer of the stack with group. The second parameter specifies a series name for use in the
+                   // legend.
+                   // The `.valueAccessor` will be used for the base layer
+                       .group(contribDayGroup, 'Contributions par jour')
+                       .valueAccessor(function (d) {
+                           return d.value;
+                       })
+                   // Stack additional layers with `.stack`. The first paramenter is a new group.
+                   // The second parameter is the series name. The third is a value accessor.
+
+                   // Title can be called by any stack layer.
+                       .title(function (d) {
+                           var value = d.value.avg ? d.value.avg : d.value;
+                           if (isNaN(value)) {
+                               value = 0;
+                           }
+                           return dateFormat(d.key); //+ '\n' + numberFormat(value);
+                       })
+                       .xAxis().tickFormat(tickFormat);
+
+               console.log("contributions", data.length);
+
+           });
+
+        var uniqueCountry;
+
+   var countryTop = 10,
+       regionTop = 10;
+
+
+   function displayCountryChart(callback) {
+
+       d3.json(herbonautes.ctxPath + '/stats/global/countries', function (data) {
+
+           countries = toObjectArray(data);
+           var ndx = crossfilter(countries);
+           //var all = ndx.groupAll();
+           //var all = ndx.groupAll();
+           //console.log(all);
+           var valDim = ndx.dimension(function (d) {
+               return d.value
+           });
+
+           var topLabels = _.map(valDim.top(countryTop), function (d) {
+               return d.label
+           });
+           //console.log(topLabels);
+           var labelDim = ndx.dimension(function (d) {
+               return d.label
+           });
+
+           var group;
+
+
+               group = labelDim.group(function (d) {
+                   //console.log("group", d);
+                   if (_.contains(topLabels, d)) {
+                       return d;
+                   } else {
+                       return "Autres";
+                   }
+               }).reduceSum(function (d) {
+                   return d.value
+               });
+
+
+
+
+           var newWidth = document.getElementById('chart-box-half').offsetWidth;
+
+           countryChart.dimension(labelDim)
+                   .group(group)
+                   .radius((newWidth - 100) / 2)
+               //.minAngleForLabel(0)
+                   .label(function (d) {
+                       // console.log("label", d);
+                       return d.key;
+                   })
+                   //.legend(dc.legend().y(newWidth - 200));
+
+           countryChart.on("filtered", function (chart, filter) {
+
+               //if (filter == "Autres") {
+               //    countryTop += 10;
+               //    countryChart.filterAll();
+               //    displayCountryChart();
+               //    return;
+               //}
+
+               uniqueCountry = null;
+
+               if (countryChart.filters().length == 1) {
+                   uniqueCountry = countryChart.filters()[0];
+               }
+
+               if (countryChart.filters().length > 0) {
+                   $("#control-countries .reset").show();
+               }
+
+               if (!!uniqueCountry) {
+
+                   var filteredCountry = _.find(countries, function (c) {
+                       return c.label == uniqueCountry;
+                   });
+
+                   var refId = filteredCountry ? filteredCountry.refId : null;
+
+                   countryId = refId;
+                   displayRegionChart();
+               } else {
+                   countryId = null;
+                   displayRegionChart();
+               }
+
+               displayUniqueCountry(uniqueCountry);
+
+           })
+
+
+           countryChart.width(newWidth).height(newWidth).transitionDuration(0);
+           //regionChart.width(newWidth).height(newWidth).transitionDuration(0);
+
+           console.log("width country : " + newWidth);
+
+
+           console.log("display country legend");
+           displayCountryLegend();
+
+           if (callback) callback();
+
+
+           dc.renderAll();
+
+
+
+
+
+
+           //        .dimension(dim)
+           //        .group(group)
+           //        .width(250)
+           //        .height(250)
+           //        .radius(100)
+           //        .label(function(d) { return d.key });
+           //chart.keyAccessor(function(d) { return d[0]; });
+           //chart.valueAccessor(function(d) { return d[1]; });
+
+
+       });
+   }
+
+   function displayRegionLegend() {
+
+
+       $("#control-regions").show();
+
+       var regions = regionChart.data();
+       var colors = regionChart.colors();
+
+       var countryLegendHtml = '<table class="legend">';
+       for (var i = 0; i < regions.length ; i++) {
+
+           if (i % 3 == 0) { countryLegendHtml += "<tr>" }
+
+           var colorSquare = '<span class="square" style="background:' + colors(regions[i].key) + '">&nbsp;</span>'
+
+           countryLegendHtml += '<td data-country="' + regions[i].key +  '">' + colorSquare + " " + regions[i].key + '</td>';
+
+           if (i % 3 == 2) { countryLegendHtml += "</tr>" }
+       }
+       countryLegendHtml += "</div>";
+
+       $("#legend-regions").html(countryLegendHtml);
+
+
+
+   }
+
+   function displayCountryLegend() {
+
+       console.log("display country legend");
+
+       $("#control-countries").show();
+
+       var countries = countryChart.data();
+       var colors = countryChart.colors();
+
+       var countryLegendHtml = '<table class="legend">';
+       for (var i = 0; i < countries.length ; i++) {
+
+           if (i % 3 == 0) { countryLegendHtml += "<tr>" }
+
+           var colorSquare = '<span class="square" style="background:' + colors(countries[i].key) + '">&nbsp;</span>'
+
+           countryLegendHtml += '<td data-country="' + countries[i].key +  '">' + colorSquare + " " + countries[i].key + '</td>';
+
+           if (i % 3 == 2) { countryLegendHtml += "</tr>" }
+       }
+       countryLegendHtml += "</div>";
+
+       $("#legend-countries").html(countryLegendHtml);
+
+
+
+   }
+
+   $("#legend-countries").on('click', 'td', function(e) {
+       var country = $(this).data("country");
+       countryChart.filter(country);
+   });
+
+
+   function displayUniqueCountry(uniqueCountry) {
+       if (uniqueCountry) {
+           $("#unique-country span").text(uniqueCountry);
+           $("#unique-country").show();
+       } else {
+           $("#unique-country").hide();
+       }
+   }
+
+   var countryId = null;
+   function displayRegionChart(callback) {
+
+
+
+       var url = herbonautes.ctxPath + '/stats/global/regions1' + (!!countryId ? ('?country=' + countryId) : '');
+
+       console.log("display regions '" + url + "'");
+   //, countryId);
+
+       d3.json(url, function (data) {
+
+           regions = toObjectArray(data);
+           var ndx = crossfilter(regions);
+           //var all = ndx.groupAll();
+           //var all = ndx.groupAll();
+           //console.log(all);
+           var valDim = ndx.dimension(function(d) { return d.value });
+           var topLabels = _.map(valDim.top(regionTop), function(d) { return d.label });
+           //console.log(topLabels);
+           var labelDim = ndx.dimension(function(d) { return d.label });
+           var group = labelDim.group(function(d) {
+               //console.log("group", d);
+               if (_.contains(topLabels, d)) {
+                   return d;
+               } else {
+                   return "Autres";
+               }
+           }).reduceSum(function(d) { return d.value });
+
+
+           var newWidth = document.getElementById('chart-box-half').offsetWidth;
+
+           regionChart.dimension(labelDim)
+                   .group(group)
+                   .radius((newWidth - 100) / 2)
+               //.minAngleForLabel(0)
+                   .label(function(d) {
+                       // console.log("label", d);
+                       return d.key;
+                   })
+                   //.legend(dc.legend().y(newWidth - 200));
+
+           regionChart.filter = function() {};
+
+
+
+           //countryChart.width(newWidth).height(newWidth).transitionDuration(0);
+           regionChart.width(newWidth).height(newWidth).transitionDuration(0);
+
+           console.log("width : " + newWidth);
+
+           displayRegionLegend();
+
+           if (callback) { callback() };
+
+           dc.renderAll();
+
+           //        .dimension(dim)
+           //        .group(group)
+           //        .width(250)
+           //        .height(250)
+           //        .radius(100)
+           //        .label(function(d) { return d.key });
+           //chart.keyAccessor(function(d) { return d[0]; });
+           //chart.valueAccessor(function(d) { return d[1]; });
+
+
+       });
+
+   }
+
+   displayCountryChart();
+   displayRegionChart();
+
+
+           window.onresize = function(event) {
+               var halfW = document.getElementById('chart-box-half').offsetWidth;
+               var fullW = document.getElementById('chart-box-full').offsetWidth;
+
+               countryChart.width(halfW).height(halfW).radius((halfW - 100) / 2 ).transitionDuration(0);
+               regionChart.width(halfW).height(halfW).radius((halfW - 100) / 2 ).transitionDuration(0);
+               contributionByDayChart.width(fullW).transitionDuration(0);
+               contributionZoomChart.width(halfW).transitionDuration(0);
+               dc.renderAll();
+
+           };
+
+   // })();
+
+</script>
+
+#{set 'moreStyles'}
+    <link rel="stylesheet" media="screen" href="@{'/public/css/dc.css'}" />
+
+    <style>
+        .chart {  }
+        .dc-chart g.row text {fill: black !important;}
+    </style>
+#{/set}

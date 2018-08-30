@@ -1,0 +1,349 @@
+#{extends 'main.html' /}
+#{set title: botanist.label + herbonautes.titleSep + herbonautes.title /}
+
+
+<div ng-controller="BotanistController" ng-init="init(${botanist.id})">
+
+<div class="row">
+	<div class="span3">
+		
+			<img alt="botanist" class="avatar bordered" src="@{Botanists.image(botanist.id)}" />
+			
+	</div>
+	<div class="span7">
+		<h2>${botanist.label}</h2>
+		
+		<dl class="clearfix">
+
+			
+			#{if info['period']}
+			<dt>&{'botanist.period'}</dt>
+			<dd>${info['period']}</dd>
+			#{/if}
+			
+			#{if info['herborarium']}
+			<dt>&{'botanist.herborarium'}</dt>
+			<dd>${info['herborarium']}</dd>
+			#{/if}
+
+
+            #{if info['countries']}
+			<dt>&{'botanist.country'}</dt>
+            <dd>${info['countries']}</dd>
+			#{/if}
+
+            #{if info['harvardId']}
+                <dt>&{'botanist.harvard.id'}</dt>
+                <dd>${info['harvardId']}</dd>
+            #{/if}
+
+            #{if info['speciality']}
+                <dt>&{'botanist.speciality'}</dt>
+                <dd>${info['speciality']}</dd>
+            #{/if}
+
+		</dl>
+		
+	
+	</div>
+	
+	<div class="span2">
+		#{if isLeader}
+			<div class="btn-group">
+				<a data-toggle="modal" href="#botanist-image-modal" id="change-botanist-image" class="btn btn-small">
+					<i class="icon-cog"></i> Modifier l'image
+				</a>
+			</div>
+		#{/if}
+	</div>
+</div>
+
+
+
+<div class="row">
+	<div class="span12 page-stats botanist-stats">
+	
+		<div class="row">
+	
+			<div class="span12 counts">
+				<div class="row">
+					
+					<div class="span3">
+						<div class="first stat">
+							<span class="count">${missionCount}</span> 
+							<span class="item">&{missionsCount > 1 ? 'missions' : 'mission'}</span>
+						</div>
+					</div>
+					<div class="span3">
+						<div class="stat">
+							<span class="count">${collectedSpecimensCount}</span> 
+							<span class="item">&{collectedSpecimensCount > 1 ? 'collected.specimens' : 'collected.specimen'}</span>
+						</div>
+					</div>
+					<div class="span3">
+						<div class="stat">
+							<span class="count">${determinedSpecimensCount}</span> 
+							<span class="item">&{determinedSpecimensCount > 1 ? 'determined.specimens' : 'determined.specimen'}</span>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+	
+		</div>
+	</div>
+</div>
+
+
+
+    <div class="row">
+        <div class="span8">
+            <div class="tabbable"> <!-- Only required for left/right tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#specimens-tab-pane" data-toggle="tab">&{'tab.specimens'}</a></li>
+                    <li><a id="map-tab" href="#map-tab-pane" data-toggle="tab">&{'tab.map'}</a></li>
+
+                </ul>
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="specimens-tab-pane">
+
+                        <table
+                                id="specimens-table"
+                                class="table contributions">
+
+                            <thead>
+                            <tr>
+                                <th class="specimen">&{'specimen'}</th>
+                                <th class="contribution" data-type="collector">&{'specimen.collector'}</th>
+                                <th class="contribution" data-type="determiner">&{'specimen.determiner'}</th>
+
+                            </tr>
+                            </thead>
+
+                            <tbody>
+								<tr ng-repeat="s in specimens">
+									<td>
+                                        <a href="{{ specimenPageUrl(s.specimen) }}">{{ s.specimen.genusSpecies }} ({{ s.specimen.code }})</a><br/>
+									</td>
+                                    <td class="contribution">
+                                        <span ng-if="s.collector"><i class="icon-ok-sign"></i></span>
+										<span ng-if="!s.collector">&middot;</span>
+									</td>
+                                    <td class="contribution">
+                                        <span ng-if="s.identifier"><i class="icon-ok-sign"></i></span>
+                                        <span ng-if="!s.identifier">&middot;</span>
+                                    </td>
+								</tr>
+
+                            </tbody>
+
+                            <tfoot>
+                            <tr ng-hide="noMore || noSpecimen">
+                                <td colspan="3" ng-cloak>
+
+                                    	<a class="btn btn-small" ng-click="nextPage()" ng-hide="loading">&{'btn.more.specimens'}</a>
+                                    	<a class="btn btn-small disabled" ng-show="loading">&{'btn.loading'}</a>
+
+
+                                </td>
+                            </tr>
+                            <tr ng-show="noMore">
+                                <td colspan="3" ng-cloak>
+
+                                	<span>&{'no.more.specimen.for.botanist'}</span>
+
+                                </td>
+                            </tr>
+                            <tr ng-show="noSpecimen">
+                                <td colspan="3" ng-cloak>
+
+                                    <span>&{'no.specimen.for.botanist'}</span>
+
+                                </td>
+                            </tr>
+                            </tfoot>
+
+                        </table>
+
+
+					</div>
+
+                    <div class="tab-pane active" id="map-tab-pane">
+							#{mapTab
+								url: @Botanists.specimensGeolocalisationForBotanist(botanist.id),
+								tabId: 'map-tab' /}
+                    </div>
+
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+#{/set}
+
+
+*{
+<div class="row">
+<div class="span8">
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#specimens-tab-pane" data-toggle="tab">&{'tab.specimens'}</a></li>
+	<li><a id="timeline-tab" href="#timeline-tab-pane" data-toggle="tab">&{'tab.timeline'}</a></li>
+	<li><a id="map-tab" href="#map-tab-pane" data-toggle="tab">&{'tab.map'}</a></li>
+ 
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="specimens-tab-pane">
+    
+<table 
+	id="specimens-table"
+	class="table contributions paginable"
+	data-paginate-url="@{Botanists.specimensWithBotanistsReports(botanist.id)}"
+	data-paginate-btn="#more-contributions-btn">
+
+	<thead>
+		<tr>
+			<th class="specimen">&{'specimen'}</th>
+			<th class="contribution" data-type="collector">&{'collector'}</th>
+			<th class="contribution" data-type="determiner">&{'determiner'}</th>
+       
+		</tr>
+	</thead>
+	
+	<tbody> 
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="3"> 
+				<a href="#" class="btn btn-small" id="more-contributions-btn">&{'btn.more.specimens'}</a>
+				<a href="#" class="btn btn-small hide" id="more-contributions-loading" >&{'btn.loading'}</a>
+				<span class="hide" id="no-specimen">&{'no.specimen.for.botanist'}</span>
+				<span class="hide" id="no-more-specimen">&{'no.more.specimen.for.botanist'}</span>
+			</td>
+		</tr>
+	</tfoot>
+	
+</table>
+}*
+
+*{
+      <script type="text/javascript">
+      
+        var currentBotanistId = ${botanist.id};
+      
+      	$('#specimens-table').bind('page-received', function(event, specimens) {
+      		
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').show();
+      		
+      		var _markIfCurrent = function(id) {
+      			return (currentBotanistId == id) ? '<i class="icon-ok"></i>' : '&middot;';
+      		}
+      		
+      		$.each(specimens, function(index, specimen) {
+      			
+      			var tds = [];
+      			tds[0] = '<td>' + 
+      				herbonautes.links.specimen(specimen) +
+      				'<br/><span class="since">' + specimen.since + '</span>' +
+      				'</td>';
+      				
+      			tds[1] = '<td class="contribution">' + _markIfCurrent(specimen.botanists['collectorId']) +  '</td>';
+      			tds[2] = '<td class="contribution">' + _markIfCurrent(specimen.botanists['determinerId']) + '</td>';
+      			
+      			$('<tr/>').html(tds.join(''))
+      				.appendTo('#specimens-table');
+      			
+      		});
+
+      		// Scroll vers le bas de la table (+ 100 px)
+      		$(window).scrollTop(
+      				$('#specimens-table').height() + 
+      				$('#specimens-table').position().top - 
+      				$(window).height() + 
+      				100); // 100 px de marge
+      		
+      		return false;
+      		
+      	}).bind('page-loading', function(event) {
+      		
+      		$('#more-contributions-btn').hide();
+      		$('#more-contributions-loading').show();
+      	}).bind('page-no-data', function() {
+      		$('#more-contributions-btn').hide();
+      		$('#more-contributions-loading').hide();
+      		if ($('#specimens-table').data('current-page') > 0) {
+      			$('#no-more-specimen').show();
+      		} else {
+      			$('#no-specimen').show();
+      		}
+      	})
+      	
+      	
+      	$(function () {
+      		$('#specimens-table').paginate();
+      	});
+      		
+      </script>
+    </div>
+    
+
+	 
+	<div class="tab-pane" id="map-tab-pane">
+	    			#{mapTab
+	    				url: @Botanists.geolocalisationContributions(botanist.id),
+	    				tabId: 'map-tab' /}
+	  </div>
+  </div>
+  
+</div>
+
+	</div>
+
+</div>
+}*
+
+#{if isLeader}
+<div class="modal hide" id="botanist-image-modal">
+	<div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal">x</button>
+	    <h3>Modifier l'image</h3>
+	  </div>
+	  <div class="modal-body">
+	  
+		  #{form 
+		  		method: 'POST',
+		  		id: 'botanist-image-form',
+		  		enctype: 'multipart/form-data',
+				action: @Botanists.saveImage(botanist.id)}
+		  <input type="file" name="image" />
+		  #{/form}
+	  
+	  </div>
+	  <script>
+	  	function saveBotanistImage() {
+	  		$('form#botanist-image-form').submit();
+	  	}
+	  </script>
+	  
+	  <div class="modal-footer">
+	  	<a href="#" class="btn" data-dismiss="modal">Annuler</a>
+	    <button type="button" onclick="saveBotanistImage()" class="btn btn-success">Valider</button>
+	    
+	  </div>	
+</div>
+#{/if}
+
+
+

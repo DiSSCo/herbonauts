@@ -1,0 +1,318 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+<style>
+    .file-content {
+        max-height: 500px;
+        overflow: auto;
+    }
+    li.page-disabled a {
+        text-decoration: none;
+        color: #666;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .cart-warning {
+        color: red;
+    }
+</style>
+
+<div ng-controller="MissionSettingsCartCtrl" ng-init="init(${mission.id}, ${herbonautes.specimenPerMissionLimit})">
+
+
+    <div class="row">
+
+        <div class="span8">
+            <h2>${mission.title} <small>Gestion des spécimens</small></h2>
+            #{if mission.proposition}
+                #{if mission.propositionSubmitted}
+                    <a href="@{Missions.displayPropositionValidationForm(mission.id)}" class="btn btn-small">Retour à la validation de mission</a>
+                #{/if}
+                #{else}
+                    <a href="@{Missions.missionPropositionForm(mission.id)}" class="btn btn-small">Retour à la proposition de mission</a>
+                #{/else}
+            #{/if}
+            #{else}
+                <a href="@{Missions.settings(mission.id)}?tab=cart" class="btn btn-small">Retour à la gestion de la mission</a>
+            #{/else}
+        </div>
+
+        *{
+        <div class="span4">
+            <i class="icon-shopping-cart"></i> <b>Panier</b> (<a data-toggle="modal" href="#cart-details-modal">Détail</a>)<br/>
+            {{ specimenCount() }} spécimen<span ng-show="specimenCount() > 1">s</span><br/>
+            dans {{ queryCount() }} recherche<span ng-show="queryCount() > 1">s</span><br/>
+            <a class="btn btn-mini" ng-click="validateCart()" ng-hide="loading">
+                <span>Verser les spécimens dans la mission</span>
+            </a>
+            <a class="btn btn-mini disabled" ng-show="loading">
+                <span>Versement en cours...</span>
+            </a>
+        </div>
+        }*
+
+    </div>
+
+    <hr/>
+
+
+    <div class="row">
+
+        <div class="span3">
+            <h3>Recherche</h3>
+
+            <br/>
+
+            <form ng-submit="newSearch()">
+                <input type="checkbox" ng-model="newCartItem.noCollectInfo" /> Spécimens sans information de récolte<br/> <br/>
+                <input ng-repeat="searchField in searchFields" type="text" placeholder="{{ searchField.name }}" ng-model="newCartItem.terms[searchField.key]" typeahead="suggestion.key for suggestion in suggest(searchField.key, $viewValue)">
+                <button class="btn btn-mini btn-success" type="submit">Rechercher</button>
+            </form>
+
+
+            <div>
+                <b>Aide</b><br/>
+                Ajoutez le caractère "*" au début d'un champ pour rechercher en milieu de chaîne. Par exemple : "*paris"
+                pour rechercher les collections de Paris
+            </div>
+
+
+            *{
+            <ul>
+                <li ng-repeat="suggestion in suggestions">
+                    <a ng-click="select(suggestion.key)">{{suggestion.key}}</a>
+                </li>
+            </ul>
+            }*
+
+
+            #{if isLeader}
+            <hr/>
+
+            <h3>Fichier codes inventaires</h3><br/>
+
+            <div ng-hide="fileLoading">
+            <form ng-submit="uploadFile()">
+
+                <input type="file" id="codeFile" />
+
+                <button class="btn btn-mini btn-success" type="submit">Importer</button>
+
+            </form>
+            </div>
+            <div ng-show="fileLoading">
+                Import du fichier en cours
+            </div>
+
+            <div>
+                <b>Aide</b><br/>
+                Vous pouvez importer des fichiers textes de codes inventaires (1 code par ligne, limité à ${herbonautes.specimenFileLimit} lignes)
+            </div>
+
+            #{/if}
+
+
+        </div>
+
+        <div class="span6">
+
+            <div ng-show="fileContent">
+                <h3 >Contenu du fichier '{{fileName}}'</h3>
+                <br />
+                <pre class="file-content">{{fileContent}}</pre>
+            </div>
+
+            <h3 ng-hide="fileContent">Résultats
+
+                <span ng-show="!!result.hits"><br/><small>{{ result.hits }} specimens - Page {{ result.pageIndex }} sur {{ result.pageCount }}</small></span>
+            </h3>
+
+
+
+            *{
+            <b>Hits :</b> {{ result.hits }}
+            <b>Page :</b>
+            }*
+
+
+            <b ng-show="!result.hits && !fileContent"><br/>Aucun spécimen</b>
+
+            <div class="pagination pagination-mini" ng-show="!!result.hits">
+                <ul>
+                    *{<li><a ng-click="search(result.pageIndex - 1)">Précédente</a></li>}*
+                    <li ng-if="result.pageIndex > 3"><a ng-click="search(1)">1</a></li>
+
+                        <li ng-if="result.pageIndex > 4" class="disabled"><a href="#">...</a></li>
+
+                    <li ng-if="result.pageIndex - 2 > 0"><a ng-click="search(result.pageIndex - 2)">{{ result.pageIndex - 2 }}</a></li>
+                    <li ng-if="result.pageIndex - 1 > 0"><a ng-click="search(result.pageIndex - 1)">{{ result.pageIndex - 1 }}</a></li>
+
+
+
+                    <li ng-if="result.pageIndex > 0" class="active"><a ng-click="search(result.pageIndex)">{{ result.pageIndex }}</a></li>
+
+                    <li ng-if="result.pageIndex + 1 < result.pageCount"><a ng-click="search(result.pageIndex + 1)">{{ result.pageIndex + 1 }}</a></li>
+                    <li ng-if="result.pageIndex + 2 < result.pageCount"><a ng-click="search(result.pageIndex + 2)">{{ result.pageIndex + 2 }}</a></li>
+
+                        <li ng-if="result.pageIndex + 3 < result.pageCount" class="disabled"><a href="#">...</a></li>
+
+                    <li ng-if="result.pageIndex < result.pageCount"><a ng-click="search(result.pageCount)">{{ result.pageCount }}</a></li>
+
+                    *{<li><a ng-click="search(result.pageIndex +1)">Suivante</a></li>}*
+                </ul>
+            </div>
+
+            <table class="specimen-results table table-hover" ng-show="!!result.hits">
+                <thead>
+                    <tr>
+                        <th style="width: 6%"><input type="checkbox" ng-checked="isAllSelected()" ng-click="toggleAllSelected()" /></th>
+                        <th style="width: 14%">Image</th>
+                        <th>Infos</th>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    *{ multiple specimen / master :
+                    <tr ng-repeat="s in result.specimens" ng-click="toggleSelected(s._id)">
+                        <td><input type="checkbox" ng-checked="isSelected(s._id)" /></td>
+                        }*
+
+                    <tr ng-repeat="s in result.specimens" ng-click="toggleSelected(s._id)"
+                        ng-class="{ 'disabled' : !!s._existing && (s._existing.mission.id != missionId) }">
+
+                        <td>
+                            <input ng-disabled="!!s._existing && (s._existing.mission.id != missionId)" type="checkbox" ng-checked="isSelected(s._id)" /></td>
+
+                        <td>
+                            <div ng-if="hasSpecimenImage(s)" class="specimen-image">
+                                <img ng-src="{{s.imageUrl}}" />
+                            </div>
+                            <div ng-if="!hasSpecimenImage(s)" class="specimen-image">
+                                <br/><em>Pas d'image</em><br/><br/>
+                            </div>
+                        </td>
+                        <td>
+                            <table class="table table-condensed table-noborder">
+                                 <tr><td style="width: 100px">N° :</td><td><em>{{s._source.catalognumber}}</em></td>    </tr>
+                                 <tr><td>Institution :</td><td><em>{{s._source.institutioncode}}</em></td>  </tr>
+                                 <tr><td>Collection :</td><td><em>{{s._source.collectioncode}}</em></td>    </tr>
+                                 <tr><td>Famille :</td><td><em>{{s._source.family}}</em></td>               </tr>
+                                 <tr><td>Genre :</td><td><em>{{s._source.genus}}</em></td>                  </tr>
+                                 <tr><td>Espèce :</td><td><em>{{s._source.specificepithet}}</em></td>       </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <span ng-show="!!s._existing">
+                                <span ng-if="s._existing.mission.id == missionId">
+                                    <em>Déjà chargé</em>
+                                </span>
+                                <span ng-if="s._existing.mission.id != missionId">
+                                     <b class="alert-warning">Mission {{ s._existing.mission.title }}</b>
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="span3">
+
+            <h3>Panier</h3>
+
+            <br/>
+
+
+            <div class="cart-item cart-warning" ng-if="totalSelectionCount() > specimenPerMissionLimit">
+                <b>Les missions sont limitées à {{ specimenPerMissionLimit }} spécimens !</b>
+            </div>
+            <div class="cart-item">
+                {{ totalSelectionCount() }} spécimen(s) sélectionné(s).
+            </div>
+
+
+
+            <div class="cart-item">{{ mission.countTotal }} spécimen(s) dans la mission.</div>
+            <div class="cart-item">{{ mission.countTiled }} spécimen(s) tuilés(s).</div>
+
+            <div class="cart-item">
+
+                <div ng-hide="isCartSync()">
+                    <p ng-hide="cart.loading" class="alert-danger">Des modifications ont été apportées à la selection.</p>
+                </div>
+                <button ng-hide="isCartSync() || cart.loading" ng-click="updateSpecimens()" class="btn btn-small">Mise à jour</button>
+                <button ng-show="cart.loading" disabled class="btn btn-small">Mise à jour spécimens en cours ...</button>
+                <button ng-hide="isCartSync() || cart.loading" ng-click="cancelModifications()" class="btn btn-small btn-danger">Annuler</button>
+                <div ng-show="isCartSync() && !cart.loading">
+                    <p class="alert-success">Spécimens de la mission à jour</p>
+                </div>
+            </div>
+
+
+            <div ng-class="{ 'cart-item' : true, 'current' : item._current }" ng-repeat="item in cart.cartItems"  ng-show="selectedSpecimensCount(item)">
+
+                <div ng-if="isFileItem(item)">
+                    Fichier {{ item.textFile.name }}<br/>
+                    <b>Nombre de codes : </b><span>{{ item.hits }}</span><br/>
+
+                    <a ng-click="setCurrentCartItem(item)">Afficher</a>
+                    |
+                    <a ng-show="!item.sync && !cart.loading" ng-click="removeCartItem(item)">Retirer</a>
+                    <span ng-show="item.sync"><em>Chargé</em></span>
+                    <span ng-show="cart.loading && !item.sync"><em>Chargement...</em></span>
+
+                </div>
+
+                <div ng-if="!isFileItem(item)">
+                    <span ng-show="!item.sync"><em>Modifié</em><br/></span>
+
+                    <b>Critères :</b>
+                    <div ng-show="item.noCollectInfo">Sans info de récolte</div>
+                    <div ng-hide="item.noCollectInfo">Avec info de récole</div>
+                    <div ng-repeat="(k, v) in item.terms">{{ k }} = {{ v }}</div>
+
+                    <b>Nombre de résultats : </b><span>{{ item.hits }}</span><br/>
+                    <b>Spécimens sélectionnés : </b><span>{{ selectedSpecimensCount(item) }}</span><br/>
+
+                    <a ng-click="setCurrentCartItem(item)">Modifier</a> |
+                    <a ng-click="removeCartItem(item)">Retirer</a>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+<script src="@{'/public/js/herbonautes-app-chef.js'}" type="text/javascript"></script>
+
+
+#{set 'moreStyles'}
+<style>
+    .cart-item {
+        border-top: 1px solid #AAA;
+        padding: 10px 5px;
+    }
+    .cart-item.current {
+        background: lightblue;
+    }
+    table.specimen-results tr.disabled {
+        background: #FAFAFA;
+    }
+    table.specimen-results tr.disabled td {
+        color: #666;
+    }
+</style>
+#{/set}
+
+
+

@@ -1,0 +1,571 @@
+#{extends 'main.html' /}
+#{set title: herbonautes.title /}
+
+<h2>&{'admin.questions.title'}</h2>
+
+
+<div class="row" ng-controller="QuestionsAdminCtrl" ng-init="init(${isAdmin})">
+    <div class="span3" >
+        <h3>&{'admin.questions.list'}</h3>
+
+        <br/>
+        <button ng-click="newQuestion()" class="btn btn-mini btn-info">&{'admin.questions.btn.new'}</button>
+        <br/><br/>
+
+        <ul class="nav nav-list" id="template-list">
+            <li ng-repeat="question in questions" ng-class="{'active': isCurrent(question)}">
+                <a ng-click="editQuestion(question)" ><span class="sort-handle"><i ng-class="{'icon-th-list': true, 'icon-white': isCurrent(question)}"></i></span> {{question.label}}</a>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div class="span5">
+
+
+        <h3>&{'admin.questions.edit'}</h3>
+
+
+        <br/>
+
+        <div ng-show="showEditor()">
+
+            <button ng-if="isEditable()" ng-click="saveQuestion()" class="btn btn-mini btn-success">&{'admin.questions.btn.save'}</button>
+
+            <button ng-if="isEditable() && isDeletable()" ng-click="deleteQuestion()" class="btn btn-mini btn-danger">&{'admin.questions.btn.delete'}</button>
+            <span ng-if="isEditable() && !isDeletable()">&{'admin.questions.nodelete'}</span>
+
+            <p ng-if="!isEditable()" class="alert">Modèle de question non modifiable</p>
+
+        </div>
+
+
+
+        *{ ---- START QUESTION ---- }*
+
+        <div ng-hide="showEditor()">
+            <p class="alert">Sélectionnez un modèle de question dans la liste ou créez une nouvelle
+                question avec le bouton <b>&{'admin.questions.btn.new'}</b></p>
+        </div>
+
+
+        <div ng-show="showEditor() && isEditable()">
+
+            <div class="question-light">
+
+                <table>
+                    <tr>
+                        <td style="width:40%">
+                            ID
+                        </td>
+                        <td style="width:60%">
+                            <input type="text" placeholder="ID" ng-model="currentQuestion.name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Libellé
+                        </td>
+                        <td>
+                            <input type="text" required placeholder="Libellé" ng-model="currentQuestion.label" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Libellé court
+                        </td>
+                        <td>
+                            <input type="text" required placeholder="Libellé court" ng-model="currentQuestion.shortLabel" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Niveau requis
+                        </td>
+                        <td>
+                            <input type="number" required min="1" placeholder="min level" ng-model="currentQuestion.minLevel" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Quiz requis
+                        </td>
+                        <td>
+                            <select ng-model="currentQuestion.neededQuiz.id">
+                                <option ng-selected="!currentQuestion.neededQuiz" ng-value="null">Aucun</option>
+                                <option ng-selected="currentQuestion.neededQuiz.id == quiz.id" ng-repeat="quiz in quizList" value="{{quiz.id}}">{{ quiz.title }}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Niveau de validation
+                        </td>
+                        <td>
+                            <input required type="number" min="1" placeholder="validation level" ng-model="currentQuestion.validationLevel" /><br/>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Aide
+                        </td>
+                        <td>
+                            <textarea ng-model="currentQuestion.helpHTML"></textarea>
+                        </td>
+                    </tr>
+
+                    #{if isAdmin}
+                    <tr>
+                        <td>
+                            Par défaut dans les missions
+                        </td>
+                        <td>
+                            <input type="checkbox" ng-model="currentQuestion.defaultForMission"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Obligatoire dans les missions
+                        </td>
+                        <td>
+                            <input type="checkbox" ng-model="currentQuestion.mandatoryForMission"></textarea>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td>
+                                Modifiable par l'équipe
+                            </td>
+                            <td>
+                                <input type="checkbox" ng-model="currentQuestion.editable"></textarea>
+                            </td>
+                        </tr>
+                    #{/if}
+
+                </table>
+
+            </div>
+
+            <br/>
+
+            <div style="text-align: right">
+                <a ng-hide="minified" ng-click="minifyAll()"><i class="icon-chevron-up" ></i> Masquer les détails</a>
+                <a ng-show="minified" ng-click="unminifyAll()"><i class="icon-chevron-down" ></i> Afficher les détails</a>
+            </div>
+
+            <div id="question-configuration">
+                <div ng-repeat="question in currentQuestion.configuration" class="question">
+
+                    <div>
+                        <span class="sort-handle"><i class="icon-th-list"></i></span> <span ng-show="minified">{{question.name}}</span>
+                        <a class="pull-right" ng-click="removeConfiguration($index)"><i class="icon-trash"></i></a><br/>
+                    </div>
+
+                    <div ng-hide="minified">
+
+
+                        <table>
+                            <tr>
+                                <td style="width:40%">
+                                    Nom
+                                </td>
+                                <td style="width:60%">
+                                    <input ng-model="question.name">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Libellé
+                                </td>
+                                <td>
+                                    <input ng-model="question.label">
+                                    <a href="#libelle-help-modal" role="button" class="btn btn-mini" data-toggle="modal">Aide</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Type
+                                </td>
+                                <td>
+                                    <select ng-model="question.type" ng-change="initOptionFields(question)">
+                                        <option value="text">Texte</option>
+                                        <option value="checkbox">Case à cocher</option>
+                                        <option value="list">Liste</option>
+                                        <option value="reference">Référence</option>
+
+
+                                        <option value="date">Date</option>
+                                        <option value="period">Période</option>
+                                        <option value="geo">Geo</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr ng-if="question.type == 'text'">
+                                <td>
+                                    Comparaison approximative
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.options.approx" />
+                                </td>
+                            </tr>
+
+                            <tr ng-if="question.type == 'text' || question.type == 'reference'">
+                                <td>
+                                    Multiple
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.options.multiple" />
+                                </td>
+                            </tr>
+
+
+                            <tr ng-if="question.options.multiple && (question.type == 'text' || question.type == 'reference')">
+                                <td>
+                                    Liste triable
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.options.sortable" />
+                                </td>
+                            </tr>
+
+
+                            <tr ng-if="question.type != 'checkbox'">
+                                <td>
+                                    Obligatoire
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.mandatory" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Informatif (ne génére pas de conflit)
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.noConflict" />
+                                </td>
+                            </tr>
+
+                            <tr ng-if="question.type == 'list'">
+                                <td style="vertical-align:top">
+                                    Choix
+                                </td>
+                                <td>
+                                    <div ng-repeat="choice in question.options.choice">
+                                        <input type="text" ng-model="choice.value" /> <a ng-click="removeChoice(question, $index)"><i class="icon-trash"></i></a>
+                                    </div>
+                                    <div>
+                                        <button ng-click="addChoice(question)" class="btn btn-mini">Ajouter choix</button>
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr ng-if="question.type == 'list'">
+                                <td>
+                                    Par défaut
+                                </td>
+                                <td>
+                                    <select ng-model="question.options.defaultValue">
+                                        <option value="">-- Vide --</option>
+                                        <option ng-repeat="choice in question.options.choice" ng-value="{{choice.value}}">{{choice.value}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr ng-if="question.type == 'list'">
+                                <td style="vertical-align:top">
+                                    Affichage
+                                </td>
+                                <td>
+                                    <input type="radio" ng-model="question.options.display" value="combobox" /> Liste
+                                    <input type="radio" ng-model="question.options.display" value="radio" /> Boutons radio
+                                </td>
+                            </tr>
+
+                            <tr ng-if="question.type == 'checkbox'">
+                                <td>
+                                    Par défaut
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.options.defaultValue" />
+                                </td>
+                            </tr>
+
+
+                            <tr ng-if="question.type == 'reference'">
+                                <td style="vertical-align:top">
+                                    Référentiel
+                                </td>
+                                <td>
+                                    <select ng-model="question.options.reference" ng-change="initReferenceRecords(question)">
+                                        <option ng-selected="question.options.reference == reference.id" ng-repeat="reference in references" ng-value="reference.id">{{reference.label}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr ng-if="question.type == 'reference'">
+                                <td style="vertical-align:top">
+                                    Autoriser nouvelles valeurs
+                                </td>
+                                <td>
+                                    <input type="checkbox" ng-model="question.options.allowUserCreation" value="combobox" />
+                                </td>
+                            </tr>
+                            <tr ng-if="question.type == 'reference'">
+                                <td style="vertical-align:top">
+                                    Affichage
+                                </td>
+                                <td>
+                                    <input type="radio" ng-model="question.options.display" value="combobox" /> Liste
+                                    <input type="radio" ng-model="question.options.display" value="autocomplete" /> Suggestion
+                                </td>
+                            </tr>
+                            <tr ng-if="question.type == 'reference' || question.type == 'list' || question.type == 'text'">
+                                <td style="vertical-align:top">
+                                    Placeholder
+                                </td>
+                                <td>
+                                    <input ng-model="question.options.placeholder" />
+                                </td>
+                            </tr>
+                            <tr ng-if="question.options.multiple">
+                                <td style="vertical-align:top">
+                                    Libellé bouton ajout
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="question.options.buttonLabel" />
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>
+                                    Visible
+                                </td>
+                                <td>
+
+                                    <select ng-model="question.visible">
+                                        <option value="always">Toujours</option>
+                                        <option value="condition">Condition</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr ng-if="question.visible == 'condition'" ng-repeat="opt in question.visibleOptions">
+                                <td style="text-align:right"><a ng-click="removeVisibleOption(question, $index)"><i class="icon-trash"></i></a></td>
+                                <td>
+                                      <div >
+
+                                                <select ng-model="opt.field" class="span2">
+
+                                                    <option ng-selected="option.value == opt.field" ng-repeat="option in visibleOptionFields" value="{{option.value}}">{{option.label}}</option>
+                                                </select>
+
+                                                <span ng-if="confByName(opt.field).type == 'checkbox'">
+                                                    <input ng-model="opt.value" type="checkbox" />
+                                                </span>
+                                                <span ng-if="confByName(opt.field).type == 'list'">
+
+                                                    <select ng-model="opt.value" class="span2"/>
+                                                        <option ng-selected="!opt.value" value="">Aucune valeure</option>
+                                                        <option ng-repeat="choice in confByName(opt.field).options.choice" ng-value="choice.value">{{choice.value}}</option>
+                                                    </select>
+                                                </span>
+
+                                        </div>
+
+                                        <div>
+
+                                        </div>
+
+
+                                    *{
+                                    <select ng-model="question.visibleOptions.field">
+                                        <option ng-repeat="option in question.visibleOptions.choice" value="{{option.value}}">{{option.label}}</option>
+                                    </select><br/>
+
+                                    <span ng-if="confByName(question.visibleOptions.field).type == 'checkbox'">
+                                        <input ng-model="question.visibleOptions.value" type="checkbox" />
+                                    </span>
+                                    <span ng-if="confByName(question.visibleOptions.field).type == 'list'">
+                                        <select ng-model="question.visibleOptions.value"/>
+                                            <option ng-selected="!question.visibleOptions.value" value="">Aucune valeure</option>
+                                            <option ng-repeat="choice in confByName(question.visibleOptions.field).options.choice" ng-value="choice.value">{{choice.value}}</option>
+                                        </select>
+                                    </span>
+                                    }*
+
+
+                                </td>
+                            </tr>
+                            <tr ng-if="question.visible == 'condition'">
+                                <td></td>
+                                <td><a ng-click="addVisibleOption(question)">Ajouter critère</a></td>
+                            </tr>
+
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <br/>
+
+            <button class="btn btn-mini" ng-click="addConfiguration()">Ajouter un critère</button>
+
+
+        </div>
+        *{ ---- END QUESTION CONF---- }*
+
+
+
+        <br/>
+        <button ng-show="showEditor() && isEditable()" ng-click="saveQuestion()" class="btn btn-mini btn-success">&{'admin.questions.btn.save'}</button>
+    </div>
+
+    <div class="span4">
+
+        <div class="preview affix">
+            <h3>&{'admin.questions.preview'}</h3>
+
+            <br/>
+
+            <div ng-hide="showEditor()">
+                <p class="alert">Sélectionnez une question</p>
+            </div>
+
+            <div class="contribution-box" ng-if="showEditor()">
+                <question-box question="currentQuestion"
+                              user="{level:5}"
+                              context="context"
+                              on-submit="submitPreview"
+                              on-cancel="cancelPreview"
+                              popover-placement="'left'"
+                              reference-records="referenceRecordsByQuestion"
+                              update-reference-records="updateReferenceRecords"
+                              init-reference-records="initReferenceRecords"
+                              check-status="isStatusPreview"></question-box>
+            </div>
+
+            <hr/>
+
+            <h3>&{'admin.question.answer.preview'}</h3>
+            <div id="response" class="contribution-box" ng-if="showEditor()">
+                <br/>
+                <answer-box question="currentQuestion" answer="currentAnswer" specimen="specimen" />
+            </div>
+            <div ng-hide="showEditor()">
+                <p class="alert">Sélectionnez une question</p>
+            </div>
+
+            <hr/>
+
+            <h3>&{'admin.question.answer.preview.tech'}</h3>
+            <div id="response" class="contribution-box" ng-show="showEditor()">
+                <br/>
+                <answer-box-json question="currentQuestion" />
+            </div>
+            <div ng-hide="showEditor()">
+                <p class="alert">Sélectionnez une question</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="modal hide" id="libelle-help-modal">
+    <div class="modal-header">
+        <h3>Aide libellés questions</h3>
+    </div>
+    <div class="modal-body">
+        <p ng-non-bindable>
+
+            Vous pouvez utiliser les balises html dans les libellées<br/>
+            Par exemple : &lt;b&gt;Libellé important&lt;/b&gt;  <br/><br/>
+
+            Vous pouvez ajouter les attributs dynamiques du specimen entre {{}}. <br/>
+            Par exemple : {{specimen.family}} <br/>
+
+            Attributs disponibles :
+        <ul>
+            <li>family</li>
+            <li>genus</li>
+            <li>specificEpithet</li>
+            <li>institute</li>
+            <li>collection</li>
+            <li>code</li>
+        </ul>
+        </p>
+    </div>
+</div>
+
+
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+<script src="@{'/public/js/herbonautes-app-chef.js'}" type="text/javascript"></script>
+
+#{include 'angularTemplates.html' /}
+
+
+#{set 'moreStyles'}
+
+<script type="text/ng-template" id="reference-item-template.html">
+    <a>
+        <span ng-bind-html="match.model.label | typeaheadHighlight:query"></span>
+    </a>
+</script>
+
+<style>
+    a.current {
+        font-weight: bold;
+    }
+
+    .sort-handle {
+        cursor: move;
+    }
+
+    .question {
+        border: 1px solid #CCC;
+        margin-bottom: 5px;
+        border-radius: 2px;
+        background: #FFF;
+    }
+    .question-light {
+        border: 1px solid #CCC;
+        margin-bottom: 5px;
+        border-radius: 2px;
+        background: #EEE;
+        padding: 1em;
+        margin-top: 8px;
+    }
+    #column-left {
+        position: absolute;
+        width: 400px;
+        top: 0;
+        left: 0;
+    }
+    #column-right {
+        position: absolute;
+        width: 400px;
+        top: 0;
+        left: 420px;
+    }
+    #preview, .question {
+        border: 1px solid #AAA;
+        padding: 1em;
+    }
+    #preview h4 {
+        margin-top: 0;
+        margin-bottom: 0.6em;
+    }
+    .contribution-box {
+        border: 1px solid #999;
+    }
+</style>
+#{/set}
+

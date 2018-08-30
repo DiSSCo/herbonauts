@@ -1,0 +1,254 @@
+#{extends 'main.html' /}
+#{set title: user.login + herbonautes.titleSep + herbonautes.title /}
+
+*{set 'moreScripts'}
+<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
+{/set}*
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+#{/set}
+
+<div ng-controller="UserProfileCtrl" ng-init="init(${user.id})">
+
+<div class="row">
+	<div class="span3">
+		<div class="avatar" id="avatar-box">		
+			#{userImg user.login, class: 'avatar bordered', imageId: user.imageId /}
+		</div>
+	</div>
+	<div class="span6">
+		<h2>${user.login}</h2>
+		<p>${user.description}</p>
+		
+		#{if (user.fullName && user.fullName.trim()) || user.city}
+			<dl class="clearfix">
+			
+			#{if user.fullName && user.fullName.trim()}
+				<dt>&{'user.name'}</dt>
+				<dd>${user.fullName}</dd>
+			#{/if}
+				
+			#{if user.city}
+				<dt>&{'user.city'}</dt>
+				<dd>${user.city}</dd>
+			#{/if}
+			</dl>
+			<hr/>
+		#{/if}
+		<dl class="clearfix">
+			<dt>&{'user.member.since'}</dt>
+			<dd>${user.registrationDate.since()}</dd>
+			<dt>&{'user.level'}</dt>
+			<dd>${user.level}<br/>
+		</dl>
+		
+	</div>
+	
+	<div class="span3">
+		#{ifMe user.login}		
+			<a href="@{Users.settings(user.login)}" class="btn">
+				<i class="icon-cog"></i> &{'btn.settings'}
+			</a>
+		#{/ifMe}
+		
+		#{if isLeader}
+			#{ifMe user.login}<p>&nbsp;</p>#{/ifMe}	
+			<a href="@{Messages.blank(user.login)}" class="btn">
+				<i class="icon-envelope"></i> &{'btn.message'}
+			</a>	
+		#{/if}
+	</div>
+</div>
+
+#{set userMissions: user.getAllMissions() /}
+
+<div class="row">
+	<div class="span12 page-stats user-stats ">
+	
+		<div class="row">
+
+		#{set contributionsCount: user.getContributionsCount() /}
+	
+			<div class="span6 counts #{if contributionsCount > 10000} counts-small#{/if}" *{if user.badges.size()} style="padding-top: 33px;" #{/if}*>
+				<div class="row">
+					<div class="span2">
+						<div class="first stat">
+							#{set missionsCount: userMissions?.size() /}
+							<span class="count">${String.format("%,d", missionsCount)}</span>
+							<span class="item">&{missionsCount > 1 ? 'missions' : 'mission'}</span>
+						</div>
+					</div>
+					<div class="span2">
+						<div class="stat">
+
+							<span class="count">${String.format("%,d", contributionsCount)}</span>
+							<span class="item">&{contributionsCount > 1 ? 'contributions' : 'contribution'}</span>
+						</div>
+					</div>
+					<div class="span2">
+						<div class="stat">
+							#{set specimensCount: user.getSpecimensCount() /}
+							<span class="count">${String.format("%,d", specimensCount)}</span>
+							<span class="item">&{specimensCount > 1 ? 'specimens' : 'specimen'}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+			<div class="span6 badge-list">
+				<div class="row">
+				*{<h4>&{'user.badges'}</h4>}*
+				 #{list items: user.badges, as: 'badge'}
+					#{badge badge, float: (user.badges.size() > 5) /}
+		     	  #{/list}
+		     	  </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	
+<div class="row">
+	<div class="span8">
+		<div class="tabbable"> <!-- Only required for left/right tabs -->
+		
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tab1" data-toggle="tab">&{'tab.mission'}</a></li>
+				<li><a id="contributions-tab" href="#contributions-tab-pane" data-toggle="tab">&{'tab.contributions'}</a></li>
+				<!--  <li><a id="timeline-tab" href="#timeline-tab-pane" data-toggle="tab">&{'tab.timeline'}</a></li> -->
+				<li><a id="map-tab" href="#map-tab-pane" data-toggle="tab">&{'tab.map'}</a></li>
+				#{ifMe user.login}
+                <li><a id="user-tags-tab" href="#user-tags-tab-pane" data-toggle="tab">&{'tab.user.tags'}</a></li>
+				#{/ifMe}
+			</ul>
+			
+	  		<div class="tab-content">
+	    		<div class="tab-pane active" id="tab1">
+	    		
+	    		#{if userMissions.size() > 0}
+					<ul class="user-missions-list">
+					#{list items:userMissions, as:'mission'}
+						<li class="clearfix">
+							<div class="small-avatar">#{missionImg mission /}</div>
+							<h4><a href="@{Missions.show(mission.id)}">${mission.title}</a></h4>
+							<p>*{${mission.getContributionsCountForUser(user.id)} &{'contributions'}*</p>
+						</li>
+					#{/list}
+					</ul>
+				#{/if}
+				#{else}
+					&{'user.no.mission'}
+				#{/else}
+				
+	    		</div>
+	    		
+	    		
+				<div class="tab-pane" id="contributions-tab-pane">
+					#{include './tabs/contributions.html' /} 
+	  			</div>
+	  			
+	  			*{
+	  			<div class="tab-pane" id="timeline-tab-pane">
+	    			#{timelineTab
+	    				url: @Users.dateContributions(user.login),
+	    				tabId: 'timeline-tab' /}
+	  			</div>
+	  			}*
+	  			
+	  			<div class="tab-pane" id="map-tab-pane">
+
+					<em>&{'map.user.geo', user.login}</em>
+
+	    			#{mapTab
+	    				url: @Users.geolocalisationContributions(user.login),
+	    				tabId: 'map-tab' /}
+	  			</div>
+
+				#{ifMe user.login}
+					<div class="tab-pane" id="user-tags-tab-pane" ng-controller="userTagsCtrl" ng-init="getAllSubscribedTags()">
+
+						<div id="noSubscribedTags" ng-show="tags.length == 0">&{'tag.noSubscription'}</div>
+						<div id="subscribedTags">
+							<div ng-repeat="tag in tags" ng-class="tag.tagType">
+								<i ng-class="tag.tagType == 'MISSION' ? 'icon-book' : tag.tagType == 'SPECIMEN' ? 'icon-leaf' : 'icon-tag'"></i><a href="#" ng-click="showTag(tag.tagLabel)" onclick="return false;">{{tag.tagLabel}}</a> <a class="remove-button" ng-click="unsubscribeTag(tag.tagLabel)">&#10006;</a>
+							</div>
+						</div>
+
+
+					</div>
+				#{/ifMe}
+			</div>
+		</div>
+	</div>
+
+	<div class="span4" id="activity-box">
+		<h3>&{user.login == connectedLogin ? 'my.activity' : 'his.activity'}</h3>
+		
+		#{activitiesBox id:'user', filter: 'view=user&login=' + user.login /}
+		
+		<script>
+		$(function() {
+			$('#activity-box .activities').paginate();
+		})
+		</script>
+		
+	</div>
+
+</div>
+
+<div class="modal hide" id="imageUploadModal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">x</button>
+    <h3>&{'btn.user.change.image'}</h3>
+  </div>
+   #{form action: @Users.saveImage(user.login), 
+  		enctype:'multipart/form-data',
+  		method: 'POST'}
+		<div class="modal-body">
+
+			<input type="file" name="image" />
+  
+		</div>
+  #{/form}
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">&{'button.cancel'}</a>
+    <a href="#" class="btn btn-primary" id="modal-form-submit">&{'buttons.save'}</a>
+  </div>
+  
+  <script>
+  
+  	$(function() {
+  		
+		var initialized = {
+				comments: false,
+				contributions: false,
+				ratings: false
+			}
+	  
+		$('#contributions-tab').on('shown', function() {
+			if(!initialized.contributions) {
+				initialized.contributions = true;
+				$('#contributions-table').paginate();
+			}
+		});
+		
+		herbonautes.needReload = true;
+		
+  	});
+  
+  $('#modal-form-submit').on('click', function(e){
+    // We don't want this to act as a link so cancel the link action
+    e.preventDefault();
+
+    // Find form and submit it
+    $('#imageUploadModal form').submit();
+  });
+  
+  
+  
+</script>
+  	
+</div>
+
+</div>

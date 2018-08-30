@@ -1,0 +1,91 @@
+
+
+<div ng-controller="RecolnatTransferCtrl" ng-init="init(${mission.id})">
+
+    #{if isAdmin}
+
+        #{if mission.recolnatTransferInProgress}
+            <em>Transfert en cours</em>
+        #{/if}
+        #{else}
+            #{if mission.recolnatTransferDone}
+            <div class="row">
+                 <div class="span4">
+                <b>Transfert terminé</b>
+                </div>
+             </div>
+                <br/>
+
+                <div class="row">
+                    <div class="span5">
+                        <table class="table">
+                            <tr><th colspan="2">Spécimens</th></tr>
+                            <tr>
+                                <td>Spécimens complétement transférés</td><td>{{ report.specimenCompleteCount }}</td>
+                            </tr>
+                            <tr>
+                                <td>Spécimens partiellement transférés</td><td>{{ report.specimenPartialCount }}</td>
+                            </tr>
+                            <tr>
+                                <td>Spécimens non transférés</td><td>{{ report.specimenEmptyCount }}</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="span5">
+                        <table class="table">
+                            <tr><th colspan="2">Champs</th></tr>
+                            <tr>
+                                <td>Champs transférés</td><td>{{ report.questionTransfered }}</td>
+                            </tr>
+                            <tr ng-repeat="(question, count) in report.tranferByQuestion">
+                                <td>&nbsp;&nbsp; {{ _i18n('transfer.question.' + question) }}</td><td>{{ count }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Champs non transférés</td>
+                                <td>{{ report.questionNotTransfered }}</td>
+                            </tr>
+                            <tr ng-repeat="(cause, count) in report.noTransferCause">
+                                <td>&nbsp;&nbsp; {{  _i18n('transfer.cause.' + cause) }}</td><td>{{ count }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+
+                *{
+
+
+                <table>
+                    <tr ng-repeat="transfer in report.transferList">
+                        <td>{{ transfer.specimenId }}</td>
+                        <td>{{ transfer.questionName }}</td>
+                        <td>{{ transfer.transferDone }}</td>
+                        <td>{{ transfer.noTransferCause }}</td>
+                    </tr>
+                </table>
+
+                }*
+
+            #{/if}
+            #{else}
+                <p ng-hide="inProgress"><a ng-click="startTransfer()" class="btn btn-success"><i class="icon-white icon-share-alt"></i> Verser dans Recolnat</a></p>
+                <em ng-show="inProgress">Transfert en cours</em>
+            #{/else}
+        #{/else}
+
+    #{/if}
+    #{else}
+        <br/>
+        <p><b>Contactez l'admin pour verser dans Recolnat</b></p>
+    #{/else}
+
+    <hr/>
+
+
+
+</div>
+
+

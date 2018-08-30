@@ -1,0 +1,46 @@
+
+<div class="bubbles">
+${attributesMap.keySet().size()} spécimens à cette position<br/>
+
+<select id="bubble-select" onChange="selectBubble()">
+	#{list items: attributesMap.keySet(), as: 'specimen'}
+		<option value="${specimen.code}">${specimen.getGenusSpecies()} (${specimen.code})</option>
+	#{/list}
+</select>
+
+<hr/>
+
+#{list items: attributesMap.keySet(), as: 'e'}
+
+	<div class="bubble-specimen" id="bubble-specimen-${e.code}" #{if !e_isFirst} style="display:none" #{/if}>
+
+	#{specimenLink e /}
+
+    <dl class="bubble-infos" >
+		#{list items: attributesMap.get(e), as: 'attribute'}
+			#{if !attribute.todo}
+                <dt>${attribute.label}</dt>
+                <dd>
+					#{list items: attribute.validatedValue, as: 'val'}
+						#{if val.isBoolean}
+							#{if val.booleanValue}
+                                <em>${val.label}</em>
+							#{/if}
+						#{/if}
+						#{else}
+						${val.textValue}
+						#{/else}
+					#{/list}
+                </dd>
+			#{/if}
+		#{/list}
+    </dl>
+
+    </div>
+
+
+#{/list}
+
+</div>
+
+

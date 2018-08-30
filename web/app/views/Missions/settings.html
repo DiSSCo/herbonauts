@@ -1,0 +1,571 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+<script type="text/javascript" src="@{'/public/ckeditor/ckeditor.js'}"></script>
+<script type="text/javascript" src="@{'/public/ckeditor/adapters/jquery.js'}"></script>
+
+
+<script type="text/javascript">
+
+    $(function() {
+        var config = {
+            toolbar: #{include '/ckeditorToolbarSettings.html' /},
+
+        *{ filebrowserImageBrowseUrl: '/contents/images/browse', }*
+            filebrowserImageUploadUrl: '@{Contents.imagesUpload()}'
+        };
+
+        // Initialize the editor.
+        // Callback function can be passed and executed after full instance creation.
+        $('#presentation-field, #report-field').ckeditor(config);
+
+
+        // Max length on textarea
+        $('textarea.maxlength').bind('keyup change', function() {
+
+            var $elt = $(this);
+            var maxLength = parseInt($elt.attr("maxlength"));
+
+            if ($elt.val().length > maxLength) {
+                $elt.val($elt.val().slice(0, maxLength));
+
+            }
+
+        })
+    });
+
+
+
+</script>
+
+<div ng-controller="MissionSettingsCtrl" ng-init="init(${mission.id})">
+
+
+<div class="row">
+
+    <div class="span2">
+    #{missionImg mission /}
+    </div>
+    <div class="span10">
+        <h2>${mission.title} <small>Edition</small></h2>
+        *{<p>${mission.shortDescription}</p>}*
+
+
+
+    </div>
+
+</div>
+
+<br/>
+
+
+<div class="row">
+
+<div class="span10">
+
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+<ul class="nav nav-tabs">
+    <li><a id="parameters-tab" href="#tab1" data-toggle="tab">&{'tab.parameters'}</a></li>
+    <li><a id="cart-tab" href="#tab-cart" data-toggle="tab">&{'tab.specimens'}</a></li>
+    <li><a id="questions-tab" href="#tab-questions" data-toggle="tab">&{'tab.questions'}</a></li>
+    *{<li><a id="specimens-tab" href="#tab2" data-toggle="tab">&{'tab.contributions'}</a></li>}*
+    <li><a id="announcements-tab" href="#tab3" data-toggle="tab">&{'tab.announcements'}</a></li>
+    <li><a id="members-tab" href="#tab4" data-toggle="tab">&{'tab.members'}</a></li>
+    <li><a id="export-tab" href="#tab-export" data-toggle="tab">&{'tab.export'}</a></li>
+    <li><a id="recolnat-tab" href="#tab-recolnat" data-toggle="tab">&{'tab.recolnat'}</a></li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane" id="tab-questions">
+
+#{include './tabs/questions.html' /}
+
+</div>
+
+<div class="tab-pane" id="tab-cart">
+    #{include './tabs/cart.html' /}
+</div>
+
+<div class="tab-pane" id="tab-export">
+    #{include './tabs/export.html' /}
+</div>
+
+<div class="tab-pane" id="tab-recolnat">
+    #{include './tabs/recolnat.html' /}
+</div>
+
+<div class="tab-pane" id="tab1">
+#{form
+action: @Missions.saveSettings(mission.id),
+method: 'POST',
+enctype: 'multipart/form-data',
+class: 'form-horizontal',
+id: 'mission-save'}
+
+
+    #{ifErrors}
+    <div class="alert alert-error">
+    &{'mission.tab.errors'}
+    </div>
+    #{/ifErrors}
+
+<fieldset>
+    <legend>&{'mission.tab.description'}</legend>
+
+    <div class="control-group">
+        <label class="control-label" for="input01">&{'mission.tab.mission.publish'}</label>
+        <div class="controls">
+            <label class="checkbox">
+                <input type="checkbox" name="mission.published" value="true"
+                ${mission.published ? 'checked' : ''} />
+            &{'mission.tab.visible'}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">&{'mission.tab.image.small'}'</label>
+        <div class="controls">
+            <input type="file" name="image" />
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">&{'mission.tab.image.big'}</label>
+        <div class="controls">
+            <input type="file" name="bigImage" />
+        </div>
+    </div>
+
+    #{field 'mission.title'}
+        <div class="control-group ${field.errorClass}">
+            <label class="control-label" for="${field.id}">&{field.name}</label>
+            <div class="controls">
+                <input
+                        name="${field.name}"
+                        type="text"
+                        class="input-xlarge"
+                        id="${field.id}"
+                        value="${mission.title}"/>
+                <span class="help-inline">${field.error}</span>
+            </div>
+        </div>
+    #{/field}
+
+    #{field 'mission.principalTagString'}
+        <div class="control-group ${field.errorClass}">
+            <label class="control-label" for="${field.id}">&{field.name}</label>
+            <div class="controls">
+                <input
+                        name="${field.name}"
+                        type="text"
+                        class="input-xlarge"
+                        id="${field.id}"
+                        value="${mission.principalTagString}"/>
+                <span class="help-inline">${field.error}</span>
+            </div>
+        </div>
+    #{/field}
+
+    #{field 'mission.shortDescription'}
+        <div class="control-group ${field.errorClass}">
+            <label class="control-label" for="${field.id}">&{field.name}</label>
+            <div class="controls">
+                <textarea
+                        name="${field.name}"
+                        class="input-xlarge"
+                        id="${field.id}">${mission.shortDescription}</textarea>
+                <span class="help-inline">${field.error}</span>
+            </div>
+        </div>
+    #{/field}
+
+    <div class="control-group">
+        <label class="control-label">&{'mission.tab.presentation'}</label>
+        <div class="controls">
+            <a class="btn btn-small" data-toggle="modal" href="#presentation-edit-modal">Editer</a>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">&{'mission.tab.rapport'}</label>
+        <div class="controls with-sub-checkbox">
+            <a class="btn btn-small" data-toggle="modal" href="#report-edit-modal">Editer</a>
+            <label class="checkbox">
+                <input
+                        type="checkbox"
+                        name="mission.reportPublished"
+                        value="true"
+                ${mission.reportPublished ? 'checked' : ''}>
+            &{'mission.tab.showRapport'}
+            </label>
+        </div>
+    </div>
+
+</fieldset>
+
+<fieldset>
+    <legend>&{'mission.tab.configuration'}</legend>
+
+    <div class="control-group #{ifError 'mission.lang'}error#{/ifError}">
+        <label class="control-label" for="input-lang">&{'mission.tab.langue'}</label>
+        <div class="controls">
+            <select name="mission.lang" id="input-lang">
+                #{list items: langs, as: 'lang'}
+                    <option value="${lang}" ${(lang == flash['mission.lang']) ? 'selected' : ''}>&{'lang.' + lang}</option>
+                #{/list}
+            </select>
+            #{ifError 'mission.lang'}
+                <span class="help-inline">#{error 'mission.lang' /}</span>
+            #{/ifError}
+        </div>
+    </div>
+
+    *{
+    #{field 'mission.goal'}
+        <div class="control-group ${field.errorClass}">
+            <label class="control-label" for="${field.id}">&{field.name}</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input
+                            name="${field.name}"
+                            type="text"
+                            class="input-xlarge"
+                            id="${field.id}"
+                            value="${mission.goal}"/>
+                    <span class="add-on">&{'mission.tab.contribution'}</span>
+                </div>
+                <span class="help-inline">${field.error}</span>
+            </div>
+        </div>
+    #{/field}
+    }*
+
+*{
+                                <div class="control-group">
+                                    <label class="control-label" for="input01">&{'mission.tab.country.unique'}</label>
+                                    <div class="controls">
+                                        <label class="checkbox inline">
+                                            <input type="checkbox"  ${mission.country ? 'checked' : ''} name="oneCountry" value="true" id="check-country">
+                                         </label>
+                                        <select name="countryId" id="select-country">
+                                            #{list items: countries, as: 'country'}
+                                                <option value="${country.id}" &{mission.country?.id == country.id ? 'selected' :  ''}>${country.name}</option>
+                                            #{/list}
+                                        </select>
+                                    </div>
+                                </div>
+                                }*
+
+    <script type="text/javascript">
+        function toggleDependantOnCheck() {
+            if ($('#check-country').is(':checked')) {
+                $('#select-country').show();
+            } else {
+                $('#select-country').hide();
+            }
+        }
+        toggleDependantOnCheck();
+        $('#check-country').change(toggleDependantOnCheck);
+    </script>
+
+    #{field 'mission.openingDate'}
+        <div class="control-group ${field.errorClass}">
+            <label class="control-label" for="${field.id}">&{field.name}</label>
+            <div class="controls">
+                <input
+                        name="${field.name}"
+                        type="text"
+                        placeholder="DD/MM/YYYY"
+                        id="${field.id}"
+                        value="${mission.openingDate?.format()}"/>
+                <span class="help-inline">${field.error}</span>
+            </div>
+        </div>
+    #{/field}
+
+
+
+
+
+*{
+                                <div class="control-group">
+                                    <label class="control-label" for="input01">&{'mission.tab.ponderation'}</label>
+                                    <div class="controls">
+                                        <span class="uneditable-input">0</span>
+                                    </div>
+                                </div>
+                                }*
+
+</fieldset>
+
+*{
+                            <fieldset>
+                                <legend>&{'mission.tab.addSpecimen'}</legend>
+
+                                <div class="control-group">
+                                    <label class="control-label" for="input-titre">&{'mission.tab.specimen.file'}</label>
+                                    <div class="controls">
+                                        <input type="file" name="specimensFile" />
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                            }*
+
+#{/form}
+</div> <!--  /tab1 -->
+
+*{
+<div class="tab-pane" id="tab2">
+
+#{include './tabs/contributions.html' /}
+
+</div><!-- /tab2 -->
+
+}*
+
+
+<div class="tab-pane" id="tab3">
+#{ifErrors}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
+        <ul>
+            #{ifError 'announcement.title'}
+                <li>&{'mission.tab.announcementTitle'} : #{error 'announcement.title' /}</li>
+            #{/ifError}
+            #{ifError 'announcement.date'}
+                <li>&{'mission.tab.date'} : #{error 'announcement.date' /}</li>
+            #{/ifError}
+            #{ifError 'announcement.text'}
+                <li>&{'mission.tab.contenu'} : #{error 'announcement.text' /}</li>
+            #{/ifError}
+        </ul>
+    </div>
+#{/ifErrors}
+
+#{list items: announcements, as: 'announcement'}
+    <div class="alert-box announcements">
+        <div class="announcement" data-announcement-id="${announcement.id}">
+            <div class="pull-right">
+                <a href="#" class="btn-edit-announcement" data-announcement-id="${announcement.id}">&{'mission.tab.modify'}</a>
+                <a href="#" class="btn-unedit-announcement hide" data-announcement-id="${announcement.id}">&{'mission.tab.cancel'}</a>
+                <a href="@{Missions.deleteAnnouncement(announcement.id)}">&{'mission.tab.delete'}</a><br/>
+            </div>
+            <div class="not-editable">
+                <b>${announcement.title}</b>
+                <em></em>${announcement.date?.format('dd/MM/YYYY')}</em><br/>
+                <input type="checkbox" disabled ${announcement.published ? 'checked' : ''} /> &{'mission.tab.published'}<br/>
+            ${announcement.text}<br/>
+            </div>
+            <div class="editable hide">
+                #{form
+                action: @Missions.saveAnnouncement(mission.id),
+                method: 'POST'}
+
+                    <input type="hidden" value="${announcement.id}" name="announcement.id" />
+
+                    <input type="text" name="announcement.title" value="${announcement.title}">
+                    <input type="checkbox" value="true" name="published" ${announcement.published ? 'checked' : ''} /> &{'mission.tab.publish'}<br/>
+
+                    <input type="text" name="announcement.date" value="${announcement.date?.format('dd/MM/YYYY')}" /><br/>
+                    <textarea name="announcement.text" class="maxlength" maxlength="255">${announcement.text}</textarea><br/>
+                    <br/>
+                    <input class="btn" type="submit" />
+
+                #{/form}
+            </div>
+        </div>
+    </div>
+#{/list}
+
+    <hr/>
+
+#{form
+action: @Missions.addAnnouncement(mission.id),
+method: 'POST'}
+
+    <input type="text" name="announcement.title" placeholder="titre" value="${flash['announcement.title']}"/>
+    <input type="checkbox" value="true" name="announcement.published" /> &{'mission.tab.publish'}<br/>
+
+    <input type="text" name="announcement.date" placeholder="JJ/MM/AAAA" value="${flash['announcement.date']}" /><br/>
+    <textarea class="maxlength" maxlength="255" name="announcement.text" placeholder="contenu">${flash['announcement.text']}</textarea><br/>
+    <br/>
+    <input class="btn" type="submit" />
+
+#{/form}
+
+</div><!-- /tab3 -->
+<div class="tab-pane" id="tab4">
+
+#{include './tabs/members.html' /}
+
+
+</div><!-- /tab4 -->
+
+</div> <!-- /tab content -->
+</div> <!-- /tabbable content -->
+</div><!-- /span 8 -->
+
+<div class="span2" style="text-align:right">
+
+    <button class="btn btn-success" ng-click="saveSettings()" type="button" id="mission-save-btn-2">&{'mission.tab.save'}</button>
+    <a href="@{Missions.show(mission.id)}" class="btn">&{'mission.tab.back'}</a>
+
+    <script>
+        $(function() {
+            $('#mission-save-btn').click(function() {
+                $('form#mission-save').submit();
+            });
+
+            $('.btn-edit-announcement').click(function() {
+                var announcementId = $(this).data('announcement-id');
+                var box = $('.announcement[data-announcement-id="' + announcementId + '"]');
+                $(this).hide();
+                $('.btn-unedit-announcement', box).show();
+                $('.not-editable', box).hide();
+                $('.editable', box).show();
+                return false;
+            });
+            $('.btn-unedit-announcement').click(function() {
+                var announcementId = $(this).data('announcement-id');
+                var box = $('.announcement[data-announcement-id="' + announcementId + '"]');
+                $(this).hide();
+                $('.btn-edit-announcement', box).show();
+                $('.editable', box).hide();
+                $('.not-editable', box).show();
+                return false;
+            });
+
+        });
+    </script>
+
+    <br/><br/>
+    <br/><br/>
+#{if mission.closed}
+    <button class="btn btn-info" onclick="reopenMission()" type="button">&{'mission.tab.reopen'}</button>
+#{/if}
+#{else}
+    <button class="btn btn-warning" onclick="closeMission()" type="button">&{'mission.tab.close'}</button>
+#{/else}
+
+
+    #{if !mission.published && !mission.closed}
+
+        <script>
+            function confirmSuppression(e) {
+                var ok = confirm("Attention ! Toutes les contributions seront supprimées");
+                if (ok) {
+                    $("#suppress-form").submit();
+                }
+            }
+        </script>
+        <form style="display:none" action="@{Missions.resetContributions(mission.id)}" method="POST" id="suppress-form" >
+        </form>
+    <br><br/>
+        <a class="btn btn-danger btn-small" type="button" onclick="confirmSuppression()">Supprimer les contributions</a>
+
+    #{/if}
+
+
+
+</div>
+
+</div>
+
+
+
+
+<div class="modal large-modal hide" id="presentation-edit-modal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>&{'mission.tab.mission.presentation.edit'}</h3>
+    </div>
+    <div class="modal-body">
+    #{form action: @Missions.savePresentation(id: mission.id), method: 'POST'}
+        <textarea class="jquery_ckeditor" id="presentation-field"   name="presentation" style="width:100%; height: 350px">${mission.presentation?.raw()}</textarea>
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">&{'btn.cancel'}</a>
+        <a href="#" class="btn btn-primary" id="presentation-edit-save">&{'btn.save'}</a>
+    </div>
+
+    <script>
+        $('#presentation-edit-save').on('click', function(e){
+            // We don't want this to act as a link so cancel the link action
+            e.preventDefault();
+
+            // Find form and submit it
+            $('#presentation-edit-modal form').submit();
+        });
+    </script>
+</div>
+
+<div class="modal large-modal hide" id="report-edit-modal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>&{'mission.tab.reportMission'}</h3>
+    </div>
+    <div class="modal-body">
+    #{form action: @Missions.saveReport(id: mission.id), method: 'POST'}
+        <textarea class="jquery_ckeditor" id="report-field"   name="report" style="width:100%; height: 350px">${mission.report?.raw()}</textarea>
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">&{'btn.cancel'}</a>
+        <a href="#" class="btn btn-primary" id="report-edit-save">&{'btn.save'}</a>
+    </div>
+</div>
+
+<script>
+    $('#report-edit-save').on('click', function(e){
+        // We don't want this to act as a link so cancel the link action
+        e.preventDefault();
+
+        // Find form and submit it
+        $('#report-edit-modal form').submit();
+    });
+</script>
+
+#{form action: @Missions.closeMission(mission.id), method: 'POST', id:'close-mission', class: 'hide'}
+#{/form}
+#{form action: @Missions.reopenMission(mission.id), method: 'POST', id:'reopen-mission', class: 'hide'}
+#{/form}
+
+</div>
+
+*{<script src="@{'/public/js/elasticsearch.angular.min.js'}" type="text/javascript"></script>}*
+<script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+<script src="@{'/public/js/herbonautes-app-chef.js'}" type="text/javascript"></script>
+
+<script type="text/javascript">
+    function closeMission() {
+        if (confirm("&{'mission.tab.confirmationClosure'}")) {
+            $('form#close-mission').submit();
+        }
+    }
+    function reopenMission() {
+        if (confirm("&{'mission.tab.confirmationReopen'}")) {
+            $('form#reopen-mission').submit();
+        }
+    }
+
+
+    var membersInit = false;
+
+    $(function() {
+
+        $('#members-tab').on('shown', function() {
+            if (!membersInit) {
+                membersInit = true;
+                $('#ratings-table').paginate();
+            }
+        });
+
+        $('#${tab}-tab').tab('show');
+        $('#${tab}-tab').trigger('shown');
+
+        //$('#parameters-tab').tab('show');
+    });
+
+</script>

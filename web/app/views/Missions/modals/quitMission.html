@@ -1,0 +1,31 @@
+#{if isMember}
+<div class="modal hide" id="mission-quit-modal">
+	<div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal">x</button>
+	    <h3>&{'mission.confirm.quit.title'}</h3>
+	  </div>
+	  <div class="modal-body">
+	  		&{'mission.confirm.quit.text'}
+	  </div>
+	  
+	  #{form 
+	  		class: 'hide',
+	  		method: 'POST',
+	  		id: 'quit-mission',
+			action: @Missions.removeMember(mission.id)}
+	  <input type="hidden" name="login" value="${connectedLogin}" />
+	  #{/form}
+	  
+	  <script>
+	  	function quitMission() {
+	  		$('form#quit-mission').submit();
+	  	}
+	  </script>
+	  
+	  <div class="modal-footer">
+	  	<a href="#" class="btn" data-dismiss="modal">&{'mission.confirm.quit.no'}</a>
+	    <button type="button" onclick="quitMission()" class="btn btn-success">&{'mission.confirm.quit.yes'}</button>
+	    
+	  </div>	
+</div>
+#{/if}

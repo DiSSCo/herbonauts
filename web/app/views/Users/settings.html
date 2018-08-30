@@ -1,0 +1,173 @@
+#{extends 'main.html' /}
+#{set 'title'}
+	&{'edit'} ${herbonautes.titleSep + herbonautes.title}
+#{/set}
+
+
+<h2>${user.login}</h2>
+
+<div class="row">
+	<div class="span8">
+		
+
+		#{if !isFB}
+			<a href="@{Users.password(login: user.login)}">&{'user.change.password'}</a>
+		#{/if}
+
+		
+		#{form action: @Users.saveSettings(login: user.login), 
+				enctype: 'multipart/form-data',
+				method: 'POST', 
+				id: 'settings-form',
+				class: 'form-horizontal'}
+  			<fieldset>
+				<legend>&{'user.settings.informations'}</legend>
+				
+				<div class="control-group">
+					<div class="control-label">&{'user.avatar'}</div>
+					
+					<div class="controls">
+						#{userImg user.login, imageId: user.imageId /}
+						
+						<br/>
+						<input type="file" name="newImage" />
+						<br/>
+						
+						#{if user.hasImage}
+						<input type="checkbox" name="deleteImage" value="true" /> &{'btn.delete'}
+						#{/if}
+					</div>
+				</div>
+
+    			<div class="control-group">
+      				<label class="control-label" for="input01">&{'user.settings.email'}</label>
+     				<div class="controls">
+     					<input type="hidden" id="old-email" value="${user.email}"  />
+        				<input type="email" required id="new-email" class="input-xlarge #{ifError 'user.email'} error #{/ifError}" name="user.email" value="${user.email}" ${isFB ? 'disabled' : ''} />
+
+						*{ Email provenant de recolnat, FB n'est plus utilisé ici
+      					&{isFB ? 'from.facebook' : ''}
+      					#{ifError 'user.email'}
+      						<span class="help-inline text-error">#{error 'user.email' /}</span>
+      					 #{/ifError}
+      					 }*
+
+      				</div>      				
+    			</div>
+    			*{ <div class="control-group">
+      				<label class="control-label" for="input01"></label>
+     				<div class="controls">
+     					<label class="checkbox">
+     						<input type="checkbox" name="user.publishInformations" ${user.publishInformations ? 'checked' : ''} /> 
+     						Afficher mes informations personnelles
+     					</label>
+      				</div>
+    			</div> }*
+
+    			<div class="control-group">
+      				<label class="control-label" for="input01"></label>
+     				<div class="controls">
+     					<label class="checkbox">
+     						<input type="checkbox" name="user.receiveMails" ${user.receiveMails ? 'checked' : ''} /> 
+     						&{'receive.mails'}
+     					</label>
+      				</div>
+    			</div>
+
+				*{
+                <div class="control-group">
+                    <label class="control-label" for="input01"></label>
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" name="user.alertMission" ${user.alertMission ? 'checked' : ''} />
+							&{'user.alert.mission'}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="input01"></label>
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" name="user.alertSpecimen" ${user.alertSpecimen ? 'checked' : ''} />
+							&{'user.alert.specimen'}
+                        </label>
+                    </div>
+                </div>
+                }*
+    			
+    			<div class="control-group">
+      				<label class="control-label" for="input01">&{'user.firstName'}</label>
+     				<div class="controls">
+        				<input type="text" class="input-xlarge" name="user.firstName" value="${user.firstName}" />
+      				</div>
+    			</div>
+    			<div class="control-group">
+      				<label class="control-label" for="input01">&{'user.lastName'}</label>
+     				<div class="controls">
+        				<input type="text" class="input-xlarge" name="user.lastName" value="${user.lastName}" />
+      				</div>
+    			</div>
+    			<div class="control-group">
+      				<label class="control-label" for="input01">&{'user.description'}</label>
+     				<div class="controls">
+        				<textarea name="user.description">${user.description}</textarea>
+      				</div>
+    			</div>
+    			<div class="control-group">
+      				<label class="control-label" for="input01">&{'user.city'}</label>
+     				<div class="controls">
+        				<input type="text" class="input-xlarge" name="user.city" value="${user.city}" id="user-geolocation-input" />
+
+						*{
+                        <input id="input-latitude" type="hidden" name="user.latitude" value="${user.latitude}" />
+                        <input id="input-longitude" type="hidden" name="user.longitude" value="${user.longitude}" />
+
+                        }*
+      				</div>
+    			</div>
+    			<div class="form-actions">
+            		<button type="submit"  class="btn btn-success" id="password-button">
+						<i class="icon-ok icon-white"></i> &{'btn.save'}
+					</button>
+            		<a class="btn" href="@{Users.show(user.login)}">&{'btn.cancel'}</a>
+          		</div>
+  			</fieldset>
+  			
+  			<div class="modal hide" id="password-modal">
+			<div class="modal-header">
+				<h3>&{'modal.type.password.to.save'}</h3>
+			</div>
+			<div class="modal-body">
+				
+				<input type="password" name="password" />
+				<button type="submit" class="btn btn-success">
+					<i class="icon-ok icon-white"></i> &{'btn.continue'}
+				</button>
+			</div>
+
+		</div>
+  			
+		#{/form}
+
+
+		
+	</div>
+
+
+	<div class="span4">
+
+		*{
+
+        <a href="@{Users.deleteAccount(login: user.login)}" class="pull-right btn btn-danger" id="delete-account-button">
+            <i class="icon-trash icon-white"></i> &{'btn.delete.account'}
+        </a>
+
+        }*
+
+	</div>
+
+</div>
+
+
+

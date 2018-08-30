@@ -1,0 +1,65 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+<h2><small>&{'quiz.new'}</small></h2>
+
+
+
+#{form 
+	action: @Quizzes.createQuiz(), 
+	method: 'POST', 
+	enctype: 'multipart/form-data', 
+	class: 'form-horizontal'}
+
+            #{ifErrors}
+                <h5>Erreurs</h5>
+                #{errors}
+                <li>${error}</li>
+                #{/errors}
+            #{/ifErrors}
+
+			<div class="control-group">
+    			<label class="control-label" for="quiz-name">&{'quiz.name'}</label>
+    			<div class="controls">
+      				<input type="text" name="quiz.name" value="${flash['quiz.name']}" required/>
+    			</div>
+  			</div>
+		
+			*{
+			<div class="control-group">
+    			<label class="control-label">&{'quiz.level'}</label>
+    			<div class="controls">
+		      		<select name="quiz.unlockingLevel">
+		      				<option value="0">&{'quiz.mission.out'}</option>
+						#{list items: 2..6, as: 'level'}
+							<option value="${level}">${level}</option>
+						#{/list}
+					</select>
+    			</div>
+  			</div>
+  			}*
+  			
+  			<div class="control-group">
+    			<label class="control-label">&{'quiz.title'}</label>
+    			<div class="controls">
+      				<input type="text" name="quiz.title" value="${flash['quiz.title']}" required/>
+    			</div>
+  			</div>
+  			
+  			<div class="control-group">
+    			<label class="control-label">&{'quiz.description'}</label>
+    			<div class="controls">
+      				<textarea maxlength="1000" name="quiz.description">${flash['quiz.description']}</textarea>
+    			</div>
+  			</div>
+	
+	
+			<div class="control-group">
+    			<label class="control-label"></label>
+    			<div class="controls">
+      				<input type="submit" value="&{'quiz.save'}" class="btn"/>
+    			</div>
+  			</div>
+
+
+#{/form}

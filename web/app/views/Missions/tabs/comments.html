@@ -1,0 +1,85 @@
+#{commentsTab 
+	commentsURL: @Comments.lastMissionComments(id: mission.id),
+	formId: 'comment-form',
+	tabId: 'comments-tab'}
+	
+	#{if connectedLogin}
+			
+		#{form 
+			action: @Comments.addMissionComment(id: mission.id), 
+			method: 'POST',
+			class: 'comment-form clearfix',
+			id: 'comment-form'}
+			<div class="avatar">
+				#{userImg connectedLogin, imageId: connectedImageId /}
+			</div>
+			<div class="text">
+				<input type="hidden" name="comment.user.id" value="${connectedId}" />
+				<input type="hidden" name="comment.mission.id" value="${mission.id}" />
+				<textarea id="comment-field" maxlength="1000" name="comment.text" placeholder="&{'comment.answer.placeholder'}"></textarea>
+				<br/>
+				<input type="submit" class="btn btn-small" value="&{'btn.send'}" />
+			</div>
+			
+		#{/form}
+	
+	#{/if}	
+	#{else}
+		<a href="#" class="login-button">&{'connect.to.comment'}</a>
+	#{/else}
+	
+#{/commentsTab}
+
+*{
+<ul 
+	id="comments-list" 
+	class="comments paginable"
+	data-paginate-url="@{Comments.lastMissionComments(id: mission.id)}"
+	data-paginate-btn="#more-contributions-btn" 
+	data-before-attr="comment-id">
+	     
+</ul>
+	     
+
+     
+<script>
+
+
+$('#comments-list')
+	// Affichage d'une nouvelle page
+	.bind('page-received', function(event, comments) {
+		$.each(comments, function(i, comment) {
+			herbonautes.appendComment('#comments-list', comment);
+		});
+		return false;
+	});   	
+     		
+    		$('#comment-form').submit(function() {
+    			var $form = $(this);
+    			var url = $form.attr('action');
+    			var data = $form.serialize();
+    			
+    			$.ajax({
+    				url: url,
+    				type: 'POST',
+    				data: data,
+    				dataType: 'json',
+    				success: function(data) {
+    					alert('test');
+    					$('#comment-field').val('');
+    					herbonautes.appendComment('#comments-list', data);
+    					oldCommentCount = $('#comments-tab span').val();
+    					$('#comments-tab span').val(oldCommentCount+1);
+    					$(window).scrollTop(
+    			  				$('#comments-list').height() + 
+    			  				$('#comments-list').position().top - 
+    			  				$(window).height() + 
+    			  				100); // 100 px de marge
+    				}
+    			});
+    			
+    			return false;
+    		});
+     	
+</script>
+}*

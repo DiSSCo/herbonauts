@@ -1,0 +1,50 @@
+#{extends 'main.html' /}
+#{set title:'Admin Missions' + herbonautes.titleSep + herbonautes.title /}
+
+<style>
+#sortable {
+	list-style-type: none;
+	margin-left: 0;
+}
+#sortable li {
+	border: 1px solid #DDD;
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	background: #FAFAFA;î
+}
+</style>
+
+<h2>&{'admin.list'}</h2>
+
+<p>&{'admin.move'}</p>
+
+<ul id="sortable">
+	#{list items: missions, as: 'mission'}
+		<li data-mission-id="${mission.id}"><i class="icon-align-justify"></i> ${mission.title}</li>
+	#{/list}
+</ul>
+
+<script type="text/javascript">
+$(function() {
+	$('#sortable').sortable({
+		update: function(event, ui) {
+			var sort = [];
+			$('#sortable li').each(function (i, elt) {
+				var missionId = $(elt).data('mission-id');
+				if (missionId) {
+					sort[i] = missionId;
+				}
+				$.ajax({
+					url: '@{Admin.saveMissionsSort()}',
+					type: 'post',
+					data: {
+						sort: sort
+					}
+				});
+			});
+		}
+	});
+	$( "#sortable" ).disableSelection();
+})
+</script>

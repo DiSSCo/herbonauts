@@ -1,0 +1,10 @@
+#{extends 'main.html' /}
+#{set 'title'}
+	&{quiz.title} ${herbonautes.titleSep} ${herbonautes.title}
+#{/set}
+
+<h2><small>&{'about.to.take.quiz'}</small> ${quiz.title}</h2>
+
+<p>${quiz.description?.raw()}</p>
+
+<a href="@{Quizzes.showQuestion(name: quiz.name, number: 1)}" class="btn">&{'btn.start'}</a>

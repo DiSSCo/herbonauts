@@ -1,0 +1,94 @@
+#{extends 'main.html' /}
+#{set 'title'}&{'specimen.list'} ${herbonautes.titleSep} ${herbonautes.title}#{/set}
+
+<style>ul { margin-left: 0 }</style>
+
+#{if genus}
+<h2><small>&{'specimen.title.specimen'}</small> ${genus} ${specificEpithet}</h2>
+#{/if}
+#{if institute}
+<h2><small>&{'specimen.title.institute'}</small> ${institute}</h2>
+#{/if}
+#{if collection}
+<h2><small>&{'specimen.title.collection'}</small> ${collection}</h2>
+#{/if}
+
+<div class="row">
+
+	<div class="span12">
+
+
+		#{if specimens}
+
+
+        <div class="pagination pagination-mini" style="margin-bottom: 0px">
+        <ul>
+
+			#{if page > 1}
+                <li><a href="@{Specimens.list(institute: institute, collection: collection, genus: genus, specificEpithet: specificEpithet, page: 1)}">1</a></li>
+			#{/if}
+
+			#{if page - 1 > 2}
+                <li class="disabled"><a href="#">...</a></li>
+			#{/if}
+
+			#{if page - 1 > 1}
+				<li><a href="@{Specimens.list(institute: institute, collection: collection, genus: genus, specificEpithet: specificEpithet, page: page-1)}">${page - 1}</a></li>
+			#{/if}
+
+
+
+            <li class="active"><a href="@{Specimens.list(institute: institute, collection: collection, genus: genus, specificEpithet: specificEpithet, page: 1)}">${page}</a></li>
+
+			#{if page + 1 < pageCount}
+                <li><a href="@{Specimens.list(institute: institute, collection: collection, genus: genus, specificEpithet: specificEpithet, page: page+1)}">${page + 1}</a></li>
+			#{/if}
+
+			#{if page + 1 < pageCount - 1}
+                <li class="disabled"><a href="#">...</a></li>
+			#{/if}
+
+			#{if page < pageCount}
+				<li><a href="@{Specimens.list(institute: institute, collection: collection, genus: genus, specificEpithet: specificEpithet, page: pageCount)}">${pageCount}</a></li>
+			#{/if}
+
+		</ul>
+		</div>
+
+
+		<table class="table">
+			<thead>
+				<th>&{'specimen.list.institute'}</th>
+				<th>&{'specimen.list.collection'}</th>
+				<th>&{'specimen.list.code'}</th>
+			</thead>
+			<tbody>
+			#{list items: specimens, as: 'specimen'}
+			<tr>
+				<td>		
+					<a href="@{Specimens.list(institute: specimen.institute)}">${specimen.institute}</a>
+				</td>
+				<td>
+					<a href="@{Specimens.list(collection: specimen.collection)}">${specimen.collection}</a>
+				</td>
+				<td>
+					<a href="@{Specimens.show(specimen.institute, specimen.collection, specimen.code)}">${specimen.code}</a>
+				</td>
+				
+			</tr>
+			#{/list}
+			
+			</tbody>
+		
+		</table>	
+		#{/if}
+		#{else}
+			<p>&{'no.specimen'}</p>
+		#{/else}
+	</div>
+
+</div>
+
+
+
+

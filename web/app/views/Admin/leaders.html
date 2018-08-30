@@ -1,0 +1,44 @@
+#{extends 'main.html' /}
+#{set title: 'Admin contenus' + herbonautes.titleSep + herbonautes.title /}
+
+<div class="row">
+	<div class="span10">
+
+		<h2>&{'admin.chief'}</h2>
+				
+		<table class="table">
+			<thead>
+				<th>&{'admin.login'}</th>
+				<th>&{'admin.name'}</th>
+				<th></th>
+			</thead>
+			<tbody>
+				#{list items: leaders, as: 'leader'}
+				<tr>
+					<td>${leader.login}</td>
+					<td>${leader.fullName}</td>
+					<td>
+						<a href="@{Admin.removeLeader(leader.login)}">Supprimer</a>
+					</td>
+				</tr>
+				#{/list}
+			</tbody>
+		</table>
+		
+		
+		<h3>&{'admin.add.chief'}</h3>
+		<br/>
+		#{form 
+			action: @Admin.addLeader(),
+			method: 'POST',
+			class: 'form-horizontal'}
+			
+			<input type="text" name="login" placeholder="login" />
+			<input type="submit" class="btn" value="&{'btn.add'}" />
+			
+		#{/form}
+	
+	</div>
+	<div class="span2">
+	</div>
+</div>

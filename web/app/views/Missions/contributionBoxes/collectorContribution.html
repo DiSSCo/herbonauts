@@ -1,0 +1,148 @@
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Contribution Botanistes
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+
+#{contributionBox type: 'COLLECTOR', mission: mission}
+
+	<div class="contribution-values">
+		<i class="icon-leaf"></i> <span data-value="collector"></span>
+		<span data-value="otherCollectors"></span>
+		<span data-value="collectorNotPresent"></span>
+		<span data-value="collectorNotSure"></span>
+	</div>
+		
+	#{form 
+		action: @Contributions.addCollector(specimenId: specimen.id), 
+		method: 'POST',
+		id: 'collector-form',
+		class: 'contribution-form' }
+
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+		
+		<div class="collector-select">
+			
+			<h5><i class="icon-leaf"></i> &{'collected.by'} : </h5>
+			
+			<div id="collector-select">
+				
+				<input type="hidden" name="contribution.collector.id" id="collector-id" />
+				<input id="collector-field"  maxlength="255" name="contribution.collector.name" type="text" placeholder="&{'collector.placeholder'}" />
+				
+				
+				<div id="other-collectors">
+				</div>
+				
+				<a href="#" class="btn btn-small" onclick="addOtherCollectorField()"><i class="icon-plus-sign"></i> &{'btn.add.collector'}</a>
+				<br/>
+				<br/>
+				
+				<script>
+				
+				$(function() {
+					
+					$('#collector-form').bind('clean', function() {
+						if ($('#collector-field').val() == '&{'collector.placeholder'}') {
+							$('#collector-id').val('');
+							$('#collector-field').val('');
+						}
+					});
+				});
+				
+				var nextCollectorIndex = 0;
+				
+				function addOtherCollectorField() {
+					
+					var idInput = 
+						$('<input/>')
+							.attr('type', 'hidden')
+							.attr('name', 'contribution.otherCollectors[' + nextCollectorIndex + '].id')
+							.attr('id', 'otherCollector-id-' + nextCollectorIndex);
+					
+					var fieldInput = 
+						$('<input/>')
+							.attr('type', 'text')
+							.attr('maxLength', '255')
+							.attr('name', 'contribution.otherCollectors[' + nextCollectorIndex + '].name')
+							.attr('id', 'otherCollector-field-' + nextCollectorIndex);
+							
+					var removeBtn = 
+						$('<a/>')
+							.attr('href', '#')
+							.attr('id', 'otherCollector-remove-' + nextCollectorIndex)
+							.html('<i class="icon-minus-sign"></i>');
+					
+					$('#other-collectors')
+						.append(idInput) 
+						.append(fieldInput)
+						.append(removeBtn);
+					
+					initAutocompleteOn(fieldInput, idInput);
+					
+					var removeId = nextCollectorIndex;
+					$('#otherCollector-remove-' + nextCollectorIndex).click(function() {
+						$('#otherCollector-id-' + removeId).remove();
+						$('#otherCollector-field-' + removeId).remove();
+						$(this).remove();
+						return false;
+					});
+					
+					fieldInput.focus();
+					
+					nextCollectorIndex++;
+					
+				}
+				
+				function initAutocompleteOn(nameField, idField) {
+					$(nameField).autocomplete({
+						source: '@{References.searchBotanists()}',
+						minLength: 0,
+						select: function(event, ui) {
+							$(idField).val(ui.item.id);
+							$(nameField).val(ui.item.name);
+							return false;
+						}
+						
+					}).data('autocomplete')._renderItem = function(ul, item) {
+						return $('<li></li>')
+						.data('item.autocomplete', item)
+						.append('<a>' + item.name + '</a>')
+						.appendTo(ul);
+					}
+					
+					$(nameField).bind('change keyup', function(e) { 
+						if(e.keyCode != 13) {
+							$(idField).val('') 
+						}
+					});
+				}
+				
+				$(function() {
+			
+					initAutocompleteOn('#collector-field', '#collector-id');
+					
+				});
+				</script>
+				
+				<label>
+					<input type="checkbox" name="contribution.collectorNotSure" value="true" /> &{'not.sure'}
+				</label>
+			</div>
+			
+			<label>
+				<input type="checkbox" value="true" data-oncheck-hide="#collector-select" name="contribution.collectorNotPresent" />
+				&{'not.present'}
+			</label>
+			
+		</div>
+		
+		<div class="buttons">
+			<input type="submit" id="collector-validate" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+		
+	#{/form}
+	
+#{/contributionBox}

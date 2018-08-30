@@ -1,0 +1,387 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# CAS
+GET     /                                               module:cas
+
+# General
+GET     /                                       		Application.index
+GET     /home                                   		Application.index
+GET     /stats                                   		Application.stats
+GET     /about                                       	Application.about
+GET     /auth                                     		Application.auth
+POST	/fb												Application.fbauth
+POST	/send											Application.sendPassword
+GET		/profilemenu									Application.profileMenu
+GET		/missionsmenu									Application.missionsMenu
+GET		/levelInfos										Users.levelInfos
+
+
+# Stats
+GET     /stats/global/countries                         Stats.totalDistCountries
+GET     /stats/global/regions1                          Stats.totalDistRegions1
+GET     /stats/global/botanists                         Stats.totalDistBotanists
+GET     /stats/global/contributionsByDay                Stats.totalContributionByDay
+GET     /stats/global/topContributors                   Stats.topContributors
+GET     /stats/global/lastRegistered                    Stats.lastRegisteredUsers
+GET     /stats/global/specimenDetails                   Stats.specimenDetails
+GET     /stats/global/topTagUsage                       Stats.topTagUsage
+GET     /stats/global/lastTagUsage                      Stats.lastTagUsage
+GET     /stats/global/topInstitution                    Stats.topInstitution
+GET     /stats/global/centuries                         Stats.centuryDist
+
+
+
+# Missions
+GET		/missions/new									Missions.blank
+GET		/missions/propositionsList                      Missions.propositionsList
+GET		/missions/propositionForm                       Missions.missionPropositionForm
+GET		/missions/propositionForm/{id}                  Missions.missionPropositionForm
+POST    /missions/propositionCartInit                   Missions.propositionCartInit
+POST    /missions/propositionCartValidation             Missions.propositionCartValidation
+GET		/missions/propositionValidationForm/{id}        Missions.displayPropositionValidationForm
+POST	/missions/propositionProcess                    Missions.propose
+POST    /missions/validateProposition                   Missions.validateProposition
+POST    /missions/reject                                Missions.reject
+POST	/missions										Missions.create
+GET		/missions/{id}									Missions.show
+GET		/missions/{id}/contributions					Missions.specimenWithContributionReports
+GET		/missions/{id}/contributions/geos				Missions.geolocalisationContributions
+GET		/missions/{id}/contributions/dates				Missions.dateContributions
+GET		/missions/{id}/contributions/dates/min			Missions.minDateContributions
+GET		/missions/{id}/contributions/ratings			Missions.contributionRatings
+GET		/missions/{id}/specimens/count					Missions.specimensCount
+GET		/missions/{id}/specimens/tiledCount				Missions.tiledSpecimensCount
+GET		/missions/{id}/membership						Missions.joinMission
+POST	/missions/{id}/membersOut						Missions.removeMember
+POST	/missions/{id}/announcements					Missions.addAnnouncement
+POST	/missions/{id}/saveAnnouncement					Missions.saveAnnouncement
+GET		/missions/announcements/delete					Missions.deleteAnnouncement
+GET		/missions/{id}/settings							Missions.settings
+POST	/missions/{id}/settings							Missions.saveSettings
+POST	/missions/{id}/presentation						Missions.savePresentation
+POST	/missions/{id}/report							Missions.saveReport
+POST	/missions/{id}/closing							Missions.closeMission
+POST	/missions/{id}/reopening						Missions.reopenMission
+GET		/missions/{id}/allMembers						Missions.allMembers
+POST	/missions/{id}/banMember						Missions.banMember
+GET		/missions										Missions.list(format:'html')
+GET		/missions.{format}								Missions.list
+
+GET     /missions/{id}/stats/contributions              Missions.statsContributionsByQuestion
+GET     /missions/{id}/stats/contributionsByUser        Missions.statsContributionsByUser
+GET     /missions/{id}/stats/contributionsByUserDetails Missions.statsContributionsByUserDetails
+
+GET     /missions/{id}/stats/values/{type}              Missions.statsValuesByType
+GET     /missions/{id}/stats/daily                      Missions.statsDaily
+
+
+GET      /missions/{id}/questions                       Missions.allQuestions
+GET      /missions/{id}/questions/reload                Missions.reloadQuestionsConfiguration
+POST     /missions/{id}/questions                       Missions.saveQuestions
+POST     /missions/{id}/settings/reset                  Missions.resetContributions
+
+
+GET     /missions/{id}/stats.json                        Missions.lastSpecimenIdsForStats
+GET     /missions/{id}/export                           Missions.exportValidAnswers
+GET     /missions/{id}/exportall                       Missions.exportUsersAnswers
+
+#
+# API WeDigBio
+#
+GET     /missions/byId/json/{missionId}                 WedigbioController.getMissionById
+GET     /missions/all/json				                WedigbioController.getAllMissions
+GET		/contributions/last/rss							WedigbioController.lastWeekRss
+GET		/contributions/last/days/{nb}/rss				WedigbioController.lastDaysRss
+GET		/contributions/interval/json					WedigbioController.IntervalJson
+
+
+#
+# Spécimens
+# ~~~~~~~~
+#
+GET		/specimens/{id}/contributions/mine				Contributions.contributionsForSpecimen
+GET		/specimens/{id}/contributions/reports			Contributions.contributionReportsForSpecimen
+GET		/specimens/{id}/contributions/type/{type}		Contributions.contributionsTypeForSpecimen
+GET		/specimens/{id}/contributions/geos				Specimens.geolocalisationContributions
+GET		/specimens/{institute}/{collection}/{code}		Specimens.show
+POST	/specimens/{id}/displayed						Specimens.markDisplayed
+GET		/specimens/{id}/bubble							Specimens.bubble
+GET		/specimens/bubbles							Specimens.bubbles
+GET		/specimens										Specimens.list
+
+
+# Admin
+GET		/admin/users									Admin.adminUsers
+POST	/admin/users/{id}								Admin.saveUser
+GET		/admin/search/users							    Admin.findUsers
+GET		/admin/leaders									Admin.leaders
+POST	/admin/leaders									Admin.addLeader
+GET		/admin/notleader								Admin.removeLeader
+POST	/admin/missionsSort								Admin.saveMissionsSort
+
+#
+# Contributions
+# ~~~~~~~~~~~~~
+#
+#GET		/missions/{missionId}/specimens/random			                            Missions.randomContributionBoard
+GET     /missions/{missionId}/specimens/random                                      ContributionBoard.randomBoard
+GET		/v1/missions/{missionId}/specimens/{specimenId}	                            Missions.contributionBoard
+GET     /missions/{missionId}/specimens/random.json                                 ContributionBoard.getRandomSpecimen
+GET     /missions/{missionId}/specimens/{specimenId}.json	                        ContributionBoard.getSpecimen
+POST    /missions/{missionId}/specimens/{specimenId}/markseen                       ContributionBoard.markSeen
+GET     /missions/{missionId}/specimens/{specimenId}	                            ContributionBoard.showBoard
+GET     /missions/{missionId}/specimens/{specimenId}/answers/user	                ContributionBoard.getUserAnswers
+GET     /missions/{missionId}/specimens/{specimenId}/answers/stats	                ContributionBoard.getStats
+
+GET     /missions/{missionId}/specimens/{specimenId}/answers/valid	                ContributionBoard.getValidAnswers
+POST    /missions/{missionId}/specimens/{specimenId}/answers/{questionId}	        ContributionBoard.submitAnswer
+POST    /missions/{missionId}/specimens/{specimenId}/answers/{questionId}/keep	        ContributionBoard.keepAnswer
+GET     /missions/{missionId}/specimens/{specimenId}/answers/{questionId}	        ContributionBoard.answerReport
+POST    /missions/{missionId}/specimens/{specimenId}/answers/{questionId}/cancel	ContributionBoard.cancelAnswer
+GET		/missions/{missionId}/specimens/{specimenId}/mark                           Missions.markCurrent
+POST	/specimens/{specimenId}/contributions/{type}	                            Contributions.add{type}
+GET		/contributions/delete							                            Contributions.delete
+POST	/contributions/validate							                            Contributions.validate
+POST	/contributions/keep								                            Contributions.keep
+GET		/contributions/{id}/specimen					                            Contributions.specimenForContribution
+
+
+# Users
+GET		/users/{login}									Users.show
+GET		/users/{login}/missions.json					Users.showMissions
+POST	/users/{login}/image							Users.saveImage
+GET		/users/{login}/missions							Users.missions
+GET		/users/{login}/settings							Users.settings
+POST	/users/{login}/settings							Users.saveSettings
+GET		/users/{login}/password							Users.password
+POST	/users/{login}/password							Users.changePassword
+GET		/users/{login}/lastContributions				Users.lastContributions
+GET		/users/{userId}/contributions					Users.specimenWithContributions
+GET		/users/{login}/contributions/geos				Users.geolocalisationContributions
+GET		/users/{login}/contributions/date				Users.dateContributions
+POST    /users/{login}/location                         Users.saveLocation
+GET		/users/{login}/delete							Users.deleteAccount
+POST	/users/{login}/delete							Users.confirmDeleteAccount
+
+# Alert
+GET		/alerts/{id}/read								Users.markAlertAsRead
+
+# iivities
+GET		/activities										Activities.list
+
+# Botanists
+GET		/botanists/admin								Botanists.admin
+POST	/botanists/load									Botanists.load
+GET		/botanists/{id}									Botanists.show
+POST	/botanists/{id}/image							Botanists.saveImage
+GET		/botanists/{id}/contributions/dates				Botanists.dateContributions
+GET		/botanists/{id}/contributions/dates/min			Botanists.minDateContributions
+#GET		/botanists/{id}/contributions/geos				Botanists.geolocalisationContributions
+GET     /botanists/{id}/geos                            Botanists.specimensGeolocalisationForBotanist
+#GET		/botanists/{id}/specimens						Botanists.specimensWithBotanistsReports
+GET     /botanists/{id}/specimens                       Botanists.specimensForBotanist
+
+# Ignore favicon requests
+# GET     /favicon.ico                          		  	404
+
+# Images
+GET		/users/{login}/nopic.jpg						Users.noimage
+GET		/users/{login}/{imageId}.jpg					Users.image
+GET		/img/users/{userId}.jpg					        Users.imageByUserId
+GET		/botanists/{id}/picture.jpg						Botanists.image
+GET		/missions/{id}/{imageId}_b.jpg					Missions.bigImage
+GET		/missions/{id}/{imageId}.jpg					Missions.image
+GET     /logo                                           Application.getLogo
+
+
+POST 	/login											Application.login
+POST 	/signup											Application.signup
+GET 	/hlogouth									    Application.logout
+
+GET		/references/regions1							References.regions1ByCountry
+GET		/references/regions2							References.regions2ByRegion1
+GET		/references/botanists							References.searchBotanists
+
+GET		/search											Search.search
+
+# Comments
+GET		/missions/{id}/comments							Comments.lastMissionComments
+GET		/missions/{id}/comments/before					Comments.missionCommentsCount
+POST	/missions/{id}/comments							Comments.addMissionComment
+GET		/specimens/{id}/comments						Comments.lastSpecimenComments
+POST	/specimens/{id}/comments						Comments.addSpecimenComment
+
+# Content
+GET		/contents										Contents.list
+GET		/contents/images/{id}							Contents.image
+GET		/contents/new									Contents.blank
+GET		/contents/{name}								Contents.show
+GET		/contents/{name}/edit							Contents.edit
+POST	/contents/{name}/edit							Contents.save
+POST	/contents/										Contents.create
+
+
+# Links
+GET		/links											Links.list
+GET		/links/new										Links.blank
+GET		/links/{id}										Links.show
+GET		/links/{id}/edit								Links.edit
+POST	/links/{id}/edit								Links.save
+GET		/links/{id}/delete								Links.delete
+POST	/links/											Links.create
+
+# Messages
+GET		/messages/to/{login}							Messages.blank
+POST	/messages/to/{to}								Messages.send
+
+
+# Quiz
+GET		/quiz/new										Quizzes.blankQuiz
+POST	/quiz											Quizzes.createQuiz
+GET		/quiz/lvl{level}								Quizzes.forLevel					
+GET		/quiz/{name}/questions/new						Quizzes.blankQuestion
+POST	/quiz/{name}/questions							Quizzes.createQuestion
+GET		/questions/{id}/img								Quizzes.image
+GET		/quiz/{name}/questions/{id}/edit				Quizzes.editQuestion
+POST	/quiz/{name}/questions/{id}/edit				Quizzes.saveQuestion
+POST	/quiz/{name}/questions/delete					Quizzes.deleteQuestion
+GET		/quiz/{name}									Quizzes.show
+GET		/quiz/{name}/edit								Quizzes.edit
+POST	/quiz/{name}/edit								Quizzes.saveQuiz
+GET		/quiz/{name}/start								Quizzes.start
+GET		/quiz/{name}/end								Quizzes.end
+GET		/quiz/{name}/q{number}							Quizzes.showQuestion
+POST	/quiz/{name}/q{number}							Quizzes.validateQuestion
+POST	/quiz/{name}/sortQuestions						Quizzes.saveSort
+GET		/quiz											Quizzes.list
+
+
+
+# Images
+POST	/contents/images/upload							Contents.imagesUpload
+GET		/contents/images/browse							Contents.imagesBrowse
+
+# Admin
+GET		/admin/missions/list							Admin.missionsList
+
+# Discussions
+GET     /discussions/show/{id}                                              DiscussionController.show
+GET     /discussions/all                                                    DiscussionController.showAll
+GET     /modules/discussionModule/getServerTime                                 DiscussionController.getServerTime
+GET     /modules/discussionModule/getDiscussionsCategories                      DiscussionController.getDiscussionsCategories
+POST	/modules/discussionModule/createDiscussion                              DiscussionController.createDiscussion
+GET 	/modules/discussionModule/getDiscussionsFilteredByCategories            DiscussionController.getDiscussionsFilteredByCategories
+GET 	/modules/discussionModule/getDiscussionById/{id}                        DiscussionController.getDiscussionById
+GET 	/modules/discussionModule/getDiscussionsCount                           DiscussionController.getDiscussionsCount
+GET 	/modules/discussionModule/getLastMessages                               DiscussionController.getLastMessages
+POST  	/modules/discussionModule/postMessage                                   DiscussionController.postMessage
+GET  	/modules/discussionModule/getNewMessages                                DiscussionController.getNewMessages
+GET  	/modules/discussionModule/getNewMessagesByDiscussionId                  DiscussionController.getNewMessagesByDiscussionId
+GET		/modules/discussionModule/solveDiscussion                               DiscussionController.solveDiscussion
+GET		/modules/discussionModule/deleteMessage                                 DiscussionController.deleteMessage
+POST    /modules/discussionModule/saveTags                                      DiscussionController.saveDiscussionTags
+
+# DiscussionsCategories
+GET     /categories/manage                                                      CategoriesController.manage
+GET     /categories/getAllCategories                                            CategoriesController.getAll
+GET     /categories/createCategory/{label}                                      CategoriesController.createCategory
+GET     /categories/deleteCategory/{id}                                         CategoriesController.deleteCategory
+
+#Tags
+GET     /tags/show/{tagLabel}                                                                       TagController.show
+GET     /tags/getAllTags                                                                            TagController.getAllTags
+GET     /modules/tagModule/subscribeTag/{tagLabel}                                                      TagController.subscribeTag
+GET     /modules/tagModule/unsubscribeTag/{tagLabel}                                                    TagController.unsubscribeTag
+GET     /modules/tagModule/getAllSubscribedTags                                                         TagController.getAllSubscribedTags
+GET     /modules/tagModule/getSpecimensByTag/{tagLabel}                                                 TagController.getSpecimensByTag
+POST    /modules/tagModule/saveTags                                                                     TagController.saveElementTags
+GET     /modules/tagModule/loadTagsByElement/{tagLinkType}/{targetId}                                   TagController.loadTagsByElement
+GET     /modules/tagModule/deleteTagLink/{tagId}/{tagLinkType}/{targetId}/{principalTagLabel}           TagController.deleteElementTags
+
+# V2 Gestion
+# GET     /references                                     References.showAllReferences
+# GET     /references/{referenceName}                     References.allRecords
+GET     /admin/references                               References.adminIndex
+GET     /admin/references/{referenceId}                 References.adminEdit
+GET     /modules/admin/references                           References.allReferences
+POST    /modules/admin/references                           References.saveReference
+POST    /modules/admin/references/update                    References.updateReference
+GET     /modules/admin/references/{referenceId}             References.getReference
+GET     /modules/admin/references/{referenceId}/questions   References.questionsUsingReference
+GET     /modules/admin/references/{referenceId}/records     References.allRecords
+GET     /modules/admin/references/{referenceId}/pagerecords     References.getRecords
+POST    /modules/admin/references/{referenceId}/records     References.saveRecord
+POST    /modules/admin/references/{referenceId}/recordsTrash     References.deleteRecord
+POST    /modules/admin/references/{referenceId}/delete     References.deleteReference
+POST    /modules/admin/references/{referenceId}/search      References.searchRecord
+
+GET     /admin/questions                                Questions.adminIndex
+GET     /admin/questions/templates                      Questions.allTemplates
+POST    /admin/questions/templates                      Questions.saveTemplate
+POST    /admin/questions/templates/sort                 Questions.saveTemplateOrder
+POST    /admin/questions/templates/delete                 Questions.deleteTemplate
+
+
+GET		/missions/{id}/settings/cart/edit				Missions.settingsCart
+GET     /missions/{id}/settings/cart/items              Missions.getCartItems
+POST    /missions/{id}/settings/cart/items				Missions.saveCartItem
+GET     /missions/{id}/settings/cart/loading	        Missions.isLoadingCart
+POST    /missions/{id}/settings/cart/sync	            Missions.syncCart
+POST    /missions/{id}/settings/cart/cancel	            Missions.cancelModifications
+POST    /missions/{id}/settings/existing	            Missions.existingSpecimens
+POST    /missions/{id}/settings/cart/uploadFile		    Missions.cartUploadFile
+POST    /missions/{id}/settings/recolnat/transfer       Missions.startRecolnatTransfer
+GET     /missions/{id}/settings/recolnat/report         Missions.recolnatTransferReport
+
+
+
+# POST	/missions/{id}/settings/cart				    Missions.settingsCartSave
+# GET	/missions/{id}/settings/cart				    Missions.settingsCart
+# GET	/missions/{id}/settings/cart/loading	        Missions.isLoadingCart
+# POST	/missions/{id}/settings/cart/load				Missions.settingsCartValidate
+# POST  /missions/{id}/settings/cart/remove             Missions.settingsCartRemove
+
+GET     /modules/quiz                                       Quizzes.allQuizzes
+
+GET     /modules/user/current                               Application.currentUser
+GET     /modules/user/current/passedquiz                    Application.currentUserPassedQuiz
+
+# Elastic search
+POST	/elastic/{<.*>path}                              ElasticController.call
+GET 	/elastic/{<.*>path}                              ElasticController.call
+OPTIONS	/elastic/{<.*>path}                              ElasticController.checkPreFlight
+
+#API
+GET     /api/getSpecimenDatas/{code}                                ApiController.getSpecimenDatas
+GET     /api/getDiscussionsBySpecimenCode/{code}                    ApiController.getDiscussionsBySpecimenCode
+GET     /api/getMessagesBySpecimenCode/{code}                       ApiController.getMessagesBySpecimenCode
+GET     /api/getTagsBySpecimenCode/{code}                           ApiController.getTagsBySpecimenCode
+GET     /api/getAllMissions                                         ApiController.getAllMissions
+GET     /api/getMissionById/{missionId}                             ApiController.getMissionById
+GET     /api/getSpecimensByMissionId/{missionId}                    ApiController.getSpecimensByMissionId
+GET     /api/getDiscussionsByMissionId/{missionId}                  ApiController.getDiscussionsByMissionId
+GET     /api/getMessagesByMissionId/{missionId}                     ApiController.getMessagesByMissionId
+GET     /api/getTagsByMissionId/{missionId}                         ApiController.getTagsByMissionId
+
+GET		/api/doc						                            ApiController.redirectDoc
+GET		/api/doc/						                            ApiController.redirectDoc2
+GET		/api/doc/						                            staticDir:public/apidoc
+
+# Invitation
+GET     /invitation/form                                    Invitation.form
+POST    /invitation/send                                    Invitation.send
+GET     /invitation/{token}                                 Invitation.validate
+GET     /invitation/{token}/signin                          Invitation.sign
+
+# Confirmation email
+GET     /email/{token}                                      Confirmation.validate
+
+# Map static resources from the /app/public folder to the /public path
+GET     /                              		  			staticDir:public
+
+
+# Catch all
+#*       /{controller}/{action}                 		{controller}.{action}
+

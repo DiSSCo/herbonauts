@@ -1,0 +1,126 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+#{set 'moreScripts'}
+<script type="text/javascript">
+
+var choiceIndex = 0;
+
+function addPropField() {
+	
+	
+	var fieldInput = 
+		$('<input/>')
+			.attr('type', 'text')
+			.attr('name', 'choices[' + choiceIndex + '].text')
+			.attr('id', 'choice-text-' + choiceIndex);
+		
+	
+	var checkBox = 
+		$('<input/>')
+			.attr('type', 'checkbox')
+			.attr('value', 'true')
+			.attr('name', 'choices[' + choiceIndex + '].text')
+			.attr('id', 'choice-answer-' + choiceIndex);
+	
+	var removeBtn = 
+		$('<a/>')
+			.attr('href', '#')
+			.attr('id', 'choice-remove-' + choiceIndex)
+			.html('<i class="icon-minus-sign"></i>');
+		
+	var row = $('<tr>')
+		.append($('<td/>').html(fieldInput))
+		.append($('<td/>').html(checkBox))
+		.append($('<td/>').html(removeBtn));
+	
+	$('#choices-table')
+		.append(row);
+	
+	var removeId = choiceIndex;
+	$('#choice-remove-' + removeId).click(function() {
+		removeChoice(removeId);
+		return false;
+	});
+	
+	fieldInput.focus();
+	
+	choiceIndex++;
+		
+}
+
+function removeChoice(id) {
+	$('#choice-id-' + id).remove();
+	$('#choice-text-' + id).remove();
+	$('#choice-answer-' + id).remove();
+	$('#choice-remove-' + id).remove();
+	return false;
+}
+
+</script>
+
+#{/set}
+
+<h2><small>&{'quiz.quiz'}</small> ${quiz.name} : <small>&{'quiz.question.edit'}</small></h2>
+
+#{form 
+	action: @Quizzes.saveQuestion(quiz.name, question.id), 
+	method: 'POST', 
+	enctype: 'multipart/form-data', 
+	class: 'form-horizontal'}
+
+<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.image'}</label>
+		<div class="controls">
+ 			<input type="file" name="image" ><br>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.name'}</label>
+		<div class="controls">
+ 			<input type="text" class="input-xlarge" name="question.text" value="${question.text}"/>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.answer'}</label>
+		<div class="controls">
+ 			<textarea name="question.answerDetails" maxlength="2000">${question.answerDetails}</textarea>
+		</div>
+	</div>
+	
+	<br>
+
+
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.proposition'}</label>
+		<div class="controls">
+ 			<table id="choices-table">
+	 			#{list items: question.choices, as: 'choice'}
+				<tr>
+					<td>
+						<input type="hidden" id="choice-id-${choice_index}" value="${choice.id}" name="choices[${choice_index}].id" />
+						<input type="text" id="choice-text-${choice_index}" name="choices[${choice_index}].text" value="${choice.text}" >
+					</td>
+					<td><input type="checkbox" id="choice-answer-${choice_index}"  name="choices[${choice_index}].answer" value="true" ${choice.answer ? 'checked' : ''} /></td>
+					<td><a href="#" id="choice-remove-${choice_index}" onclick="removeChoice(${choice_index})"><i class="icon-minus-sign"></i></a></td>
+				</tr>
+				#{/list}
+				<script>choiceIndex = ${(question.choices != null ? question.choices.size() : 0) + 2}</script>
+			</table>
+	
+			<a href="javascript:addPropField()" class="btn btn-small">&{'quiz.question.proposition.add'}</a>
+		</div>
+	</div>
+	
+	<table id="choices-table">
+		</table>
+	
+	<br><br>
+
+	<a href="@{Quizzes.edit(quiz.name)}" class="btn">&{'quiz.question.cancel'}</a> 
+	<input class="btn btn-success" type="submit" value="&{'quiz.question.save'}" />
+
+
+#{/form}

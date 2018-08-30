@@ -1,0 +1,31 @@
+#{extends 'main.html' /}
+#{set title: herbonautes.title  /}
+
+<div class="row">
+	<div class="span12">
+	
+
+		<h2><small>&{'message.new'}</small></h2>
+		
+		#{form action: @Messages.send(to: to.login), method: 'POST'}
+		
+			<b>&{'message.to'} : ${to.login}</b>
+			<input type="hidden" name="login" value="${to.login}" />
+			
+			#{field 'content.text'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<textarea name="message" style="width:100%; height: 100px"></textarea>
+				</div>
+			</div>
+			#{/field}	
+		
+			<input type="submit" value="&{'btn.send'}" class="btn btn-success" />
+			
+		#{/form}
+	
+	</div>
+	<div class="span2">
+	</div>
+</div>

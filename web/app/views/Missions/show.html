@@ -1,0 +1,462 @@
+#{extends 'main.html' /}
+#{set title: mission.title + herbonautes.titleSep + herbonautes.title  /}
+
+#{set 'moreStyles'}
+<link rel="stylesheet" media="screen" href="@{'/public/css/nv.d3.css'}">
+#{/set}
+
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                           Infos générales
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+
+<div ng-controller="MissionCtrl" ng-init="init(${mission.id})">
+
+    <div class="row">
+    <div class="span3 avatar">
+        #{if mission.hasImage}
+        <img alt="avatar" class="avatar bordered"
+        src="@{Missions.image(id: mission.id, imageId: mission.imageId)}" />
+        #{/if}
+    </div>
+    <div class="span9 _mission-description">
+
+        <div class="row">
+            <div class="span9">
+
+
+
+            #{if isMember}
+                <a data-toggle="modal" href="#mission-quit-modal" style="width: 180px;margin-left:1em" class="btn btn-dual pull-right">
+                    <span class="btn-out"><i class="icon-check"></i> &{'mission.already.member'}</span>
+                    <span class="btn-over hide"><i class="icon-trash"></i> &{'mission.quit.mission'}</span>
+                </a>
+                &nbsp;
+            #{/if}
+
+
+
+            #{if isAdmin || isTeam || isLeader && (mission.isLeader(connectedLogin) || (mission.validator && mission.validator.id == connectedId))}
+                <a href="@{Missions.settings(mission.id)}" style="margin-left: 10px"
+                class="btn btn-info pull-right"><i class="icon-pencil icon-white"></i> &{'mission.show.btn.edit'}</a>
+            #{/if}
+
+
+
+                <h2>${mission.title}</h2>
+
+                #{if mission.closed}
+                    <span class="label label-important">&{'closed.mission'}</span>
+                #{/if}
+                #{if isLeader && mission.isLeader(connectedLogin)}
+                    #{if mission.published}
+                        <span class="label label-success">&{'mission.published'}</span>
+                    #{/if}
+                    #{else}
+                        <span class="label label-warning">&{'mission.not.published'}</span>
+                    #{/else}
+                #{/if}
+            </div>
+        </div>
+
+
+    <div class="row">
+    <div class="span5">
+    <p>${mission.shortDescription?.raw()}</p>
+
+    <dl class="clearfix">
+
+        <dt>&{'mission.show.specimens.count'}</dt>
+
+        #{set specimenCount: mission.getSpecimensCount() /}
+
+        <dd><span id="specimens-count" class="count"
+            data-refresh-url="@{Missions.specimensCount(mission.id)}">${specimenCount}</span>
+        #{if isLeader && mission.isLeader(connectedLogin) && isLoading} <span
+            id="loading-specimens-badge" class="label label-warning">En
+        cours de chargement...</span> <span id="loaded-specimens-badge"
+            class="label label-success hide">Chargement termin��</span> <script>
+                    refresh('#specimens-count', function() {
+                        $('#loading-specimens-badge').hide();
+                        $('#loaded-specimens-badge').show();
+                    });
+                </script> #{/if}</dd>
+
+
+
+        <dt>&{'mission.show.leader'}</dt>
+        <dd><a href="@{Users.show(mission.leader?.login)}">${mission.leader?.login}</a></dd>
+
+        <dt>&{'mission.show.opening.date'}</dt>
+        <dd>${mission.openingDate?.format('dd MMMM yyyy')}</dd>
+
+    </dl>
+
+    #{if !mission.closed}
+        #{if !isMember && connectedLogin}
+            #{form method: 'GET', action: @Missions.joinMission(mission.id) }
+                <button type="submit" class="btn btn-success btn-join"><i class="icon-check icon-white"></i> &{mission.isOpened() ? 'mission.show.btn.join' :  'mission.show.btn.join.soon'}</button>
+            #{/form}
+        #{/if}
+        #{else}
+            *{<span class="">
+                &{'connect.to.join'}
+            </span>}*
+        #{/else}
+    #{/if}
+
+    #{if !mission.closed && mission.isOpened()}
+
+        *{
+        <a href="@{Missions.randomContributionBoard(mission.id)}" class="btn btn-success">&{'btn.contribute'}</a>
+        }*
+
+        <a href="@{ContributionBoard.randomBoard(mission.id)}" class="btn btn-success">&{'btn.contribute'}</a>
+
+        *{set testRandom: mission.getRandomSpecimenForUser(connectedLogin)
+
+
+        #{set randomSpecimen: mission.getRandomSpecimen() /}
+        #{if randomSpecimen}
+            <a href="@{Missions.contributionBoard(mission.id, mission.getRandomSpecimen().id)}" class="btn btn-success">&{'btn.contribute'}</a>
+        #{/if}
+        #{else}
+            <b>&{'no.specimen.to.contribute'}</b>
+        #{/else}
+        }*
+
+    #{/if}
+
+
+    #{if mission.closed}
+        <b>&{'closed.mission'}</b>
+    #{/if}
+    #{if !mission.isOpened()}
+        #{if isMember}
+            <b>&{'not.opened.yet.member'}</b>
+        #{/if}
+        #{else}
+            <b>&{'not.opened.yet.mission'}</b>
+        #{/else}
+    #{/if}
+
+    </div>
+
+    <div class="span4">#{if announcements}
+    <div class="alert-box announcements">#{if announcements.size() > 1}
+    <div class="pull-right"><a href="#" class="prev"><i
+        class="icon-chevron-left"></i></a> <a href="#" class="next"><i
+        class="icon-chevron-right"></i></a></div>
+    #{/if} #{list items: announcements, as: 'announcement'}
+    <div class="announcement ${announcement_isFirst ? '' : 'hide'}">
+        <em>${announcement.date.format('d MMMM YYYY')}</em>
+        <h4>${announcement.title}</h4>
+        <p>${announcement.text}</p>
+    </div>
+    #{/list}</div>
+    #{/if}</div>
+    </div>
+
+
+    </div>
+    </div>
+
+
+    *{
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Stats
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }*
+
+    <div class="row">
+        <div class="span12 page-stats">
+
+            <div class="row">
+
+                <div class="span6">
+                    *{<h4 class="first">Stats</h4>}*
+
+                    <div class="row">
+                        <div class="span2">
+                            <div class="first stat">
+                            #{set membersCount:
+                            mission.getMembersCount() /} <span class="count">${membersCount}</span>
+                            <span class="item">&{membersCount <= 1 ? 'member' : 'members'}</span>
+                            </div>
+                        </div>
+                <!--		<div class="span2">
+                            <div class="stat">
+                                #{set contributionsCount: mission.getContributionsCount() /}
+                                <span class="count">${contributionsCount}</span>
+                                <span class="item">&{contributionsCount <= 1 ? 'contribution' : 'contributions'}</span>
+                            </div>
+                        </div> -->
+
+                        <div class="span2">
+                            <div class="stat">
+                                #{set displayedSpecimensCount: mission.getDisplayedSpecimensCount() /}
+                                <span class="count">${displayedSpecimensCount}</span>
+                                <span class="item">&{displayedSpecimensCount <= 1 ? 'displayed.specimen' : 'displayed.specimens'}</span>
+                            </div>
+                        </div>
+
+                        <div class="span2">
+                            <div class="stat">
+                                #{set contributionsCompletedCount: mission.getCompletedSpecimensCount() /}
+                                <span class="count">${contributionsCompletedCount}</span>
+                                <span class="item">&{contributionsCompletedCount <= 1 ? 'completed.specimen' : 'completed.specimens'}</span>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+
+            *{
+            <div class="span3">
+                #{set contributionsCount: mission.getContributionsCount() /}
+                <h4>&{'mission.state'}</h4>
+                %{
+                    if (mission.goal > 0) {
+                        goalRatio = mission.getContributionsCount() * 100 / mission.goal;
+                    } else {
+                        goalRatio = 100;
+                    }
+                    if (goalRatio > 100) {
+                        goalRatio = 100;
+                    }
+                }%
+
+                <div class="progress progress-success ${goalRatio >= 100 ? 'progress-success' : ''}">
+                    <div class="bar" style="width: ${goalRatio}%"></div>
+
+                </div>
+                &{'goal'} : <span>${contributionsCount} / ${mission.goal} &{'contributions'}</span>
+            </div>
+            }*
+
+            <div class="span3">
+                #{set contributionsCount: mission.getContributionsCount() /}
+                    <h4>&{'mission.state'}</h4>
+                %{
+                    if (specimenCount > 0) {
+                        goalRatio = contributionsCompletedCount * 100 / specimenCount;
+                    } else {
+                        goalRatio = 0;
+                    }
+                    if (goalRatio > 100) {
+                        goalRatio = 100;
+                    }
+                    }%
+
+                    <div class="progress progress-success ${goalRatio >= 100 ? 'progress-success' : ''}">
+                        <div class="bar" style="width: ${goalRatio}%"></div>
+
+                    </div>
+                &{'goal'} : <span>${contributionsCompletedCount} / ${specimenCount} &{'specimens'}</span>
+                </div>
+
+
+                <div class="span3">
+                <h4>&{'contributors.top'}</h4>
+                <div class="contributor-stat" ng-repeat="user in topContributors" ng-cloak>
+
+
+                    <a ng-if="!user.deleted" ng-href="{{ userProfileUrl(user) }}" >
+
+                        <img class="bordered" ng-src="{{ userPic(user) }}" />
+                        {{ user.deleted ? '' : user.login }}
+
+                    *{contributor.login.length() > 10 ?
+                                contributor.login[0..9] + '...' :
+                                contributor.login}*
+
+                    </a>
+                    <a ng-if="user.deleted" >
+
+                        <img class="bordered" ng-src="{{ userPic(user) }}" />
+
+
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+
+
+    *{
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Tabs
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }*
+
+    <div class="row">
+    <div class="span8">
+
+    <div class="tabbable">
+
+    <ul class="nav nav-tabs">
+        <li><a href="#presentation-tab-pane" id="presentation-tab"
+            data-toggle="tab">&{'tab.presentation'}</a></li>
+        #{if mission.reportPublished}
+        <li><a href="#report-tab-pane" id="report-tab" data-toggle="tab">&{'tab.report'}</a></li>
+        #{/if}
+        <li><a href="#stats-tab-pane" id="stats-tab"
+               data-toggle="tab">&{'tab.stats'}</a></li>
+        <li><a href="#contributions-tab-pane" id="contributions-tab"
+            data-toggle="tab">&{'tab.contributions'}</a></li>
+        <li><a href="#ratings-tab-pane" id="ratings-tab" data-toggle="tab">&{'tab.members'}</a></li>
+
+        *{
+        <li><a href="#timeline-tab-pane" id="timeline-tab"
+            data-toggle="tab">&{'tab.timeline'}</a></li>                   }*
+        <li><a href="#map-tab-pane" id="map-tab" data-toggle="tab">&{'tab.map'}</a></li>
+        <li><a href="#tags-tab-pane" id="tags-tab" data-toggle="tab">&{'tab.tags'} (<span ng-cloak>{{$root.nbTagsTab}}</span>)</a></li>
+        <li><a href="#comments-tab-pane" id="comments-tab"
+                data-toggle="tab">&{'tab.discussions'} (<span ng-cloak>{{$root.nbDiscussionsTab}}</span>)</a></li>
+    </ul>
+
+
+    <div class="tab-content">
+
+    <div class="tab-pane" id="presentation-tab-pane">
+    <p>${mission.presentation?.raw()}</p>
+    </div>
+
+    #{if mission.reportPublished}
+    <div class="tab-pane" id="report-tab-pane">
+    <p>${mission.report?.raw()}</p>
+    </div>
+    #{/if}
+
+    <div class="tab-pane" id="stats-tab-pane">#{include
+    './tabs/stats.html' /}</div>
+
+
+        <div class="tab-pane horizontal_scrollable" id="contributions-tab-pane">#{include
+    './tabs/contributions.html' /}</div>
+
+    <div class="tab-pane horizontal_scrollable" id="ratings-tab-pane">#{include
+    './tabs/ratings.html' /}</div>
+
+    *{
+    <div class="tab-pane" id="timeline-tab-pane">
+    #{timelineTab
+        url: @Missions.dateContributions(mission.id),
+        urlMin: @Missions.minDateContributions(mission.id),
+        tabId: 'timeline-tab' /}
+    </div>
+    }*
+
+    <div class="tab-pane map-container" id="map-tab-pane">#{mapTab
+    url: @Missions.geolocalisationContributions(id: mission.id), tabId:
+    'map-tab' /}</div>
+
+    <div class="tab-pane" id="tags-tab-pane">
+        #{if mission.principalTag}
+            #{elementTags connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, tagLinkType: 'MISSION', targetId: mission.id, principalTagLabel: mission.principalTag.tagLabel}
+            #{/elementTags}
+        #{/if}
+    </div>
+
+    <div class="tab-pane" id="comments-tab-pane">
+        #{if mission.principalTag}
+            #{discussionBox connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, isLeader: isLeader, imageId: connectedImageId, tagType: 'MISSION', tagLabel: mission.principalTag.tagLabel, allowCreation: true, forceDiscussion: forceDiscussion}
+            #{/discussionBox}
+        #{/if}
+    </div>
+
+
+    </div>
+    </div>
+
+    </div>
+
+
+
+    <div class="span4">
+
+    <div id="short-comments-box">
+        <h3>&{'mission.show.last.comments'}</h3>
+
+        #{if mission.principalTag}
+            #{lastMessagesBox connectedLogin: connectedLogin, tagType: 'MISSION', tagLabel: mission.principalTag.tagLabel}
+            #{/lastMessagesBox}
+        #{/if}
+
+    </div>
+
+    <div id="activity-box">
+    <h3>&{'activity'}</h3>
+
+    #{activitiesBox id:'mission', filter: 'view=mission&id=' + mission.id /}
+
+    <script>
+                $(function() {
+                    $('#activity-box .activities').paginate();
+                })
+                </script>
+    </div>
+    </div>
+
+    </div>
+
+
+
+#{if isMember} #{include './modals/quitMission.html' /} #{/if}
+
+</div>
+
+#{set 'moreScripts'}
+    <script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+#{/set}
+
+<script type="text/javascript">
+
+// Positionnement sur l'onglet par d��faut
+$(function() {
+	
+	var initialized = {
+		ratings: false
+	}
+
+
+    $('#contributions-tab').on('shown', function() {
+
+	})
+
+	
+	$('#ratings-tab').on('shown', function() {
+		if(!initialized.ratings) {
+			initialized.ratings = true;
+			$('#ratings-table').paginate();
+		}
+	});
+
+    $('#stats-tab').on('shown', function() {
+        if(!initialized.stats) {
+            initialized.stats = true;
+            buildStats(${mission.id});
+        }
+    })
+	
+	$('#${tab}-tab').tab('show');
+	$('#${tab}-tab').trigger('shown');
+	
+	#{if announcements}
+		initAnnouncementsBox();
+	#{/if}
+	
+	$('#show-comments-tab-button').click(function() {
+		$('#comments-tab').tab('show');
+		return false;
+	});
+	
+	herbonautes.needReload = true;
+	
+});
+
+</script>
+

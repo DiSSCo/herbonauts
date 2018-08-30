@@ -1,0 +1,58 @@
+#{if isConnected}
+	              <li class="dropdown" id="menu-missions">
+				    <a class="dropdown-toggle" data-toggle="dropdown" href="#menu-missions">
+				      &{'header.missions'}
+				      <b class="caret"></b>
+				    </a>
+
+
+
+				    <ul class="dropdown-menu">
+
+
+                        <li><a href="@{Missions.list()}">&{'header.all.missions'}</a></li>
+
+					  #{if connectedUserMissions}
+                          <li class="divider"></li>
+							<li class="nav-header">&{'header.my.missions'}</li>
+						  #{list items: connectedUserMissions, as: 'mission'}
+							 <li><a href="@{Missions.show(mission.id)}">${mission.title}</a></li>
+						  #{/list}
+					  #{/if}
+					  #{else}
+							<li class="nav-header">&{'header.no.mission'}</li>
+					  #{/else}
+
+					  #{if isLeader && connectedLeaderMissions}
+						<li class="divider"></li>
+						<li class="nav-header">&{'header.mission.leader'}</li>
+						#{list items: connectedLeaderMissions, as: 'mission'}
+						 <li><a href="@{Missions.show(mission.id)}">${mission.title}</a></li>
+					  #{/list}
+					  #{/if}
+
+					  *{#{if validatedMissions}
+                          <li class="divider"></li>
+						  <li class="nav-header">&{'header.my.missions.validated'}</li>
+						#{list items: validatedMissions, as: 'mission'}
+							<li><a href="@{Missions.show(mission.id)}">${mission.title}</a></li>
+						#{/list}
+					  #{/if}}*
+					  #{if isTeam || (!isLeader && connectedLevel && connectedLevel >= play.configuration.get("herbonautes.mission.proposition.minimum.level").toInteger())}
+                          <li class="divider"></li>
+                          <li class="nav-header">&{'header.mission.propositions'}</li>
+						  #{if isTeam}
+                              <li><a href="@{Missions.propositionsList()}">&{'header.missions.propositions'} (${nbPropositions})</a></li>
+						  #{/if}
+					      #{else}
+                              <li><a href="@{Missions.missionPropositionForm()}"><i class="icon-plus-sign"></i> &{'mission.propose'}</a></li>
+						  #{/else}
+					  #{/if}
+
+
+				    </ul>
+				  </li>
+              #{/if}
+              #{else}
+               <li id="menu-missions"><a href="@{Missions.list()}">&{'header.missions'}</a></li>
+			  #{/else}

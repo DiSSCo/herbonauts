@@ -1,0 +1,82 @@
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Contribution Déterminateur
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+
+#{contributionBox type: 'IDENTIFIEDBY', mission: mission}
+
+	<div class="contribution-values">
+		
+			<i class="icon-pencil"></i> <span data-value="determiner"></span> (<strong><em>&{specimen.family + ' ' + specimen.genus}</em></strong>)
+			<br/><br />
+			<span data-value="determinerNotPresent"></span>
+			<span data-value="determinerNotSure"></span>
+	</div>
+		
+	#{form 
+		action: @Contributions.addIdentifiedBy(specimenId: specimen.id), 
+		method: 'POST',
+		id: 'identified-by-form',
+		class: 'contribution-form' }
+
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+		
+		<div class="determiner-select">
+			
+			<h5><i class="icon-pencil"></i> &{'determined.by', specimen.family + ' ' + specimen.genus} : </h5>
+			
+			<div id="determiner-select">
+				
+				<style>
+				.ui-autocomplete-loading { 
+					background: white url('@{'/public/img/ajax-loader-autocomplete.gif'}')  98% center no-repeat; 
+				}
+				</style>
+				
+				<input type="hidden" name="contribution.determiner.id" id="determiner-id" />
+				<input id="determiner-field"  maxlength="255" name="contribution.determiner.name" type="text" placeholder="&{'determiner.placeholder'}" />
+
+				<script>
+				
+				$(function() {
+			
+					$('#determiner-field').autocomplete({
+						source: '@{References.searchBotanists()}',
+						minLength: 0,
+						select: function(event, ui) {
+							$('#determiner-id').val(ui.item.id);
+							$('#determiner-field').val(ui.item.name);
+							return false;
+						}
+						
+					}).data('autocomplete')._renderItem = function(ul, item) {
+						return $('<li></li>')
+						.data('item.autocomplete', item)
+						.append('<a>' + item.name + '</a>')
+						.appendTo(ul);
+					}
+				});
+				</script>
+				
+				<label>
+					<input type="checkbox" name="contribution.determinerNotSure" value="true" /> &{'not.sure'}
+				</label>
+			</div><!-- /#determiner-select -->
+			
+			<label>
+				<input type="checkbox" value="true" data-oncheck-hide="#determiner-select" name="contribution.determinerNotPresent" />
+				&{'not.present'}
+			</label>
+			
+		</div>
+		
+		<div class="buttons">
+			<input type="submit" id="identifiedby-validate" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+		
+	#{/form}
+	
+#{/contributionBox}

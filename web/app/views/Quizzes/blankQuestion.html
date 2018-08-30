@@ -1,0 +1,112 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+#{set 'moreScripts'}
+<script type="text/javascript">
+
+var choiceIndex = 0;
+
+function addPropField() {
+	
+	var idInput = 
+		$('<input/>')
+			.attr('type', 'hidden')
+			.attr('name', 'choices[' + choiceIndex + '].id')
+			.attr('id', 'choice-id-' + choiceIndex);
+	
+	var fieldInput = 
+		$('<input/>')
+			.attr('type', 'text')
+			.attr('name', 'choices[' + choiceIndex + '].text')
+			.attr('id', 'choice-text-' + choiceIndex);
+		
+	
+	var checkBox = 
+		$('<input/>')
+			.attr('type', 'checkbox')
+			.attr('value', 'true')
+			.attr('name', 'choices[' + choiceIndex + '].answer')
+			.attr('id', 'choice-answer-' + choiceIndex);
+	
+	var removeBtn = 
+		$('<a/>')
+			.attr('href', '#')
+			.attr('id', 'choice-remove-' + choiceIndex)
+			.html('<i class="icon-minus-sign"></i>');
+		
+	var row = $('<tr>')
+		.append($('<td/>').html(idInput))
+		.append($('<td/>').html(fieldInput))
+		.append($('<td/>').html(checkBox))
+		.append($('<td/>').html(removeBtn));
+	
+	$('#choices-table')
+		.append(row);
+	
+	var removeId = choiceIndex;
+	$('#choice-remove-' + removeId).click(function() {
+		$('#choice-id-' + removeId).remove();
+		$('#choice-text-' + removeId).remove();
+		$('#choice-answer-' + removeId).remove();
+		$(this).remove();
+		return false;
+	});
+	
+	fieldInput.focus();
+	
+	choiceIndex++;
+		
+}
+</script>
+
+#{/set}
+
+<h2><small>Quiz</small> ${quiz.name} : <small>&{'quiz.new.question'}</small></h2>
+
+#{form 
+	action: @Quizzes.createQuestion(quiz.name), 
+	method: 'POST', 
+	enctype: 'multipart/form-data', 
+	class: 'form-horizontal'}
+
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.image'}</label>
+		<div class="controls">
+ 			<input type="file" name="image" ><br>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.name'}</label>
+		<div class="controls">
+ 			<input type="text" class="input-xlarge" name="question.text"/>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.answer'}</label>
+		<div class="controls">
+ 			<textarea name="question.answerDetails"></textarea>
+		</div>
+	</div>
+	
+	<br>
+
+
+	<div class="control-group">
+		<label class="control-label" for="quiz-name">&{'quiz.question.proposition'}</label>
+		<div class="controls">
+ 			<table id="choices-table">
+			</table>
+	
+			<a href="javascript:addPropField()" class="btn btn-small">&{'quiz.question.proposition.add'}</a>
+		</div>
+	</div>
+	
+	<br><br>
+
+	<a href="@{Quizzes.edit(quiz.name)}" class="btn">&{'quiz.question.cancel'}</a> 
+	<input class="btn btn-success" type="submit" value="&{'quiz.question.save'}" />
+
+
+#{/form}

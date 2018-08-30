@@ -1,0 +1,56 @@
+<div id="profile-menu" class="pull-right nav ${connectedLogin ? '' : 'hide'}">
+	
+	<a class="dropdown-toggle profile-btn" data-toggle="dropdown" href="#">
+		#{if connectedLogin}
+			#{userImg connectedLogin, imageId: connectedImageId /}
+		#{/if}
+		<b class="caret"></b>
+	</a>
+
+
+	<ul class="dropdown-menu">
+
+		#{set 'userURL'}
+			#{if connectedLogin}
+				@{Users.show(connectedLogin)}
+			#{/if}
+			#{else}
+				#
+			#{/else}
+		#{/set}
+		
+		<li><a id="profile-link" href="${userURL}"><i class="icon-user"></i> &{'header.profile'}</a></li>
+
+		*{
+		<li><a href="@{Invitation.form()}"><i class="icon-bullhorn"></i> &{'invitation.menu'}</a></li>
+		}*
+
+		#{if isLeader}
+		<li class="divider"></li>
+		<li class="nav-header">&{'menu.mission.leader'}</li>
+		<li><a href="@{Missions.blank()}"><i class="icon-plus-sign"></i> &{'mission.create'}</a></li>
+		#{/if}
+
+        #{if isTeam}
+            <li class="divider"></li>
+            <li class="nav-header">&{'menu.team'}</li>
+            <li><a href="@{Quizzes.list}"><i class="icon-question-sign"></i> &{'menu.admin.quiz'}</a></li>
+            <li><a href="@{References.adminIndex}"><i class="icon-book"></i> &{'menu.admin.references'}</a></li>
+            <li><a href="@{Questions.adminIndex}"><i class="icon-pencil"></i> &{'menu.admin.questions'}</a></li>
+        #{/if}
+
+		#{if isAdmin}
+		<li class="divider"></li>
+		<li class="nav-header">&{'menu.admin'}</li>
+		<li><a href="@{Admin.adminUsers}"><i class="icon-user"></i> &{'menu.admin.users'}</a></li>
+		<li><a href="@{Links.list}"><i class="icon-share"></i> &{'menu.admin.link'}</a></li>
+		<li><a href="@{Contents.list}"><i class="icon-file"></i> &{'nemu.admin.content'}</a></li>
+		<li><a href="@{Admin.missionsList}"><i class="icon-list"></i> &{'menu.admin.mission.priority'}</a></li>
+		<li><a href="@{CategoriesController.manage}"><i class="icon-comment"></i> &{'menu.categories.management'}</a></li>
+		#{/if}
+
+		<li class="divider"></li>
+		<li><a href="@{modules.cas.SecureCAS.logout()}"><i class="icon-off"></i> &{'header.deconnection'}</a></li>
+
+	</ul>
+</div>

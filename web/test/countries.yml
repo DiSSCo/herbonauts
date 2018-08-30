@@ -1,0 +1,13 @@
+# Countries
+  
+Country(FR):
+    iso: FR
+    name: France
+
+Country(DE):
+    iso: DE
+    name: Allemagne
+
+Country(IT):
+    iso: IT
+    name: Italie

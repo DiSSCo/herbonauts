@@ -1,0 +1,37 @@
+# Users
+
+User(admin):
+    login: Admin
+    firstName: Mister
+    lastName: Admin
+    email: admin
+    registrationDate: 1/4/2011
+    publishInformations: true
+    admin: true
+
+User(jon):
+    login: Jon
+    firstName: Jonathan
+    lastName: Geslin
+    email: jonathan.geslin+jon@gmail.com
+    registrationDate: 1/4/2011
+    publishInformations: true
+    leader: true
+
+User(tim):
+    login: Tim
+    firstName: Tim
+    lastName: Armstrong
+    email: jonathan.geslin+tim@gmail.com
+    registrationDate: 1/6/2012
+    publishInformations: false
+    
+User(bart):
+    login: Bart
+    firstName: Bart
+    lastName: Simpson
+    email: bart@fake.fake
+    registrationDate: 1/1/2012
+    publishInformations: true
+
+

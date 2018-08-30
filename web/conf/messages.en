@@ -1,0 +1,826 @@
+# For the templates, replace the ' by \\'
+# Example : L\\'utilisateur a modifié...
+
+# Miscellaneous
+validation.invalid=Invalid format
+members=members
+member=member
+title=The Herbonauts
+link.title=Title
+
+# Language
+lang.fr=French
+lang.en=English
+
+# Template
+templates.activities.MISSION_JOIN={{{link.user}}} joins the mission {{{link.mission}}}.
+templates.activities.MISSION_PUBLISH=The mission {{{link.mission}}} has been published.
+templates.activities.CONTRIBUTION_ADD={{{link.user}}} has identified {{i18n.contribution.type}} for the specimen {{{link.contribution.specimen}}} in the  mission {{{link.contribution.mission}}}.
+templates.activities.BADGE_WIN={{{link.user}}} wins the badge <b>{{i18n.badge.type}}</b>
+templates.activities.COMMENT_MISSION={{{link.comment.user}}} has posted a message on the mission {{{link.comment.mission}}}
+templates.activities.COMMENT_SPECIMEN={{{link.comment.user}}} has posted a message on the specimen {{{link.comment.specimen}}}
+templates.activities.SIGN_UP={{{link.user}}} joins les Herbonautes
+template.contribution.value.date=The {{collectDate}}
+template.contribution.value.date.period= Between {{collectStartDate}} and  {{collectEndDate}}
+template.deducted=I deduce it
+templates.badge.unlock= You have been unlocked the badge <b>{{type}}</b>
+
+# Divers
+btn.loading=Loading...
+
+# Links
+link.new=New link
+link.lang=Language
+link.url=URL
+link.modify=Edit link
+link.add=New
+link.edit=Edit
+link.delete=Delete
+
+# Contributions
+contribution.help=Help
+
+contribution.type.country=Country
+contribution.type.region_1=Region
+contribution.type.region_2=Subregion
+contribution.type.date=Date
+contribution.type.botanists=Botanists
+contribution.type.locality=Locality
+contribution.type.geolocalisation=Geolocalisation
+contribution.type.unusable=Unusable specimen
+contribution.type.collector=Collector
+contribution.type.identifiedby=Identified by
+
+contribution.country.short=Coun.
+contribution.region_1.short=Cou.
+contribution.region_2.short=Cou.
+contribution.date.short=Date
+contribution.botanists.short=Bot.
+contribution.collector.short=Col.
+contribution.identifiedby.short=Id.
+contribution.locality.short=Loc.
+contribution.geolocalisation.short=Géo.
+contribution.unusable.short=Unus.
+
+no.contribution.yet=No contribution for this moment
+no.more.contributions.to.show=All the contributions are posted
+
+contribution.help.title.unusable=Mark as unusable image
+contribution.help.content.unusable=<p> Click on this button if the image represente a growned pant, has several labels, several collect date or no data.</p>
+
+contribution.help.title.country=Country
+contribution.help.content.country=<p>In this drop-down list, select the country where the plant had been collected. </p>\
+<p><strong>Be careful</strong> : the country selected must be the <span style="text-decoration: underline;">current country</span></p>\
+<p style="padding-left: 30px;">Examples : <br/> \
+1/ for a New-Holland plant (Australia name during the 17e and 18e century), the correct country name will be Australia<br/>\
+2/ for a plant from Czechoslovakia, country was composing by the actual Czech Republic and Slovakia between 1918 and 1992, you need to find on the label an information more precisely about the collected locality of the plant, in order to identify if the good country is Czech Republic and Slovakia.<br />\
+
+In those two examples, the actual country name was not displayed on the label, the box "I deduced" need to be checked.</p>\
+<p>If no information enables you to know the country, click on the "No information" box. </p
+
+contribution.help.title.region_1=Region
+contribution.help.content.region_1=<p>In the drop-down list, select the region/district/province where the plant has been collected.<br />\
+Explore well all the parts of the image to find if the region/district/province has been quoted.</p><p>Check the box "I deduced" if the name of the region/district/province are not displayed litteraly on the label and is the result of your interpretation via another information (as department or town). </p>
+<p>If no information enables you to know the region/district/province, check the box "No information". </p>
+
+
+contribution.help.title.region_2=Subregion
+contribution.help.content.region_2=<p> In the drop-down list, select the subregion (or an equal entity as department) where the plant has been collected.<br/>\
+Explore well all the parts of the image to find if the subregion or the department has been quoted.</p></p><p>Check the box "I deduced" if the name of the subregion or the department are not displayed litteraly on the label and is the result of your interpretation via another information (as town). </p>
+<p>If no information enables you to know the subregion, check the box "No information". </p>
+
+
+contribution.help.title.date=Date
+contribution.help.content.date=<p>Fill in with the collector date. You can be confronted with three different case:
+<ol>
+	<li>The exact date is indicated on the label: write the date using the format JJ/MM/AAAA (example: 27/12/1934).</li>\
+	<li>A date is indicated as a period: write the date using a period format as \\'Between JJ/MM/AAAA and JJ/MM/AAAA'.<br/>\
+	Example: if the indication writing on the label is \\'march 1875\\', you need to enter the period \\'between 01/03/1875 and 30/03/1875\\'.<br/>\
+	for the indication date \\'missions 1870-1872\\', you need to enter the period \\'between 01/01/1870 and 31/12/1987\\'.</li>\
+	<li>If no information enables you to know the date on the label, check the box \\'No information\\'.</li>
+</ol>
+
+contribution.help.title.collector=Collector
+contribution.help.content.collector=<p><span style="text-decoration: underline;">Collected by</span> :</p>\
+<p> Enter the botanist name that has collected the plant, as indicated on the label using the format "Name, initial of the firstname ", (ex: Dupont, T.). With the validation of your contribution, the botanist will be registered. Then if you enter the first letters of the botanist name, a list of available name will be displayed, you just have to select the good name;</p>\
+<p>If there is more than one collector writing on the label, you can indicate other botanists by clicking on the button \\'Add a collector\\' using the same system explained above.</p>\
+<p>If no information enables you to know the collector, check the box "No information". </p>\
+<p><strong>Be careful</strong> : the collector and the botanist who identified the plant are often two different persons ! The abbreviation \\'det.\\' in front a name clearly indicate the person who identified the specimen, but this abbreviation is not shown everytime...</p>
+
+contribution.help.title.identifiedby=Identified By
+contribution.help.content.identifiedby= <p> </p><p><span style="text-decoration: underline;">Identified by </span> :</p>\
+<p>Enter the botanist name that identified the plant<br/>\
+If no information enables you to know the botanist, check the box "No information". </p>\
+<strong>Be careful</strong> : the collector and the botanist who identified the plant are often two different persons ! The abbreviation \\'det.\\' in front a name clearly indicate the person who identified the specimen, but this abbreviation is not shown everytime...</p>
+
+
+contribution.help.title.locality=Locality
+contribution.help.content.locality=<p>Transcribe, with accuracy, geographic data of the locality where the plant has been collected writing in the label.<br/>\
+Observe word order, language, orthographe, and abbreviations.</p>
+<p>Example :<br/>\
+<ol><li>\\'Massif de Manongarivo, versant ouest du Mt. Bekolosy, sur les berges de la rivière.\\'</li>\
+<li>\\'Above the village of Ambodisakoana E of Ankaramy\\'.</li></ol></p>
+
+contribution.help.title.geolocalisation=Geolocalisation
+contribution.help.content.geolocalisation=<p>Write the geolocalisation of the plant collect. You have two different ways to do this.\
+<ol><li>Enter directly the geographic coordonates writing on the label in the two boxes latitude (north/south) and longitude(east/west). <br/>\
+Accepted format : <br/>\
+text field Latitude: 43 16 40 N  - text field  Longitude: 0 23 41 O<br/>\
+or, text field  Latitude: 43º16\\'40"N - text field  Longitude: 0º23\\'41"W<br/>\
+or, text field  Latitude: 43º16\\'40"N - text field  Longitude: 0º23\\'41"O<br/>\
+or, text field  Latitude: 43,15651    - text field  Longitude: 0,15871<br/></li>\
+
+<li>Localise, the more precisely possible, the site in the map by clicking on the \\'Map\\'. <br/>\
+Click on the map at the place matching to the locality writing on the label. It is possible to use the search field on the left top of the map.<li></ol></p>
+
+
+bubble.contribution.to.be.completed= to be validate by another herbonaut
+bubble.contribution.empty=to be completed
+
+btn.unusable.picture=unsable image
+btn.next.specimen=next specimen
+contribution.locked.country=Country
+
+deducted=I deduced
+not.sure=I hesitate
+not.present=No information
+not.geolocalisable=Image not geolocalisable
+template.not.present=No information
+template.not.sure=I hesitate
+
+collected.by=collected by
+determined.by=Identified (<strong><em>%s</em></strong>) by
+btn.add.collector=Add a collector
+collector.placeholder=Type a name
+determiner.placeholder=Type a name
+
+lat.lng=Coordonates
+lat.placeholder=Lat (41.5, 41º11N)
+lng.placeholder=Lng (-2.34, 2º23W)
+precision.placeholder= Precision
+btn.map=Mao
+
+unusable.modal.title=Why is this image unsable ?
+unusable.cause.no.specimen=No specimen
+unusable.cause.too.many.specimens=Too many specimens
+unusable.cause.no.label=No label
+unusable.cause.too.many.labels=Too many labels
+unusable.cause.growned.plant=Growned plant
+alert.unusable.picture=Specimen marked as unusable
+
+button.cancel=Cancel
+button.confirm=Confirm
+
+validation.required.level=Level %s required
+validation.match=Invalid format (authorized characters : letters, digit, '_')
+
+connect.to.join=Login for participate
+
+modal.conflicts.title=Your proposition is in conflict with other contributions.
+modal.conflicts.comments= There are %s comments linked to this specimen.
+modal.conflicts.comment= There is 1 comment linked to this specimen.
+btn.comment.specimen= Display comments of this specimen
+btn.keep.proposition= I confirm my proposition
+btn.validate.proposition=or I validate the proposition of another herbonaut
+btn.validate=Confirm
+
+alert.pass.quiz=Take the quiz "%s" for unlock level
+select.country=Select a country
+select.region=Select a region
+
+no.more.contributions=There is no more contribution
+
+contributions=contributions
+contribution=contribution
+
+contribution.conflict.error.message=To solve the conflict, click on the symbol
+
+# Content
+contents.edition=Edit content
+content.url=URL
+content.title=Title
+button.save=Save
+content.text=Save
+content.new=New content
+content.available=Content available
+content.add=New
+
+# Dates
+date.format=JJ/MM/AAAA
+date=Date
+period=Period
+date.from=Between
+date.to=and
+since.now = A few secons
+since.seconds = %s second%s 
+since.minutes = %s minute%s
+since.hours   = %s hour%s
+since.days    = %s day%s
+since.months  = %s month
+since.years   = %s year%s
+since.format  = dd MMMM yyyy
+message.since = Since %s
+
+# Activities
+activities.no.more=More activities
+activities.charging=Loading ...
+
+# Admin
+admin.chief=Leaders
+admin.login=Login
+admin.name=Name
+admin.add.chief=Add a leader
+admin.list=List of missions
+admin.move=Move for sorted
+
+# Application
+application.who.are.we=Who are we ?
+application.who=Who
+application.are=are
+application.we=we ?
+
+# Général
+activity=Activity
+my.activity=My activity
+his.activity=His activity
+contributor=contributor
+contributors=contributors
+for=for
+activity.no.data=All the activities are displayed
+mark.as.read=Mark as read
+
+
+
+# Badges
+modal.badge.congratulations=New badge ! Congratulation !
+badge.night=Night
+badge.sherlock=Sherlock
+badge.ender=Ender
+badge.explorer=Explorer
+badge.cool=Cool
+badge.podium=Podium
+badge.night.explained=You have contributed during the night
+badge.sherlock.explained=You have deducted an information 
+badge.ender.explained=You complete all of the contribution of a specimen 
+badge.explorer.explained=You are one of the first contributor of this mission. 
+badge.cool.explained=You added a picture to your profile
+badge.podium.explained= You are on the podium for this mission
+badge.pioneer=Pioneer
+badge.classifier=Classifier
+badge.pedagogue=Pedagogue
+badge.writer=Writer
+badge.animator=Animator
+badge.sharer=Sharer
+badge.solidary=Solidary
+badge.candle=Candle
+
+# Errors
+validation.required=Required
+validation.exists=Already exists
+validation.email=Invalid e-mail address
+validation.min.lat=Latitude has to be upper than -90º
+validation.max.lat=Latitude has to be less than 90º
+validation.min.lng=Longitude has to be upper than -180º
+validation.max.lng=Longitude has to be less than 180º
+
+error.no.blank.specimen=You can not contribute
+error.title=Error
+error.apologies=An error occured
+
+error.bad.login.or.password=Wrong password
+error.unknow.login=Login not recognized
+error.contribution.period.invalid= The ending date is prior than the begin date
+error.404= Message d'erreur : 
+error.not.found=Not found
+error.occured=Oops, an error occured
+error.exception=This exception has been logged with id <strong>%s</strong>.
+error.application=Application error
+content.not.found=Page not found
+error.content.title=Page not found
+
+# Alertes 
+alert.conflict=The interpretation of %1$s (%4$s : %5$s) on the specimen %2$s is different from yours (%4$s : %6$s).Go to the <a href="%3$s">page of the specimen </a> for talk or "contribute" to a correction.
+alert.announce=A new announcement in the mission %1$s
+alert.mission.published= New mission has been published : %1$s
+alert.password.sent= Your password has been sent
+alert.mission.comment=%1$s has posted a message on the mission %2$s
+alert.specimen.comment=%1$s has posted a message on the specimen %2$s :<br/> %3$s
+
+# Header
+header.about=Who are you?
+header.missions=Missions
+header.mission.propositions=Propositions
+header.mission.leader=My missions (Leader)
+header.search.placeholder=Quick search
+header.profile=My profil
+header.deconnection=Sign out
+header.connection=Sign in
+header.my.missions=My missions
+header.my.missions.validated=My validated missions
+header.missions.propositions=Mission's propositions
+header.all.missions=All the missions
+header.tagline= The citizen crowdsourcing digital herbarium 
+header.no.mission=No mission
+
+# Search
+search.results=Search
+search.results.for=Result for
+next.results=Next result
+prev.results=Previous result
+
+# Category
+category.specimens=Specimens
+category.herbonauts=Herbonauts
+category.botanists=Botanists
+category.missions=Missions
+category.scientificnames=Scientific names
+category.discussions=Discussions
+category.tags=Tags
+
+# Result
+all.results=All the results
+no.result=No result
+no.possible.contribution=No specimen
+
+# Login
+modal.login.title=Sign in
+modal.login.signup=Register
+modal.login.use.fb.Account=Sign in using your Facebook account
+placeholder.login.or.email= Your login or e-mail
+placeholder.password=Password
+btn.login=Sign in
+placeholder.signup.login=Choose a login
+placeholder.signup.email=Enter an e-mail
+placeholder.signup.password=Choose a password
+btn.signup=Sign up
+forgotten.password=I forgot my password
+btn.send.password=Send my password by e-mail
+from.facebook=E-mail provided by your facebook account.
+
+# Footer
+footer.line=Herbonaut is provided by
+footer.poweredby=Powered by
+url.footer.mnhn=http://www.mnhn.fr
+title.footer.mnhn=Museum d'Histoire Naturelle website
+url.footer.tela=http://www.tela-botanica.org
+title.footer.tela=Tela-Botanica website
+url.footer.erec=http://recolnat.org
+title.footer.erec=E-Recolnat website
+
+# Index visiteur
+index.specimen.question=Can you identify the country of this specimen ?
+contribute=Contribute
+index.first.mission=Choose your first mission
+mission.goal=Goal
+mission.contributions=contributions
+mission.btn.participate=Participate
+
+# Index herbonaute
+index.link.show.mission=Display the mission
+index.my.other.mission=My other missions
+index.news.title=Actuality
+index.link.add.mission=Add a mission
+herbonauts.activity=herbonauts activities
+index.contributions.title=My last contributions
+activity.tabs.site=The entire website
+activity.my.missions=My missions
+activity.my.actions=My actions
+index.btn.all.missions=Display all the missions
+index.alerts.title=My alerts
+
+# Botanists
+botanist.period=Activity period
+botanist.herborarium=Herborarium
+botanist.country=Country
+botanist.harvard.id=ID Harvard
+botanist.speciality=Specility
+botanist.collector=collector
+botanist.determiner=identified by
+collected.specimen=collected specimen
+collected.specimens=collected specimens
+determined.specimen=identified specimen
+determined.specimens=identified specimens
+no.specimen.for.botanist=No specimen for this botanist
+no.more.specimen.for.botanist=All specimens are displayed
+btn.more.specimens=Display more specimens
+warning.no.active.mission.for.specimen=No active mission for this specimen
+
+# Missions
+mission.created=Mission '%s' is created
+mission.propositions.no.result=No propositions
+mission.proposed.by=Proposed by
+mission.proposition.view=View this proposition
+mission.proposition.submit=The proposition for the mission '%s' was submitted
+mission.proposition.validated=The proposition for the mission '%s' is validated
+mission.proposition.rejected=The proposition for the mission '%s' is rejected
+mission.proposition.already.validated=The leader '%s' already validated this mission
+mission.proposition.already.rejected=The proposition for the mission was already rejected by a leader
+mission.modified=Modification done
+mission.banned.user=User %s has been banned from this mission
+
+alert.quit.mission.success=
+not.opened.yet.mission=This mission is not yet opened
+not.opened.yet.member=User %s is banned in the mission
+
+mission.show.specimens.count=specimens count
+mission.show.tiles.creation=Creation of tiles
+mission.show.leader=Leader
+mission.show.opening.date=Opening date
+mission.already.member=I am already member
+mission.quit.mission=Quit the mission
+mission.only.contributors.list= Only members who contributed at least one time are in this ranking.
+
+mission.state=Mission state
+contributors.top=Top contributors
+
+mission.tab.errors=Please correct your errors
+mission.tab.description=Description
+mission.tab.mission.publish=Publish mission
+mission.tab.visible=(visible by the users)
+mission.tab.image.small=Image (small)
+mission.tab.image.big=Image (big)
+mission.tab.presentation=Presentation
+mission.tab.rapport=Report
+mission.tab.showRapport=Display the report on the mission page
+mission.tab.configuration=Configuration
+mission.tab.langue=Main language
+mission.tab.contribution=contributions
+mission.tab.country.unique=Unique country
+mission.tab.ponderation=Weighting
+mission.tab.addSpecimen=Add specimen
+mission.tab.announcementTitle=Title
+mission.tab.date=Date
+mission.tab.contenu=Content
+mission.tab.modify=Edit
+mission.tab.cancel=Cancel
+mission.tab.delete=Delete
+mission.tab.published=Published
+mission.tab.specimen.file=Specimen file
+mission.tab.publish=published
+mission.tab.save=Save
+mission.tab.back=Back
+mission.tab.reopen=Re-open the mission
+mission.tab.close=Close the mission
+mission.tab.mission.presentation.edit=Presentation of the mission <small>edition</small>
+mission.tab.mission.presentation.visualize=Presentation of the mission <small>visualize</small>
+mission.tab.reportMission=Report of the mission <small>edition</small>
+mission.tab.confirmationClosure=Do you confirm the closure ?
+mission.tab.confirmationReopen=Do you confirm the reopening ?
+mission.tab.new.mission=New mission
+mission.tab.proposition.mission=Mission proposition
+mission.tab.proposition.mission.validation=Mission validation
+mission.tab.error=Error!
+mission.btn.mission.create=Creation of the mission
+mission.btn.mission.propose=Propose the mission
+mission.btn.mission.proposition.validate=Validate the proposition
+mission.btn.mission.reject=Reject
+mission.nb.specimens.one=There is %s specimen in this mission.
+mission.nb.specimens.many=There are %s specimens in this mission.
+
+tab.mission=Missions
+tab.presentation=Presentation
+tab.report=Report
+tab.timeline=Timeline
+tab.map=Map
+tab.tags=Tags
+tab.discussions=Discussions
+tab.contributions=Contributions
+tab.contributions.details=Contributions (detail)
+tab.user.tags=My tags
+
+modal.join.to.contribute=You need to join the mission to contribution
+btn.join=Join the mission
+
+missions.list.title=All the missions
+missions.list.tab.current=Current mission
+missions.list.tab.next=Next missions
+missions.list.tab.closed=Closed missions
+closed.mission=Mission closed
+
+mission.show.last.comments=Last messages
+mission.show.btn.show.comments=Display the discussion
+mission.show.btn.join=Join the mission
+mission.show.btn.join.soon= Register until the beginning of the mission
+mission.confirm.quit.title=Do you confirm to quit the mission?
+mission.confirm.quit.text=Your contributions will not be deleted.
+mission.confirm.quit.yes=Yes
+alert.join.mission.success=Thank you and welcome
+mission.published=published
+mission.not.published=not published 
+mission.show.btn.edit=Manage the mission
+btn.visit=Visit
+index.add.missions=Join another mission
+index.no.mission= You participate in no mission
+connect.to.comment=You need to sign in to add a comment
+mission.title=Title
+mission.principalTagString=Principal tag
+mission.shortDescription=Short Description
+tab.parameters=Parameters
+tab.specimens=specimens
+tab.announcements=Announcements
+tab.members=Members
+mission.join.forbidden=You can not join this mission
+btn.no.more.ratings=All the members are displayed
+btn.more.ratings=Display next members 
+mission.openingDate=Opening date
+
+mission.create=Create a mission
+mission.propose=Propose a mission
+
+# Menu
+menu.mission.leader=Leader
+menu.admin=Administration
+menu.admin.leaders=Leaders
+menu.admin.link=Menu links
+nemu.admin.content=Contents
+menu.admin.mission.priority=Priorities missions
+menu.admin.quiz=Quiz management
+menu.categories.management=Categories management
+
+# Comments
+comment.answer.placeholder=Your comment
+no.comment=No comment for the moment
+show.all.comments=Display all the comments
+
+# Specimens
+to.be.determined=to be determined
+no.contribution=No contribution
+contribution.country=Country
+contribution.region_1=Region
+contribution.region_2=subregion
+contribution.date=Date
+contribution.botanists=Botanists
+contribution.locality=Locality
+contribution.geolocalisation=Geolocalisation
+contribution.collector=Collector
+contribution.identifiedby=Identified by
+
+specimen.show.missions=Missions
+specimen.show.tropicos.link=Tropicos link
+specimen.title=Specimen
+specimen.institute=Instituts
+specimen.collection=Collection
+specimen.code=Code
+specimen.last.messages=Last messages
+
+complete.specimen=Complete information for this specimen
+
+displayed.specimens=viewed specimens
+displayed.specimen=viewed specimen
+completed.specimens=specimens completed
+completed.specimen=specimen completed
+goal=Goal
+user.herbonaute=Herbonaut
+total=Total
+
+specimen=specimen
+specimen.of=specimen of %s
+no.specimen=No specimen
+
+specimen.list= List of spécimens
+
+mission.box.specimens=specimens
+mission.box.contributions=contributions
+mission.box.date=Opening
+
+# Users
+user.name=Name
+user.city=Town
+user.member.since=Member since 
+user.level=Level
+btn.settings=Edit my account
+btn.message=Send a message
+user.change.password=Edit password
+user.settings.informations=Informations
+user.avatar=My avata
+btn.delete=Delete my avatar
+user.settings.email=Email
+receive.mails=Receive alerts by email
+user.firstName=First name
+user.lastName=Last name
+user.description=Description
+user.badges=Badges
+message.user.profile.saved=Your information has been saved
+modal.type.password.to.save=Please enter your password
+btn.continue=Continue
+bad.password=incorrect password
+user.no.mission=Your are registrered to any mission
+message.user.image.ignored=The image file chosen is not compatible
+user.doesnt.exists= User %s don't exist
+bad.password=Incorrect password
+sent.message=Your message has been sent
+
+user.settings.change.password=Change your password
+password=Current password
+newPassword=New password
+newPasswordConfirm=Confirmation
+
+signuped.modal.title=Welcome
+signuped.modal.content=
+
+# Message
+message.new=New message
+message.to=Message to
+
+# Quiz
+about.to.take.quiz=You are about to take a quiz
+take.quiz.before=You need to take the quiz %s before the quiz %s
+quiz.quiz=Quiz
+quiz.information.general=General information
+quiz.email=E-mail
+quiz.remember=Remember me
+quiz.signin=Sign in
+quiz.name=Name
+quiz.level=Level
+quiz.mission.out=out of mission
+quiz.title=Title
+quiz.description=Description
+quiz.description.edit=Edit the description
+quiz.congratulation=Congratulations
+quiz.congratulation.edit=Edit the congratulations
+quiz.description.firstpage=Description (first page) <small>edition</small>
+quiz.description.lastpage=Congratulation (last page) <small>edition</small>
+quiz.questions=Questions
+quiz.move=Move
+quiz.no.question=No question
+quiz.new.question=New question
+
+quiz.modal.title=Well done!
+quiz.modal.btn.later=Later
+quiz.modal.btn.now=Take the quiz
+quiz.modal.text=You have reached to the quiz "%1$s". This quiz will allow you to move up to the higher level (%2$s).
+
+question.correct=Correct
+question.not.correct=Incorrect
+next.question=Next question
+quiz.results= Results
+errors=errors
+error=error
+quiz.congratulations.title=Congratulations
+retake.quiz=Take the quiz again
+quiz.end.title=You have completed the quiz 
+
+quiz.question.image=Image
+quiz.question.name=Title
+quiz.question.answer=Detailled answer
+quiz.question.proposition=Propositions
+quiz.question.proposition.add=add a proposition
+quiz.question.cancel=Cancel
+quiz.question.save=Save
+quiz.question.edit=Edit the question
+
+quiz.new=New quiz
+quiz.save=Save the information
+
+
+# Boutons
+activity.btn.more=Display more activities
+btn.more.contributions=Display more contributions
+btn.answer=Answer
+btn.send=Send
+btn.loading=Loading
+btn.sending=Sending...
+btn.contribute=Contribute
+btn.save=Save
+btn.save.in.progress=Save in progress...
+btn.cancel=Cancel
+activity.loading=Loading
+btn.start=Start
+btn.valid=Validate
+btn.user.change.image=Change my avatar
+btn.add=Add
+btn.close=Close
+btn.edit=Edit
+btn.visualize=Visualize
+btn.delete.account=Delete my account
+
+
+# Mails
+mail.welcome.subject=[The herbonaut] Welcome in the Herbonaut
+mail.welcome.content=Welcome %s, <br /> You are now register on the herbonauts website (%s), under the login : <br /> %s
+mail.welcome.content.more=Through to the herbonaut, you can participate to the creation of a scientific database based on a million images 
+of plants from herbarium of Paris. Explore those plants and their labels for identified when and where they were collected. 
+This data are really precious elements for better understand the biodiversity, calculate it and predict its erosion.
+
+
+mail.goodbye.subject=[The herbonaut] Sign out
+mail.goodbye.content=Your account %s has been deleted from http://lesherbonautes.mnhn.fr. Thank you for your contribution!
+
+
+mail.alerts.subject=[The herbonaut] New alert
+mail.alerts.title=Your last alerts
+mail.alerts.content=This is the list of the last alerts (conflicts, comments, new missions) :
+
+mail.welcome.mission.subject=[The herbonaut] 
+mail.welcome.mission.title=Welcome in the mission '%s'
+mail.welcome.mission.content=Thank you for your participation
+
+mail.announcement.subject=[The herbonaut] New announcement for the mission %1$s
+mail.announcement.title=%1$s has posted an annoucement in the mission %2$s
+
+mail.discussion.new.message.subject.with.title=[The herbonaut] New Message in the discussion %1$s
+mail.discussion.new.message.subject.without.title=[The herbonaut] New Message in discussion
+mail.mission.proposition.subject=[The herbonaut] New proposition of mission
+mail.mission.proposition.validated=[The herbonaut] Validation of the mission '%s'
+
+mail.password.subject=[The herbonaut] Reminder of your information
+mail.password.title=[The herbonaut] Reminder of your information
+mail.password.content=Here is your connection information for the Herbonaut 
+mail.password.login=Your login
+mail.password.password=Your password
+
+mail.discussion.response.content=<h3> new message was posted in the discussion</h3><p>You can access it from this url: <a href="%1$s">%1$s</a></p>
+mail.mission.proposition.content=<h3>A mission proposition wan submit by %1$s</h3><p>You can access it from this url: <a href="%2$s">%2$s</a></p>
+mail.mission.proposition.validation.content=<h3>Your mission "%1$s" was validated by %2$s</h3><p>You can access it from this url: <a href="%3$s">%3$s</a></p>
+
+mail.message.subject=[The herbonaut] Message from %s
+mail.message.from=Message from %s
+
+discussion.newDiscussion=New discussion
+discussion.close=This discussion is closed
+discussion.post=Post
+discussion.resolve=Mark as resolution
+discussion.resolved=Resolved discussion
+discussion.placeholder.title=Title
+discussion.placeholder.message=Message
+discussion.placeholder.tag.add=Add a tag
+discussion.placeholder.reply=Reply
+discussion.filter=Filter by category
+discussion.loadMore=Load more discussions
+discussion.tags.modify=Modify tags
+
+tag.subscribe=Subscribe
+tag.unsubscribe=Unsubscribe
+tag.noResults=No results
+tag.specimen.consult=Consult
+tag.noSubscription=No subscription
+tag.already.used=This tag is already used
+tag.placeholder.add=Add a tag
+tags.modify=Modify tags
+
+message.delete=Delete
+message.moderator=This message was moderate by
+message.delete.confirmation=Are you sure you want delete this message?
+message.resolution.confirmation=Are you sure you want choose this message as solution?
+
+connect.need.display.page=You need to be connected to display this page.
+
+mission.specimens.cart.btn=Select specimens
+
+stats.legend.validated=Validated
+stats.legend.inProgress=In progress
+stats.legend.conflicts=Conflicts
+stats.legend.MEMBERS=Members
+stats.legend.CONFLICTS=In conflict
+stats.legend.COMPLETE_SPECIMENS=Complete specimens
+stats.legend.CONTRIBUTIONS=Contributions
+
+categories.management=Discussions categories management
+categories.newCategory=New category
+categories.create=Create a category
+categories.list=Categories list
+categories.placeholder.label=Category's label
+categories.delete.confirmation=discussion(s) will be impacted with this modification. Do you confirm it?
+categories.no.category=No category
+
+cookies.message=Ce site utilise des cookies
+cookies.ok=OK
+
+
+message.user.deleted.account=Your account has been deleted
+user.deleted.account=[deleted account]
+
+user.alert.mission=Receive mail on new message about mission I joined
+user.alert.specimen=Receive mail on new message about specimen I worked on
+
+user.confirm.email=You just changed your email address. A confirmation message has been sent to <b>%s</b>.
+
+mission.goal.specimens=out of %d specimens
+
+invitation.menu=Parrainer
+invitation.title=Parrainez de nouveaux Herbonautes
+invitation.text=Saisissez les adresses emails des personnes que vous souhaitez inviter (une adresse par ligne).
+invitation.send.button=Envoyer les invitations
+message.invitation.sent=Merci ! Les invitations ont été envoyées
+
+mail.invitation.subject=[Les herbonautes] %s vous invite à rejoindre les Herbonautes
+mail.invitation.content=<b>%s</b> vous invite à rejoindre les Herbonautes
+mail.invitation.content.more1=<a href="%s">les Herbonautes</a>, l'herbier numérique collaboratif citoyen...
+mail.invitation.content.more2=Pour vous inscrire, suivez ce  <a href="%s">lien</a>
+mail.invitation.content.more3=Si le lien ne s'ouvre pas, copier cette adresse dans cotre navigateur %s
+message.email.invalid=L'adresse '%s' est invalide
+
+invitation.invalid.token=Lien invalide
+invitation.invalid.token.text=Ce lien est invalide
+
+invitation.validate.title=Rejoignez les Herbonautes
+invitation.validate.text=%s vous invite à rejoindre les herbonautes, l'herbier numérique collaboratif citoyen
+invitation.validate.btn=Je m'inscris
+message.invitation.welcome=Merci d'avoir rejoint les Herbonautes
+
+mail.email.change.subject=[Les herbonautes] Confirmation de votre nouvelle adresse
+mail.email.change.content=Veuillez confirmer votre nouvelle adresse
+mail.email.change.subject.more1=Confirmer en cliquant sur le <a href="%s">lien</a>
+mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigateur %s
+
+message.email.change.success=Votre adresse mail a été modifiée

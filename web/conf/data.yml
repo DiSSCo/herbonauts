@@ -1,0 +1,56 @@
+# Pays
+  
+Country(FR):
+    iso: FR
+    name: France
+
+Country(DE):
+    iso: DE
+    name: Allemagne
+
+Country(IT):
+    iso: IT
+    name: Italie
+    
+# Region 1
+
+RegionLevel1(R1FR1):
+    country: FR
+    name: FR_1
+
+RegionLevel1(R1FR2):
+    country: FR
+    name: FR_2
+
+RegionLevel1(R1FR3):
+    country: FR
+    name: FR_3
+    
+RegionLevel1(R1IT1):
+    country: IT
+    name: IT_1
+
+RegionLevel1(R1IT2):
+    country: IT
+    name: IT_2
+
+RegionLevel1(R1IT3):
+    country: IT
+    name: IT_3
+        
+RegionLevel1(R1DE1):
+    country: DE
+    name: DE_1
+
+RegionLevel1(R1DE2):
+    country: DE
+    name: DE_2
+
+RegionLevel1(R1DE3):
+    country: DE
+    name: DE_3
+
+# Region 2
+
+
+# Botanistes (from Wikipedia)

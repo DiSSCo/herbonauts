@@ -1,0 +1,31 @@
+#{extends 'main.html' /}
+#{set 'title'}
+	&{quiz.title} ${herbonautes.titleSep} ${herbonautes.title}
+#{/set}
+
+<h2><small>&{'quiz.end.title'}</small> ${quiz.title}</h2>
+
+
+#{if passed}
+	<h3>&{'quiz.congratulations.title', quiz.unlockingLevel}</h3>
+	
+	<p>${quiz.congratulations?.raw()}</p>
+	
+#{/if}
+
+#{else}
+
+	<h3> ${errorsCount} &{errorsCount > 1 ? 'errors' : 'error'}</h3>
+	
+	<br/>
+	
+	<a href="@{Quizzes.start(quiz.name)}" class="btn"><i class="icon-refresh"></i> &{'retake.quiz'}</a>
+
+#{/else}
+
+
+
+#{if lastMissionId && lastSpecimenId}
+	<a class="btn btn-info" href="@{ContributionBoard.showBoard(missionId: lastMissionId, specimenId: lastSpecimenId)}"><i class="icon-play icon-white"></i> Poursuivre la contribution</a>
+#{/if}
+

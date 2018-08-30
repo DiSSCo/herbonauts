@@ -1,0 +1,92 @@
+#{extends 'main.html' /}
+#{set title: 'Admin - Nouveau lien - ' + herbonautes.title /}
+
+
+<div class="row">
+	<div class="span12">
+	
+
+		<h2><small>&{'link.modify'}</small></h2>
+		
+		#{form action: @Links.save(link.id), method: 'POST'}
+		
+			#{field 'link.lang'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<select name="${field.name}" id="input-lang">
+						#{list items: play.langs, as: 'lang'}
+							<option value="${lang}" ${(lang == link.lang) ? 'selected' : ''}>&{'lang.' + lang}</option>
+						#{/list}
+					</select>
+					<span class="help-inline">${field.error}</span>
+				</div>
+			</div>
+			#{/field}
+			
+			#{field 'link.title'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<input 
+						name="${field.name}" 
+						type="text" 
+						id="${field.id}" 
+						value="${link.title}"/>
+				</div>
+			</div>
+			#{/field}	
+			
+			#{field 'link.url'}
+			<div class="control-group ${field.errorClass}">
+				<label class="control-label" for="${field.id}">&{field.name}</label>
+				<div class="controls">
+					<input 
+						name="${field.name}" 
+						type="text" 
+						id="${field.id}" 
+						value="${link.url}"/>
+					<span class="help-inline">${field.error}</span>
+				</div>
+			</div>
+			#{/field}
+
+			#{field 'link.headerlink'}
+                <div class="control-group ${field.errorClass}">
+                    <label class="control-label" for="${field.id}">&{'header.about'}</label>
+                    <div class="controls">
+                        <input
+                                name="${field.name}"
+                                type="checkbox"
+                                id="${field.id}"
+                                value="true"
+								${link.headerlink ? 'checked': ''}
+
+                        <span class="help-inline">${field.error}</span>
+                    </div>
+                </div>
+			#{/field}
+
+
+            <a href="@{Links.list()}" class="btn">Retour à la liste</a>
+			<input type="submit" value="&{'btn.save'}" class="btn btn-success" />
+			
+		#{/form}
+	
+	</div>
+	<div class="span2">
+	</div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $( ":checkbox" ).each(function() {
+            var name = $(this).attr("name");
+            if(typeof(name) != "undefined") {
+                var checkboxString = "";
+                checkboxString = '<input type="hidden" style="display:none;" name="'+ name +'" value="false" />'
+                $(this).after(checkboxString);
+            }
+        });
+    });
+</script>

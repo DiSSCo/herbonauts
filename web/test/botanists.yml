@@ -1,0 +1,1340 @@
+# Botanists (from Wikipedia)
+
+Botanist(bot0):
+    name: Erik Acharius
+
+Botanist(bot1):
+    name: Julián Acuña Galé
+
+Botanist(bot2):
+    name: Johann Friedrich Adam
+
+Botanist(bot3):
+    name: Nancy Adams
+
+Botanist(bot4):
+    name: Carl Adolph Agardh
+
+Botanist(bot5):
+    name: Jacob Georg Agardh
+
+Botanist(bot6):
+    name: Nikolaus Ager
+
+Botanist(bot7):
+    name: William Aiton
+
+Botanist(bot8):
+    name: Frédéric-Louis Allamand
+
+Botanist(bot9):
+    name: Carlo Allioni
+
+Botanist(bot10):
+    name: Prospero Alpini
+
+Botanist(bot11):
+    name: Benjamin Alvord
+
+Botanist(bot12):
+    name: Eliza Frances Andrews
+
+Botanist(bot13):
+    name: Giovanni Arcangeli
+
+Botanist(bot14):
+    name: David Ashton
+
+Botanist(bot15):
+    name: William Guybon Atherstone
+
+Botanist(bot16):
+    name: Churchill Babington
+
+Botanist(bot17):
+    name: Curt Backeberg
+
+Botanist(bot18):
+    name: James Eustace Bagnall
+
+Botanist(bot19):
+    name: Liberty Hyde Bailey
+
+Botanist(bot20):
+    name: Ibn al-Baitar
+
+Botanist(bot21):
+    name: Giovanni Battista Balbis
+
+Botanist(bot22):
+    name: John Hutton Balfour
+
+Botanist(bot23):
+    name: Joseph Banks
+
+Botanist(bot24):
+    name: César Barbosa
+
+Botanist(bot25):
+    name: Benjamin Smith Barton
+
+Botanist(bot26):
+    name: John Bartram
+
+Botanist(bot27):
+    name: William Bartram
+
+Botanist(bot28):
+    name: Johann Bauhin
+
+Botanist(bot29):
+    name: Gaspard Bauhin
+
+Botanist(bot30):
+    name: Chauncey Beadle
+
+Botanist(bot31):
+    name: Rolla Kent Beattie
+
+Botanist(bot32):
+    name: Richard Henry Beddome
+
+Botanist(bot33):
+    name: Martinus Beijerinck
+
+Botanist(bot34):
+    name: David Bellamy
+
+Botanist(bot35):
+    name: George Bentham
+
+Botanist(bot36):
+    name: Robert Bentley
+
+Botanist(bot37):
+    name: Miles Joseph Berkeley
+
+Botanist(bot38):
+    name: Karl August von Bergen
+
+Botanist(bot39):
+    name: Edward W. Berry
+
+Botanist(bot40):
+    name: Clarence Bicknell
+
+Botanist(bot41):
+    name: Gustaf Johan Billberg
+
+Botanist(bot42):
+    name: Johannes Bisse
+
+Botanist(bot43):
+    name: Andrew Bloxam
+
+Botanist(bot44):
+    name: Carl Ludwig Blume
+
+Botanist(bot45):
+    name: Tyge W. Böcher
+
+Botanist(bot46):
+    name: Hieronymus Bock
+
+Botanist(bot47):
+    name: Herman Boerhaave
+
+Botanist(bot48):
+    name: Wenceslas Bojer
+
+Botanist(bot49):
+    name: Henry Nicholas Bolander
+
+Botanist(bot50):
+    name: ‎Harry Bolus
+
+Botanist(bot51):
+    name: August Gustav Heinrich von Bongard
+
+Botanist(bot52):
+    name: Charles Bonnet
+
+Botanist(bot53):
+    name: Aimé Bonpland
+
+Botanist(bot54):
+    name: Antonina Georgievna Borissova
+
+Botanist(bot55):
+    name: Frederik Børgesen
+
+Botanist(bot56):
+    name: David Bowman
+
+Botanist(bot57):
+    name: Alexander Braun
+
+Botanist(bot58):
+    name: John Patrick Micklethwait Brenan
+
+Botanist(bot59):
+    name: William Henry Brewer
+
+Botanist(bot60):
+    name: Charles-François Brisseau-Mirbel
+
+Botanist(bot61):
+    name: Elizabeth Gertrude Britton
+
+Botanist(bot62):
+    name: Nathaniel Lord Britton
+
+Botanist(bot63):
+    name: Adolphe Theodore Brongniart
+
+Botanist(bot64):
+    name: ‎Nicholas Edward Brown
+
+Botanist(bot65):
+    name: Robert Brown
+
+Botanist(bot66):
+    name: Patrick Browne
+
+Botanist(bot67):
+    name: Louis-Ovide Brunet
+
+Botanist(bot68):
+    name: Francis Buchanan-Hamilton
+
+Botanist(bot69):
+    name: Aleksandr Andreevich von Bunge
+
+Botanist(bot70):
+    name: Elsa Beata Bunge
+
+Botanist(bot71):
+    name: Luther Burbank
+
+Botanist(bot72):
+    name: Frederick William Burbidge
+
+Botanist(bot73):
+    name: ‎William John Burchell
+
+Botanist(bot74):
+    name: David Burke
+
+Botanist(bot75):
+    name: ‎Joseph Burke II
+
+Botanist(bot76):
+    name: Johannes Burman
+
+Botanist(bot77):
+    name: Nicolaas Laurens Burman
+
+Botanist(bot78):
+    name: George Caley
+
+Botanist(bot79):
+    name: Rudolf Jakob Camerarius
+
+Botanist(bot80):
+    name: Frederick Campion Steward
+
+Botanist(bot81):
+    name: A. P. de Candolle
+
+Botanist(bot82):
+    name: Alphonse Pyrame de Candolle
+
+Botanist(bot83):
+    name: Elie-Abel Carrière
+
+Botanist(bot84):
+    name: George Washington Carver
+
+Botanist(bot85):
+    name: William Casson
+
+Botanist(bot86):
+    name: Antonio José Cavanilles
+
+Botanist(bot87):
+    name: Andrea Cesalpino
+
+Botanist(bot88):
+    name: Adelbert von Chamisso
+
+Botanist(bot89):
+    name: Pierre Gaspard Chaumette
+
+Botanist(bot90):
+    name: Henry Chesterton
+
+Botanist(bot91):
+    name: Carl Christensen
+
+Botanist(bot92):
+    name: Arthur Roy Clapham
+
+Botanist(bot93):
+    name: Peter Collinson FRS
+
+Botanist(bot94):
+    name: Philibert Commerçon
+
+Botanist(bot95):
+    name: Joseph Whipple Congdon
+
+Botanist(bot96):
+    name: Valerius Cordus
+
+Botanist(bot97):
+    name: A.D. Cotton
+
+Botanist(bot98):
+    name: Arthur Cronquist
+
+Botanist(bot99):
+    name: José Cuatrecasas
+
+Botanist(bot100):
+    name: Nicholas Culpeper
+
+Botanist(bot101):
+    name: Francesco Cupani
+
+Botanist(bot102):
+    name: Charles Curtis
+
+Botanist(bot103):
+    name: William Curtis
+
+Botanist(bot104):
+    name: Anders Dahl
+
+Botanist(bot105):
+    name: John M. Darby
+
+Botanist(bot106):
+    name: Frederick Hamilton Davey
+
+Botanist(bot107):
+    name: Armand David
+
+Botanist(bot108):
+    name: Walter Davis
+
+Botanist(bot109):
+    name: Anton de Bary
+
+Botanist(bot110):
+    name: Pierre Jean Marie Delavay
+
+Botanist(bot111):
+    name: Jules Paul Benjamin Delessert
+
+Botanist(bot112):
+    name: René Louiche Desfontaines
+
+Botanist(bot113):
+    name: Johann Jacob Dillenius
+
+Botanist(bot114):
+    name: John Edward Dinsmore
+
+Botanist(bot115):
+    name: Kurt Dinter
+
+Botanist(bot116):
+    name: Pedanius Dioscorides
+
+Botanist(bot117):
+    name: Rembert Dodoens
+
+Botanist(bot118):
+    name: David Don
+
+Botanist(bot119):
+    name: James Donn
+
+Botanist(bot120):
+    name: David Douglas
+
+Botanist(bot121):
+    name: Jonas C. Dryander
+
+Botanist(bot122):
+    name: Antoine Nicolas Duchesne
+
+Botanist(bot123):
+    name: William Russell Dudley
+
+Botanist(bot124):
+    name: Michel Felix Dunal
+
+Botanist(bot125):
+    name: Robert Allen Dyer
+
+Botanist(bot126):
+    name: Michael Pakenham Edgeworth
+
+Botanist(bot127):
+    name: Henrik Franz Alexander von Eggers
+
+Botanist(bot128):
+    name: Christian Gottfried Ehrenberg
+
+Botanist(bot129):
+    name: Jakob Friedrich Ehrhart
+
+Botanist(bot130):
+    name: Eva Ekeblad
+
+Botanist(bot131):
+    name: Stephan Ladislaus Endlicher
+
+Botanist(bot132):
+    name: George Engelmann
+
+Botanist(bot133):
+    name: Adolf Engler
+
+Botanist(bot134):
+    name: Katherine Esau
+
+Botanist(bot135):
+    name: Johann Friedrich von Eschscholtz
+
+Botanist(bot136):
+    name: Constantin von Ettingshausen
+
+Botanist(bot137):
+    name: David Fairchild
+
+Botanist(bot138):
+    name: Hugh Falconer
+
+Botanist(bot139):
+    name: Reginald Farrer
+
+Botanist(bot140):
+    name: Lewis J. Feldman
+
+Botanist(bot141):
+    name: Luigi Fenaroli
+
+Botanist(bot142):
+    name: Friedrich Ernst Ludwig von Fischer
+
+Botanist(bot143):
+    name: Pius Font i Quer
+
+Botanist(bot144):
+    name: Peter Forsskål
+
+Botanist(bot145):
+    name: Georg Forster
+
+Botanist(bot146):
+    name: Johann Reinhold Forster
+
+Botanist(bot147):
+    name: Robert Fortune
+
+Botanist(bot148):
+    name: Henry Georges Fourcade
+
+Botanist(bot149):
+    name: Adrien René Franchet
+
+Botanist(bot150):
+    name: William D. Francis
+
+Botanist(bot151):
+    name: John C. Frémont
+
+Botanist(bot152):
+    name: Elias Magnus Fries
+
+Botanist(bot153):
+    name: Imre Frivaldszky
+
+Botanist(bot154):
+    name: Charles Christopher Frost
+
+Botanist(bot155):
+    name: Leonhart Fuchs
+
+Botanist(bot156):
+    name: Joseph Gaertner
+
+Botanist(bot157):
+    name: François Gagnepain
+
+Botanist(bot158):
+    name: ‎Ernest Edward Galpin
+
+Botanist(bot159):
+    name: Charles Gaudichaud-Beaupré
+
+Botanist(bot160):
+    name: Howard Scott Gentry
+
+Botanist(bot161):
+    name: John Gerard
+
+Botanist(bot162):
+    name: Conrad von Gesner
+
+Botanist(bot163):
+    name: Luca Ghini
+
+Botanist(bot164):
+    name: Ken Gillanders
+
+Botanist(bot165):
+    name: Charles Henry Gimingham
+
+Botanist(bot166):
+    name: Johann Friedrich Gmelin
+
+Botanist(bot167):
+    name: Johann Georg Gmelin
+
+Botanist(bot168):
+    name: Samuel Gottlieb Gmelin
+
+Botanist(bot169):
+    name: Hossein Gol-e-Golab
+
+Botanist(bot170):
+    name: George Gordon
+
+Botanist(bot171):
+    name: Asa Gray
+
+Botanist(bot172):
+    name: Nehemiah Grew
+
+Botanist(bot173):
+    name: William Griffith
+
+Botanist(bot174):
+    name: Jan Frederik Gronovius
+
+Botanist(bot175):
+    name: Wilhelm Gueinzius
+
+Botanist(bot176):
+    name: Hugo Gunckel Lüer
+
+Botanist(bot177):
+    name: Johann Ernst Gunnerus
+
+Botanist(bot178):
+    name: ‎Francis Guthrie
+
+Botanist(bot179):
+    name: Olaf Hagerup
+
+Botanist(bot180):
+    name: Karl Theodor Hartweg
+
+Botanist(bot181):
+    name: William Henry Harvey
+
+Botanist(bot182):
+    name: Adrian Hardy Haworth
+
+Botanist(bot183):
+    name: John Stevens Henslow
+
+Botanist(bot184):
+    name: Augustine Henry
+
+Botanist(bot185):
+    name: LeRoy Kershaw Henry
+
+Botanist(bot186):
+    name: Vernon Heywood
+
+Botanist(bot187):
+    name: Johann Centurius Hoffmannsegg
+
+Botanist(bot188):
+    name: Joseph Dalton Hooker
+
+Botanist(bot189):
+    name: William Jackson Hooker
+
+Botanist(bot190):
+    name: Albert Howard
+
+Botanist(bot191):
+    name: Armando Theodoro Hunziker
+
+Botanist(bot192):
+    name: John Hutchinson
+
+Botanist(bot193):
+    name: Keisuke Ito
+
+Botanist(bot194):
+    name: Victor Jacquemont
+
+Botanist(bot195):
+    name: Nikolaus Joseph von Jacquin
+
+Botanist(bot196):
+    name: Joseph Franz von Jacquin
+
+Botanist(bot197):
+    name: Knud Jessen
+
+Botanist(bot198):
+    name: Wilhelm Johannsen
+
+Botanist(bot199):
+    name: Lawrence Alexander Sidney Johnson
+
+Botanist(bot200):
+    name: I. M. Johnston
+
+Botanist(bot201):
+    name: Adrien-Henri de Jussieu
+
+Botanist(bot202):
+    name: Antoine Laurent de Jussieu
+
+Botanist(bot203):
+    name: Antoine de Jussieu
+
+Botanist(bot204):
+    name: Bernard de Jussieu
+
+Botanist(bot205):
+    name: Kaibara Ekiken
+
+Botanist(bot206):
+    name: Guillermo Kalbreyer
+
+Botanist(bot207):
+    name: Pehr Kalm
+
+Botanist(bot208):
+    name: Gustav Karl Wilhelm Hermann Karsten
+
+Botanist(bot209):
+    name: Kailas Nath Kaul
+
+Botanist(bot210):
+    name: Albert Kellogg
+
+Botanist(bot211):
+    name: Alice L. Kibbe
+
+Botanist(bot212):
+    name: Franz Kiggelaer
+
+Botanist(bot213):
+    name: Karl Koch
+
+Botanist(bot214):
+    name: Jacques Labillardière
+
+Botanist(bot215):
+    name: Lars Levi Laestadius
+
+Botanist(bot216):
+    name: Jean-Baptiste Lamarck
+
+Botanist(bot217):
+    name: Aylmer Bourke Lambert
+
+Botanist(bot218):
+    name: Jean Vincent Félix Lamouroux
+
+Botanist(bot219):
+    name: Kai Larsen
+
+Botanist(bot220):
+    name: Charles de l'Écluse
+
+Botanist(bot221):
+    name: Jean Baptiste Leschenault de la Tour
+
+Botanist(bot222):
+    name: William Lobb
+
+Botanist(bot223):
+    name: Emmanuel Liais
+
+Botanist(bot224):
+    name: John Lindley
+
+Botanist(bot225):
+    name: Johann Heinrich Friedrich Link
+
+Botanist(bot226):
+    name: Carolus Linnaeus
+
+Botanist(bot227):
+    name: Carolus Linnaeus the Younger
+
+Botanist(bot228):
+    name: Pablo de la Llave
+
+Botanist(bot229):
+    name: Thomas Lobb
+
+Botanist(bot230):
+    name: William Lobb
+
+Botanist(bot231):
+    name: George Loddiges
+
+Botanist(bot232):
+    name: Harri Lorenzi
+
+Botanist(bot233):
+    name: John Claudius Loudon
+
+Botanist(bot234):
+    name: Alice Lounsberry
+
+Botanist(bot235):
+    name: Elias Lönnrot
+
+Botanist(bot236):
+    name: Elizabeth McClintock
+
+Botanist(bot237):
+    name: William McCalla
+
+Botanist(bot238):
+    name: John Macoun
+
+Botanist(bot239):
+    name: ‎Peter MacOwan
+
+Botanist(bot240):
+    name: Pierre Magnol
+
+Botanist(bot241):
+    name: Joseph Maiden
+
+Botanist(bot242):
+    name: Marcello Malpighi
+
+Botanist(bot243):
+    name: Gustav Mann
+
+Botanist(bot244):
+    name: Charles Maries
+
+Botanist(bot245):
+    name: ‎Rudolf Marloth
+
+Botanist(bot246):
+    name: Humphry Marshall
+
+Botanist(bot247):
+    name: Carl Friedrich Philipp von Martius
+
+Botanist(bot248):
+    name: John M. MacDougal
+
+Botanist(bot249):
+    name: William Keble Martin
+
+Botanist(bot250):
+    name: John Martyn
+
+Botanist(bot251):
+    name: Genkei Masamune
+
+Botanist(bot252):
+    name: Francis Masson
+
+Botanist(bot253):
+    name: Carl Maximowicz
+
+Botanist(bot254):
+    name: Rogers McVaugh
+
+Botanist(bot255):
+    name: Gregor Mendel
+
+Botanist(bot256):
+    name: Archibald Menzies
+
+Botanist(bot257):
+    name: Konstantin Merezhkovsky
+
+Botanist(bot258):
+    name: Franz Meyen
+
+Botanist(bot259):
+    name: André Michaux
+
+Botanist(bot260):
+    name: Philip Miller
+
+Botanist(bot261):
+    name: Charles Frederick Millspaugh
+
+Botanist(bot262):
+    name: Friedrich Anton Wilhelm Miquel
+
+Botanist(bot263):
+    name: Charles-François Brisseau de Mirbel
+
+Botanist(bot264):
+    name: John Mitchell
+
+Botanist(bot265):
+    name: Hugo von Mohl
+
+Botanist(bot266):
+    name: Charles Theodore Mohr
+
+Botanist(bot267):
+    name: Paul Möhring
+
+Botanist(bot268):
+    name: George Thomas Moore
+
+Botanist(bot269):
+    name: Robert Morison
+
+Botanist(bot270):
+    name: Cornelius Herman Muller
+
+Botanist(bot271):
+    name: Ferdinand von Mueller
+
+Botanist(bot272):
+    name: Otto von Münchhausen
+
+Botanist(bot273):
+    name: Karl Wilhelm von Nageli
+
+Botanist(bot274):
+    name: George Valentine Nash
+
+Botanist(bot275):
+    name: Christian Gottfried Daniel Nees von Esenbeck
+
+Botanist(bot276):
+    name: Charles F. Newcombe
+
+Botanist(bot277):
+    name: Frank Newhook
+
+Botanist(bot278):
+    name: Louis Nicolas
+
+Botanist(bot279):
+    name: Thomas Nuttall
+
+Botanist(bot280):
+    name: Daniel Oliver
+
+Botanist(bot281):
+    name: Garcia de Orta
+
+Botanist(bot282):
+    name: Carl Hansen Ostenfeld
+
+Botanist(bot283):
+    name: Peter Simon Pallas
+
+Botanist(bot284):
+    name: Edward Palmer
+
+Botanist(bot285):
+    name: Josif Pancic
+
+Botanist(bot286):
+    name: Filippo Parlatore
+
+Botanist(bot287):
+    name: Charles Christopher Parry
+
+Botanist(bot288):
+    name: William Paterson
+
+Botanist(bot289):
+    name: Ruth Patrick
+
+Botanist(bot290):
+    name: Ove Paulsen
+
+Botanist(bot291):
+    name: Richard Pearce
+
+Botanist(bot292):
+    name: Donald C. Peattie
+
+Botanist(bot293):
+    name: Jean-Marie Pelt
+
+Botanist(bot294):
+    name: Karl Julius Perleb
+
+Botanist(bot295):
+    name: Henri Perrier de la Bâthie
+
+Botanist(bot296):
+    name: Christian Hendrik Persoon
+
+Botanist(bot297):
+    name: Paul Petard
+
+Botanist(bot298):
+    name: James Petiver
+
+Botanist(bot299):
+    name: Rodolfo Amando Philippi
+
+Botanist(bot300):
+    name: Louis Alexandre Henri Joseph Piré
+
+Botanist(bot301):
+    name: Pliny the Elder
+
+Botanist(bot302):
+    name: Leonard Plukenet
+
+Botanist(bot303):
+    name: Eduard Friedrich Poeppig
+
+Botanist(bot304):
+    name: Joel Roberts Poinsett
+
+Botanist(bot305):
+    name: Alf Erling Porsild
+
+Botanist(bot306):
+    name: Morten Pedersen Porsild
+
+Botanist(bot307):
+    name: Eduard Pospichal
+
+Botanist(bot308):
+    name: George E. Post
+
+Botanist(bot309):
+    name: Jan Svatopluk Presl
+
+Botanist(bot310):
+    name: Karel Presl
+
+Botanist(bot311):
+    name: Cyrus Pringle
+
+Botanist(bot312):
+    name: Nathanael Pringsheim
+
+Botanist(bot313):
+    name: William Purdom
+
+Botanist(bot314):
+    name: Frederick Traugott Pursh
+
+Botanist(bot315):
+    name: Paul Émile de Puydt
+
+Botanist(bot316):
+    name: Henri François Pittier
+
+Botanist(bot317):
+    name: Gabriele Rabel
+
+Botanist(bot318):
+    name: Oliver Rackham
+
+Botanist(bot319):
+    name: Albert Ernest Radford
+
+Botanist(bot320):
+    name: Constantine Samuel Rafinesque
+
+Botanist(bot321):
+    name: John Ralfs
+
+Botanist(bot322):
+    name: Christen C. Raunkiær
+
+Botanist(bot323):
+    name: Leonhard Rauwolf
+
+Botanist(bot324):
+    name: Peter H. Raven
+
+Botanist(bot325):
+    name: John Ray
+
+Botanist(bot326):
+    name: Heinrich Gustav Reichenbach
+
+Botanist(bot327):
+    name: Ludwig Reichenbach
+
+Botanist(bot328):
+    name: Jose Restrepo
+
+Botanist(bot329):
+    name: Thekla Resvoll
+
+Botanist(bot330):
+    name: Hanna Resvoll-Holmsen
+
+Botanist(bot331):
+    name: Achille Richard
+
+Botanist(bot332):
+    name: Louis Claude Richard
+
+Botanist(bot333):
+    name: Henry Nicholas Ridley
+
+Botanist(bot334):
+    name: Augustus Quirinus Rivinus
+
+Botanist(bot335):
+    name: Harold E. Robinson
+
+Botanist(bot336):
+    name: Frans Hubert Edouard Arthur Walter Robyns
+
+Botanist(bot337):
+    name: Joseph Rock
+
+Botanist(bot338):
+    name: Lauritz Kolderup Rosenvinge
+
+Botanist(bot339):
+    name: William Roxburgh
+
+Botanist(bot340):
+    name: Georg Eberhard Rumphius
+
+Botanist(bot341):
+    name: Per Axel Rydberg
+
+Botanist(bot342):
+    name: Joseph Sabine
+
+Botanist(bot343):
+    name: Julius von Sachs
+
+Botanist(bot344):
+    name: Augustin Saint-Hilaire
+
+Botanist(bot345):
+    name: Edward James Salisbury
+
+Botanist(bot346):
+    name: Richard Anthony Salisbury
+
+Botanist(bot347):
+    name: Charles Sprague Sargent
+
+Botanist(bot348):
+    name: William Saunders
+
+Botanist(bot349):
+    name: Horace-Bénédict de Saussure
+
+Botanist(bot350):
+    name: Andreas Franz Wilhelm Schimper
+
+Botanist(bot351):
+    name: Diederich Franz Leonhard von Schlechtendal
+
+Botanist(bot352):
+    name: Rudolf Schlechter
+
+Botanist(bot353):
+    name: Matthias Jakob Schleiden
+
+Botanist(bot354):
+    name: George Schoener
+
+Botanist(bot355):
+    name: Selmar Schonland
+
+Botanist(bot356):
+    name: Heinrich Wilhelm Schott
+
+Botanist(bot357):
+    name: Franz Paula von Schrank
+
+Botanist(bot358):
+    name: Georg August Schweinfurth
+
+Botanist(bot359):
+    name: Giovanni Antonio Scopoli
+
+Botanist(bot360):
+    name: Berthold Carl Seemann
+
+Botanist(bot361):
+    name: Prideaux John Selby
+
+Botanist(bot362):
+    name: Jean Senebier
+
+Botanist(bot363):
+    name: Martín Sessé y Lacasta
+
+Botanist(bot364):
+    name: John Adolph Shafer
+
+Botanist(bot365):
+    name: George Shaw
+
+Botanist(bot366):
+    name: Shen Kuo
+
+Botanist(bot367):
+    name: John Sibthorp
+
+Botanist(bot368):
+    name: Franz Sieber
+
+Botanist(bot369):
+    name: Philipp Franz von Siebold
+
+Botanist(bot370):
+    name: Thomas Robertson Sim
+
+Botanist(bot371):
+    name: John Kunkel Small
+
+Botanist(bot372):
+    name: Christo Albertyn Smith
+
+Botanist(bot373):
+    name: James Edward Smith
+
+Botanist(bot374):
+    name: Johannes Jacobus Smith
+
+Botanist(bot375):
+    name: Daniel Solander
+
+Botanist(bot376):
+    name: Otto Wilhelm Sonder
+
+Botanist(bot377):
+    name: Pierre Sonnerat
+
+Botanist(bot378):
+    name: Roger David Spencer
+
+Botanist(bot379):
+    name: Herman Spoering
+
+Botanist(bot380):
+    name: Kurt Sprengel
+
+Botanist(bot381):
+    name: Richard Spruce
+
+Botanist(bot382):
+    name: Herman Spöring
+
+Botanist(bot383):
+    name: Agustín Stahl
+
+Botanist(bot384):
+    name: Paul Carpenter Standley
+
+Botanist(bot385):
+    name: G. Ledyard Stebbins
+
+Botanist(bot386):
+    name: Georg Wilhelm Steller
+
+Botanist(bot387):
+    name: Kaspar Maria von Sternberg
+
+Botanist(bot388):
+    name: Julian Alfred Steyermark
+
+Botanist(bot389):
+    name: Eduard Strasburger
+
+Botanist(bot390):
+    name: George Bishop Sudworth
+
+Botanist(bot391):
+    name: Su Song
+
+Botanist(bot392):
+    name: Olof Swartz
+
+Botanist(bot393):
+    name: Simon Syrenius
+
+Botanist(bot394):
+    name: Takeda Hisayoshi
+
+Botanist(bot395):
+    name: Armen Takhtajan
+
+Botanist(bot396):
+    name: John Templeton (
+Botanist)
+
+Botanist(bot397):
+    name: Theophrastus
+
+Botanist(bot398):
+    name: Graham Stuart Thomas
+
+Botanist(bot399):
+    name: William Thompson
+
+Botanist(bot400):
+    name: George Thomson
+
+Botanist(bot401):
+    name: Louis-Marie Aubert du Petit-Thouars
+
+Botanist(bot402):
+    name: Carl Peter Thunberg
+
+Botanist(bot403):
+    name: Agostino Todaro
+
+Botanist(bot404):
+    name: John Torrey
+
+Botanist(bot405):
+    name: Joseph Pitton de Tournefort
+
+Botanist(bot406):
+    name: John Tradescant the elder
+
+Botanist(bot407):
+    name: John Tradescant the younger
+
+Botanist(bot408):
+    name: Ernst Rudolf von Trautvetter
+
+Botanist(bot409):
+    name: Mikhail Tsvet
+
+Botanist(bot410):
+    name: Edward Tuckerman
+
+Botanist(bot411):
+    name: William Turner
+
+Botanist(bot412):
+    name: Bernardino da Ucria
+
+Botanist(bot413):
+    name: Lucien Marcus Underwood
+
+Botanist(bot414):
+    name: Martin Vahl
+
+Botanist(bot415):
+    name: Sébastien Vaillant
+
+Botanist(bot416):
+    name: Domenico Vandelli
+
+Botanist(bot417):
+    name: Nikolai Vavilov
+
+Botanist(bot418):
+    name: Harry Veitch
+
+Botanist(bot419):
+    name: John Gould Veitch
+
+Botanist(bot420):
+    name: Peter Veitch
+
+Botanist(bot421):
+    name: Warren H. Wagner
+
+Botanist(bot422):
+    name: Göran Wahlenberg
+
+Botanist(bot423):
+    name: George Arnott Walker-Arnott
+
+Botanist(bot424):
+    name: Nathaniel Wallich
+
+Botanist(bot425):
+    name: Gustav Wallis
+
+Botanist(bot426):
+    name: Eugenius Warming
+
+Botanist(bot427):
+    name: Sereno Watson
+
+Botanist(bot428):
+    name: William Watson (scientist)
+
+Botanist(bot429):
+    name: Heinrich Wawra von Fernsee
+
+Botanist(bot430):
+    name: Philip Barker Webb
+
+Botanist(bot431):
+    name: Christian Ehrenfried Weigel
+
+Botanist(bot432):
+    name: Friedrich Welwitsch
+
+Botanist(bot433):
+    name: Carl Ludwig Willdenow
+
+Botanist(bot434):
+    name: Ernest Henry Wilson
+
+Botanist(bot435):
+    name: William Withering
+
+Botanist(bot436):
+    name: Anthony Hurt Wolley-Dod
+
+Botanist(bot437):
+    name: ‎John Medley Wood
+
+Botanist(bot438):
+    name: Charles Wright
+
+Botanist(bot439):
+    name: Franz Xavier von Wulfen
+
+Botanist(bot440):
+    name: Heinrich Wullschlägel
+
+Botanist(bot441):
+    name: Heinrich Wydler
+
+Botanist(bot442):
+    name: Gennady Yakovlev
+
+Botanist(bot443):
+    name: Karl Ludwig Philipp Zeyher
+
+Botanist(bot444):
+    name: Michael Zohary
+
+Botanist(bot445):
+    name: Joseph Gerhard Zuccarini

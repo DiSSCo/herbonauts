@@ -1,0 +1,30 @@
+#{extends 'main.html' /}
+#{set 'title'}
+	&{'edit'} ${herbonautes.titleSep + herbonautes.title}
+#{/set}
+
+<div class="row">
+	<div class="span12">
+
+        <div class="alert alert-error">
+           	<h4>Attention</h4>
+			<br/>
+
+			<p>Cette opération est irreversible, votre progression sera supprimée.</p>
+			<p>Votre compte e-ReColNat ne sera pas supprimé, vous aurez toujours accès aux autres modules.</p>
+
+			<br/>
+
+			#{form method: 'POST', action: @Users.confirmDeleteAccount(user.login) }
+				<a href="@{Users.settings(login: user.login)}" class="btn btn-default">
+					<i class="icon-trash icon"></i> &{'btn.cancel'}
+				</a>
+				<button type="submit" href="@{Users.deleteAccount(login: user.login)}" class=" btn btn-danger">
+					<i class="icon-trash icon-white"></i> &{'btn.delete.account'}
+				</button>
+			#{/form}
+
+        </div>
+		
+	</div>
+</div>

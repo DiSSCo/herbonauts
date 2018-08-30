@@ -1,0 +1,827 @@
+#{extends 'main.html' /} 
+#{set title: mission.title + herbonautes.titleSep + specimen.code + herbonautes.titleSep + herbonautes.title /}
+
+
+#{set 'moreScripts'}
+
+	*{ ---------- Actions paramétrées utilisées dans recolteurs.js ---------- }*
+	<script>
+		var deleteContributionAction = #{jsAction @Contributions.delete(':id') /}
+		var validateContributionAction = #{jsAction @Contributions.validate(':id') /}
+		var keepContributionAction = #{jsAction @Contributions.keep(':id') /}
+		var regions1ForCountryAction = #{jsAction @References.regions1ByCountry(':countryId') /}
+		var regions2ForRegion1Action = #{jsAction @References.regions2ByRegion1(':region1Id') /}
+		var searchBotanistsAction = #{jsAction @References.searchBotanists(':q') /}
+		var contributionsForSpecimenAction = #{jsAction @Contributions.contributionsForSpecimen(':id') /}
+		var contributionReportsForSpecimenAction = #{jsAction @Contributions.contributionReportsForSpecimen(':id') /}
+		var contributionTypeForSpecimenAction = #{jsAction @Contributions.contributionsTypeForSpecimen(':id', ':type') /}
+		var joinMissionAction = #{jsAction @Missions.joinMission(':id') /}
+		var quizForLevelAction = #{jsAction @Quizzes.forLevel(':level') /}
+		var startQuizAction = #{jsAction @Quizzes.start(':name') /}
+		var levelInfosAction = #{jsAction @Users.levelInfos() /}
+		var markURL= '@{Missions.markCurrent(missionId: mission.id, specimenId: specimen.id)}';
+	</script>
+	
+	*{ ---------- Librairies JS suppl��mentaires (JQuery UI, Google Maps) ---------- }*
+	<script src="https://maps.googleapis.com/maps/api/js?key=${play.configuration.get("herbonautes.google.api.key")}&libraries=places" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+	
+	*{ ---------- JS sp��cifique contributions ---------- }*
+	<script src="@{'/public/js/herbonautes-contributions.js'}" type="text/javascript"></script> 
+	
+	*{ ---------- Affichage du specimen avec API Google Maps v3 ---------- }*
+	<script src="@{'/public/js/herbonautes-google-maps.js'}" type="text/javascript"></script>
+	
+	*{ ---------- Templates mustache ---------- }*
+	<script>
+	
+		// TODO ajouter les spécifiques dans les *Box.html
+		herbonautes.templates.contributions = {
+			'notPresent': 		'{{#notPresent}}<span class="label">&{'template.not.present'}</span>{{/notPresent}}',
+			'notSure':			'{{#notSure}}<span class="label">&{'template.not.sure'}</span>{{/notSure}}',
+			'deducted':			'{{#deducted}}<span class="label">&{'template.deducted'}</span>{{/deducted}}',
+			'COUNTRY':			'{{country.name}}',
+			'REGION_1':			'{{regionLevel1.name}}',
+			'REGION_2':			'{{regionLevel2.name}}',
+			'DATE': 			'{{#collectDate}}&{'template.contribution.value.date'}{{/collectDate}}{{#collectStartDate}}&{'template.contribution.value.date.period'}{{/collectStartDate}}',
+			'COLLECTOR':{
+				'collectorNotPresent':	'{{#collectorNotPresent}}<span class="label">&{'template.not.present'}s</span>{{/collectorNotPresent}}',
+				'collectorNotSure':		'{{#collectorNotSure}}<span class="label">&{'template.not.sure'}</span>{{/collectorNotSure}}',
+				'collector':			'{{collector}}',
+				'otherCollectors':		'{{#otherCollectors}}<br/><em>{{name}}</em>{{/otherCollectors}}'
+			},
+			'IDENTIFIEDBY': {
+				'determinerNotPresent': '{{#determinerNotPresent}}<span class="label">&{'template.not.present'}</span>{{/determinerNotPresent}}',
+				'determinerNotSure': 	'{{#determinerNotSure}}<span class="label">&{'template.not.sure'}</span>{{/determinerNotSure}}',
+				'determiner':			'{{determiner}}'
+			},
+			'LOCALITY':			'{{locality}}',
+			'GEOLOCALISATION':	'{{#latitude}}<span id="latitude" data-type="latitude">{{latitude}}</span> &middot; <span id="longitude" data-type="longitude">{{longitude}}</span>{{/latitude}}',
+			'precision': 		'{{#precision}}({{precision}}){{/precision}}'
+		};
+		
+		herbonautes.mission = {
+			'id': ${mission.id},
+			'title': '${mission.title.escapeJavaScript()}'
+		}
+		
+		herbonautes.user = {
+				'id': ${mission.id},
+				'login': '${connectedLogin}'
+		}
+		
+		herbonautes.member = ${isMember ? 'true' : 'false'};
+		herbonautes.connected = ${connectedId ? 'true' : 'false'};
+		
+		
+		// TODO comme connect process, sortir le deferred
+		// et laisser son utilisation dans joinProcess
+		herbonautes.joinMission = function(options) {
+			var url = joinMissionAction({id: herbonautes.mission.id});
+			var _options = $.extend({}, 
+				{
+					url: url,
+					type: 'GET'
+				},
+				options);
+			$.ajax(_options);
+		}
+		
+		// TODO integrer à connectProcess
+		herbonautes.connect = function(options) {
+			var _options = $.extend({}, 
+					{
+						url: '/URLCONNECT',
+						type: 'POST'
+					},
+					options);
+			
+			$.ajax(_options);
+		}
+		
+	</script>
+	
+	*{ ---------- Affichage de mes contributions ---------- }*
+	<script>
+	
+		function markCurrentMissionAndSpecimen() {
+			$.ajax({ url: markURL });
+		}
+	
+		function onUserConnected(level, pendingLevel, specimenID) {
+			$.when(
+					// Affichage 
+					herbonautes.lockContributions(level, pendingLevel),
+					herbonautes.displayMyContributions(specimenID),
+					herbonautes.displayContributionReports(specimenID)
+				).then(
+					// Focus quand tout est affiché
+					function() {
+						displayCompleteSpecimen();
+						focusOnFirstContribution();
+					}
+				).fail(
+					// Utilisateur non connecté
+					focusOnFirstContribution	
+				); 
+		}
+		
+		var currentSpecimenID = ${specimen.id};
+		
+		$(function() {
+			onUserConnected(
+			  ${connectedLevel ? connectedLevel : 1}
+			, ${connectedPendingLevel ? connectedPendingLevel : 0}
+			, ${specimen.id});
+		});
+	</script>
+	
+#{/set}
+
+#{set 'moreStyles'}
+
+#{/set}
+
+<div ng-controller="contributionDiscussionsCtrl" id="contributionDiscussionsDiv">
+    <div id="openDiscussionIcon" ng-click="showDiscussionModule()" ng-hide="isDiscussionModuleOpened" ng-cloak>
+        <div class="icomoon-bubbles2"><span id="spanNbDiscussionsIcon" ng-cloak>{{$root.nbDiscussionsBubble}}</span></div>
+	</div>
+    <div id="control-discussions" ng-show="isDiscussionModuleOpened" ng-cloak>
+        <div class="pull-right"><a class="btn btn-info" href="#" onclick="return false;" ng-click="hideDiscussionModule()" title="&{'btn.close'}" style="margin-bottom: 10px;">&{'btn.close'}</a></div>
+		#{discussionBox connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, isLeader: isLeader,imageId: connectedImageId, tagType: 'SPECIMEN', tagLabel: specimen.code, allowCreation: true}
+		#{/discussionBox}
+    </div>
+</div>
+
+<button id="openTagsButton" class="btn btn-info" data-toggle="modal" data-keyboard="false" data-backdrop="static" data-target="#specimenTagsModal">&{'tags.modify'}</button>
+<div class="modal hide" id="specimenTagsModal">
+    <div class="modal-header">
+		#{if !connectedLogin || (!isAdmin && (connectedLevel < play.configuration.get("herbonautes.elements.tags.save.minimum.level").toInteger()))}
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="reloadTags()">&times;</button>
+		#{/if}
+		<h3>Tags</h3>
+    </div>
+    <div class="modal-body">
+	#{elementTags connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, , tagLinkType: 'SPECIMEN', principalTagLabel: specimen.code, targetId: specimen.id}
+    #{/elementTags}
+    </div>
+</div>
+
+<div id="left-bar">
+	<div>
+
+		<div class="infos-box">
+
+			*{ ---------- Récap mission & spécimen ---------- }*
+
+			<table>
+
+				<tr>
+					<td style="width: 80px; padding-right: 1em">
+					<a href="@{Missions.show(mission.id)}" title="${mission.title}">
+						#{missionImg mission /}
+					</a>
+
+					</td>
+					<td>
+						<a href="@{Missions.show(mission.id)}">${mission.title}</a>
+						<hr/>
+						<i class="icon-leaf"></i> <a href="@{Specimens.list(specimen.family, specimen.genus)}">${specimen.getGenusSpecies()}</a><br/>
+						<a target="_blank" href="${specimen.sonneratURL}"><i class="icon-picture"></i></a> <a href="@{Specimens.show(specimen.institute, specimen.collection, specimen.code)}">${specimen.institute}/${specimen.collection}/${specimen.code}</a>
+
+					</td>
+				</tr>
+			</table>
+
+			<br/>
+
+			*{ ---------- Boutons photos inutilisables ---------- }*
+
+			<a id="mark-unusable-btn" data-toggle="modal" href="#unusable-modal" class="btn btn-small btn-dual help-unusable">
+				<span class="btn-out"><i class="icon-trash"></i> &{'btn.unusable.picture'}</span>
+				<span class="btn-over" data-class="btn-danger"><i class="icon-trash icon-white"></i> &{'btn.unusable.picture'}</span>
+			</a>
+			<a id="unmark-unusable-btn" href="#" class="btn btn-small btn-dual">
+				<span class="btn-out" data-class="btn-danger"><i class="icon-check icon-white"></i> &{'btn.unusable.picture'}</span>
+				<span class="btn-over"><i class="icon-share"></i> &{'btn.cancel'}</span>
+			</a>
+			<script>
+				$('#unmark-unusable-btn').hide();
+				$(function() {
+					$('.help-unusable').popover({
+						title: '&{'contribution.help.title.unusable'}',
+						content: '&{'contribution.help.content.unusable'}',
+						trigger: 'hover'
+					})
+				});
+			</script>
+
+
+			*{ ---------- Bouton spécimen suivant ----------
+
+			<a href="@{Missions.contributionBoard(mission.id, mission.getRandomSpecimen().id)}"
+				 class="pull-right btn btn-small btn-info">&{'btn.next.specimen'}
+				<i class="icon-step-forward icon-white"></i>
+			</a>
+			 }*
+			 <a href="#"
+				class="next-specimen-btn pull-right btn btn-small btn-info">&{'btn.next.specimen'}
+				<i class="icon-step-forward icon-white"></i>
+			</a>
+
+		</div>
+
+
+		<div class="alert alert-success hide" id="complete-specimen">&{'complete.specimen'}</div>
+		<div class="alert alert-warning" id="complete-specimen">&{'contribution.conflict.error.message'} <i class="icon-warning-sign"></i></div>
+
+		*{ ---------- Bloc photo inutilisable (masqu�� par d��faut) ---------- }*
+
+		<div id="contribution-unusable-box" class="hide">
+
+			<div class="alert alert-error">
+				<h4>&{'alert.unusable.picture'}</h4>
+			</div>
+		</div>
+
+
+
+		*{ ---------- Boxes de contribution ---------- }*
+
+		#{if mission.isContributionRequired('COUNTRY')}
+			#{include './contributionBoxes/countryContribution.html' /}
+		#{/if}
+		#{else}
+			#{include './contributionBoxes/lockedCountryContribution.html' /}
+		#{/else}
+
+		#{include './contributionBoxes/regionLevel1Contribution.html' /}
+
+		#{if mission.isContributionRequired('REGION_2')}
+			#{include './contributionBoxes/regionLevel2Contribution.html' /}
+		#{/if}
+
+		#{include './contributionBoxes/dateContribution.html' /}
+
+		#{include './contributionBoxes/collectorContribution.html' /}
+
+		#{include './contributionBoxes/identifiedByContribution.html' /}
+
+		#{include './contributionBoxes/localityContribution.html' /}
+
+		#{include './contributionBoxes/geolocalisationContribution.html' /}
+
+
+		<div class="next-specimen-box">
+			<a href="#"
+				class="next-specimen-btn pull-right btn btn-small btn-info">&{'btn.next.specimen'}
+				<i class="icon-step-forward icon-white"></i>
+			</a>
+			<br/><br/>
+		</div>
+
+	</div>
+</div><!-- /#left-bar -->
+
+
+<div id="map-container"></div>
+<div id="geolocalisation-map" class="hide"></div>
+<div id="geolocalisation-keywords-container" class="hide small">
+	<input type="text" id="geolocalisation-keywords" value=""/>
+</div>
+<div id="geolocalisation-close-button" class="hide small">
+	<a href="#" id="full-map-link"><i class="icon-resize-full"></i></a>
+	<a href="#" id="small-map-link"><i class="icon-resize-small"></i></a>
+	<a href="#" id="hide-map-link"><i class="icon-remove"></i></a>
+</div>
+
+
+<!-- Modal -->
+<div class="modal hide" id="unusable-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>&{'unusable.modal.title'}</h3>
+	</div>
+	<div class="modal-body">
+		#{form 
+			action: @Contributions.addUnusable(specimenId: specimen.id), 
+			method: 'POST',
+			id: 'unusable-form' }
+			
+			<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+			<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+			<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+		
+			#{list items: causes, as: 'cause'}
+			<label><input type="radio" name="contribution.cause" value="${cause.id}"> &{cause.i18nKey}</label>
+			#{/list}
+		#{/form}
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn"data-dismiss="modal">&{'button.cancel'}</a>
+		<a href="#" id="unusable-form-btn" class="btn btn-success">&{'button.confirm'}</a>
+	</div>
+</div>
+
+<div class="modal hide" id="quiz-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>&{'quiz.modal.title'}</h3>
+	</div>
+	<div class="modal-body">
+		
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn"data-dismiss="modal">&{'quiz.modal.btn.later'}</a>
+		<a href="#" id="quiz-btn" class="btn btn-success">&{'quiz.modal.btn.now'}</a>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal hide" id="conflicts-modal" data-backdrop="static">
+	<div class="modal-header">
+		<button type="button" id="close-conflicts" class="close">×</button>
+		<h3>&{'modal.conflicts.title'}</h3>
+	</div>
+	
+	<div class="modal-body">
+		#{if comments > 0}
+			#{if comments==1}
+				<a href="@{Specimens.show(specimen.institute, specimen.collection, specimen.code)}" class="highlight_link"> &{'modal.conflicts.comment'}</a>
+			#{/if}
+			#{elseif comments > 1}
+				<a href="@{Specimens.show(specimen.institute, specimen.collection, specimen.code)}" class="highlight_link"> &{'modal.conflicts.comments', comments}</a>
+			#{/elseif}
+			<hr/>
+		#{/if}
+		<a href="#" id="keep-btn" class="btn btn-info">&{'btn.keep.proposition'}</a>
+		<hr/>
+		
+		
+		<h3>&{'btn.validate.proposition'}</h3>
+		<table class="table" id="propositions">
+		</table>
+		
+	</div>
+	<!--  
+	<div class="modal-footer">
+		<a href="#" class="btn btn-success"data-dismiss="modal">OK, désolé.</a>
+	</div>
+	-->
+</div>
+
+<div class="modal hide" id="error-modal">
+	<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">x</button>
+		<h3>&{'error.title'}</h3>
+	</div>
+	<div class="modal-body">
+		
+		<p>&{'error.apologies'}</p>
+		
+	</div>
+</div>
+
+<div class="modal hide" id="join-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>&{'modal.join.to.contribute'}</h3>
+	</div>
+	<!-- herbonautes.joinMission 	-->
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">&{'btn.cancel'}</a>
+		<a href="#" id="join-mission-button" class="btn btn-success" >&{'btn.join'}</a>
+	</div>
+</div>
+
+<script>
+	$(window).load(function() {
+		initializeSpecimenMap(
+				'${herbonautes.tilesRootURL}',
+				'${specimen.institute}',
+				'${specimen.collection}',
+				'${specimen.code}',
+				${specimen.tileWidth}, 
+				${specimen.tileHeight});
+	});
+	
+</script>
+
+<!-- Modal 
+<div class="modal hide" id="map-modal">
+	
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>Geolocalisation</h3>
+	</div>
+
+	<div class="modal-body">
+		
+    	<div class="control-group">
+    		<input type="Coordonnées"
+			<label class="control-label" for="keyword">Cari alamat :</label>
+			<div class="controls">
+				<input type="text" class="span6" name="keyword" id="keyword">
+			</div>
+		</div>
+		
+		<div id="geolocalisation-map-canvas" style="width:530px; height:300px"></div>
+	</div>
+	
+	<div class="modal-footer">
+	    <a href="#" class="btn" data-dismiss="modal">Close</a>
+	    <a href="#" class="btn btn-primary">Save changes</a>
+	</div>
+</div>
+-->
+
+
+<style>
+.pac-container {
+    background-color: #FFF;
+    z-index: 20;
+    position: fixed;
+    display: inline-block;
+    float: left;
+}
+#geolocalisation-map {
+ 	position: absolute;
+ 	left: 350px;
+ 	right: 0px;
+ 	top: 50%;
+ 	bottom: 0px;
+ 	z-index: 8;
+ 	border-top: 1px solid #000;
+}
+
+#geolocalisation-map.full {
+	top: 99px;
+}
+
+#geolocalisation-close-button.full #full-map-link,
+#geolocalisation-close-button.small #small-map-link {
+	display: none;
+}
+
+#geolocalisation-map img {
+	max-width: none;
+}
+
+#geolocalisation-keywords-container {
+	position: absolute;
+	left: 360px;
+	top: 51%;
+	z-index: 10;
+}
+
+#geolocalisation-close-button {
+	position: absolute;
+	top: 51%;
+	right: 5px;
+	z-index: 10;
+}
+
+#geolocalisation-close-button.full,
+#geolocalisation-keywords-container.full {
+	top: 108px;
+}
+
+#geolocalisation-keywords {
+
+}
+
+</style>
+
+*{if myContributions['UNUSABLE'] != null}
+<script type="text/javascript">
+	// Photo inutilisable
+	$(function() { displayUnusable(${myContributions['UNUSABLE'].id}) });
+</script>
+{/if}*
+
+<script type="text/javascript">
+
+function toFormat(val, type, format) {
+	
+	function toDD(val, type) {
+		var str = val;
+		return str;
+	}	
+	
+	function toDM(val, type) {
+		var neg = (val < 0);
+		val = Math.abs(val);
+		var d = Math.floor(val);
+		var m = (val - d) * 60;
+
+		var str = d + '°' + m + '\'';
+		if (type == 'lat') {
+			str += (neg ? 'N' : 'S');
+		} else {
+			str += (neg ? 'E' : 'W');
+		}
+		return str;
+	}
+	
+	function toDMS(val, type) {
+		var neg = (val < 0);
+		val = Math.abs(val);
+		var d = Math.floor(val);
+		var m = (val - d) * 60;
+		var s = (m - Math.floor(m)) * 60;
+		m = Math.floor(m);
+		s = Math.floor(s);
+
+		var str = d + '°' + m + '\'' + s + '"';
+		if (type == 'lat') {
+			str += (neg ? 'N' : 'S');
+		} else {
+			str += (neg ? 'E' : 'W');
+		}
+		return str;
+	}
+	
+	switch (format) {
+		case 'DMS': return toDMS(val, type);
+		case 'DM': return toDM(val, type);
+		default: return toDD(val, type);
+	}
+
+	
+}
+
+function toDecimal(val, type) {
+ 	if (!val) {
+ 		return 0;
+ 	}
+ 	var splits = val.split(/[^\d\.]/);
+ 	var decimal = 0;
+ 	var index = 0;
+ 	var neg = 1;
+ 	for (var i = 0, l = splits.length ; i < l ; i++) {
+ 		if (!splits[i]) continue;
+ 		decimal += parseFloat(splits[i]) / Math.pow(60, index);
+ 		index++;
+ 		if (index > 2) break;
+ 	}
+ 	
+ 	if (val.indexOf('S') >= 0 || 
+ 		val.indexOf('s') >= 0 || 
+ 		val.indexOf('W') >= 0 || 
+ 		val.indexOf('w') >= 0 || 
+ 		val.indexOf('O') >= 0 || 
+ 		val.indexOf('o') >= 0) {
+ 		neg = -neg;
+ 	}
+ 	
+ 	if (val.indexOf('-') >= 0) {
+ 		neg = -neg;
+ 	}
+ 	
+ 	var geoType = (type == 'lat' ? latType : lngType);
+ 	switch (index) {
+ 	case 1: geoType.value = 'DD'; break;
+ 	case 2: geoType.value = 'DM'; break;
+ 	case 3: geoType.value = 'DMS'; break;
+ 	default: geoType.value = ''; break;
+ 	}
+ 	return decimal * neg;
+}
+
+var geolocalisationMap = null;
+var geolocalisationMarker = null;
+
+var latField = document.getElementById('geolocalisation-latitude');
+var lngField = document.getElementById('geolocalisation-longitude');
+var latFieldUI = document.getElementById('geolocalisation-latitude-ui');
+var lngFieldUI = document.getElementById('geolocalisation-longitude-ui');
+var latType = document.getElementById('geolocalisation-latitude-type');
+var lngType = document.getElementById('geolocalisation-longitude-type');
+
+var keyup = false;
+
+var recenter = function() {
+	
+}
+
+latFieldUI.onkeyup = function() {
+	keyup = true;
+	latField.value = toDecimal(latFieldUI.value, 'lat');
+	recenter();
+//	marker.setPosition(new google.maps.LatLng(latField.value, lngField.value));
+//	map.setCenter(marker.getPosition());
+}
+lngFieldUI.onkeyup = function() {
+	keyup = true;
+	lngField.value = toDecimal(lngFieldUI.value, 'lng');
+	recenter();
+//	marker.setPosition(new google.maps.LatLng(latField.value, lngField.value));
+//	map.setCenter(marker.getPosition());
+}
+
+var initializeGeolocalisationMap = function(options) {
+	
+	var _options = options || {
+		editable: false,
+		otherMarkers: []
+	};
+	
+	var default_center;
+	var default_zoom;
+	var place_marker = false;
+	
+	if (latField.value && lngField.value) {
+		default_center = new google.maps.LatLng(latField.value, lngField.value);
+		default_zoom = 8;
+		place_marker = true;
+		
+	} else if (latField.value != '' && lngField.value != '') {
+		default_center = new google.maps.LatLng(latField.value, lngField.value);
+		default_zoom = 8;
+		place_marker = true;
+	} else {
+		// si pays
+		default_center = new google.maps.LatLng(45, 2);
+		default_zoom = 2;
+	}
+	
+    var map_options = {
+        center: default_center,
+        zoom: default_zoom,
+        mapTypeId: google.maps.MapTypeId.TERRAIN,
+        streetViewControl: false,
+        panControl: false,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: google.maps.ControlPosition.TOP_CENTER
+        },
+        zoomControlOptions: {
+          	position: google.maps.ControlPosition.RIGHT_BOTTOM
+        }
+    };
+
+    var map = new google.maps.Map(document.getElementById('geolocalisation-map'), map_options);
+
+    var defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(-6, 106.6),
+        new google.maps.LatLng(-6.3, 107)
+    );
+
+   var input = document.getElementById('geolocalisation-keywords');
+   var autocomplete = new google.maps.places.Autocomplete(input);
+   autocomplete.bindTo('bounds', map);
+
+   var marker = new google.maps.Marker({map: map});
+
+   marker.setDraggable(_options.editable);
+   
+   if (place_marker) {
+	   marker.setPosition(map.getCenter());
+   }
+   
+   // On ajoute les listeners si la map est ��ditable
+   if (_options.editable) {
+	   	// On centre le marker au changement de recherche
+	    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	        var place = autocomplete.getPlace();
+	
+	        if (place.geometry.viewport) {
+	            map.fitBounds(place.geometry.viewport);
+	        } else {
+	            map.setCenter(place.geometry.location);
+	            map.setZoom(15);
+	        }
+	
+	        marker.setPosition(place.geometry.location);
+	
+	    });
+	
+	   	google.maps.event.addListener(marker, 'position_changed', function() {
+	   		if (!keyup) {
+	   			latField.value = marker.getPosition().lat();
+		   		lngField.value = marker.getPosition().lng();
+		   		latFieldUI.value = toFormat(latField.value, 'lat', latType.value);
+		   		lngFieldUI.value = toFormat(lngField.value, 'lng', lngType.value);
+	   		}
+	   		keyup = false;
+	   		return true;
+	   	});
+	   		   	
+	    // On place le marker au clic
+	    google.maps.event.addListener(map, 'click', function(event) {
+	        marker.setPosition(event.latLng);
+	    });
+	   
+	    // override
+	    recenter = function() {
+	    	marker.setPosition(new google.maps.LatLng(latField.value, lngField.value));
+
+	    	map.setCenter(marker.getPosition());
+	    }
+	    
+	}
+
+    return map;
+}
+
+var geoMap = null;
+
+$(function() {
+	$('#hide-map-link').click(function() {
+		hideGeolocalisation();
+		return false;
+	});
+	$('#full-map-link').click(function() {
+		fullMap();
+		return false;
+	});
+	$('#small-map-link').click(function() {
+		smallMap();
+		return false;
+	});
+});
+
+function showGeolocalisation() {
+	$('#geolocalisation-map').show();
+	$('#map-container').css('bottom', '50%');
+	
+	var editable = $('[data-type="GEOLOCALISATION"]').hasClass('empty');
+	
+	geoMap = initializeGeolocalisationMap({ editable: editable });
+	
+	if (editable) {
+		$('#geolocalisation-keywords-container').show();
+	}
+	
+	$('#geolocalisation-close-button').show();
+	
+	$('#geolocalisation-bnt-close').click(function() {
+		hideGeolocalisation()
+	}).show();
+}
+function hideGeolocalisation() {
+	$('#geolocalisation-keywords-container').hide();
+	$('#geolocalisation-map').hide();
+	$('#geolocalisation-close-button').hide();
+	$('#map-container').css('bottom', '0px');
+}
+
+function smallMap() {
+	$('#geolocalisation-map, #geolocalisation-keywords-container, #geolocalisation-close-button')
+		.addClass('small')
+		.removeClass('full');
+	if (geoMap != null) {
+		google.maps.event.trigger(geoMap, 'resize');
+	}
+}
+
+function fullMap() {
+	$('#geolocalisation-map, #geolocalisation-keywords-container, #geolocalisation-close-button')
+		.addClass('full')
+		.removeClass('small');
+	if (geoMap != null) {
+		google.maps.event.trigger(geoMap, 'resize');
+	}
+}
+
+// Récupération asynchrone du prochain spécimen
+var _nextSpecimen = $.Deferred();
+var _nextSpecimenId = null;
+function computeNextSpecimen() {
+	_nextSpecimen = $.Deferred();
+	_nextSpecimenId = null;
+	var randomURL = '#';
+	$.ajax({
+		type: 'GET',
+		url: randomURL,
+		success: function(id) {
+			_nextSpecimenId = id;
+			_nextSpecimen.resolve();
+		}
+	});
+	$('.next-specimen-btn').click(function() {
+		$(this).text(i18n('btn.loading'));
+		$.when(_nextSpecimen).then(function() {
+			window.location.href = _nextSpecimenId;
+		})
+		return false;
+	});
+}
+
+//$(function() {
+	
+//	computeNextSpecimen();
+	
+//});
+
+#{if !specimen.displayed}
+function markDisplayed() {
+	$.post('@{Specimens.markDisplayed(id: specimen.id)}');
+}
+
+$(window).load(function() {
+	setTimeout(markDisplayed, ${herbonautes.specimenMarkedSeenDelay});
+})
+#{/if}
+</script>

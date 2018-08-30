@@ -1,0 +1,217 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+#{set 'moreScripts'}
+
+<script type="text/javascript" src="@{'/public/ckeditor/ckeditor.js'}"></script>
+<script type="text/javascript" src="@{'/public/ckeditor/adapters/jquery.js'}"></script>
+
+<script type="text/javascript">
+	function deleteQuestion(id) {
+			$('#delete-id').val(id);
+			$('#delete-form').submit();
+	}
+
+	$(function() {
+		var config = {
+			toolbar: #{include '/ckeditorToolbarSettings.html' /},
+			
+			*{ filebrowserImageBrowseUrl: '/contents/images/browse', }*
+			filebrowserImageUploadUrl: '@{Contents.imagesUpload()}'
+		};
+	
+		// Initialize the editor.
+		// Callback function can be passed and executed after full instance creation.
+		$('#description-field, #congratulations-field').ckeditor(config);
+	});
+
+	
+</script>
+#{/set}
+
+<style>
+#sortable {
+	list-style-type: none;
+	margin-left: 0;
+}
+#sortable li {
+	border: 1px solid #DDD;
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	background: #FAFAFA;
+}
+</style>
+
+<h2><small>&{'quiz.quiz'}</small> ${quiz.name}</h2>
+
+<div class="row">
+	<div class="span6">
+	
+		<h3>&{'quiz.information.general'}</h3>
+
+<!--
+<form class="form-horizontal">
+  <div class="control-group">
+    <label class="control-label" for="inputEmail">&{'quiz.email'}</label>
+    <div class="controls">
+      <input type="text" id="inputEmail" placeholder="Email">
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox"> &{'quiz.remember'}
+      </label>
+      <button type="submit" class="btn">&{'quiz.signin'}</button>
+    </div>
+  </div>
+</form> -->
+		
+		<br/>
+		
+		#{form 
+			action: @Quizzes.saveQuiz(quiz.name), 
+			method: 'POST', 
+			enctype: 'multipart/form-data', 
+			class: 'form-horizontal'}
+
+            <input name="quiz.unlockingLevel" type="hidden" value="0" />
+		
+			<div class="control-group">
+    			<label class="control-label" for="quiz-name">&{'quiz.name'}</label>
+    			<div class="controls">
+      				<input type="text" name="quiz.name" value="${quiz.name}" />
+    			</div>
+  			</div>
+
+            *{
+			<div class="control-group">
+    			<label class="control-label">&{'quiz.level'}</label>
+    			<div class="controls">
+		      		<select name="quiz.unlockingLevel">
+		      			<option value="0" ${quiz.unlockingLevel == 0 ? 'selected' : ''}>&{'quiz.mission.out'}</option>
+						#{list items: 2..6, as: 'level'}
+							<option value="${level}" ${quiz.unlockingLevel == level ? 'selected' : ''}>${level}</option>
+						#{/list}
+					</select>
+    			</div>
+  			</div>
+  			}*
+  			
+  			<div class="control-group">
+    			<label class="control-label">&{'quiz.title'}</label>
+    			<div class="controls">
+      				<input type="text" name="quiz.title" value="${quiz.title}" />
+    			</div>
+  			</div>
+  			
+  			<div class="control-group">
+    			<label class="control-label">&{'quiz.description'}</label>
+    			<div class="controls">
+      				<a class="btn btn-small" data-toggle="modal" href="#description-edit-modal">&{'quiz.description.edit'}</a>
+    			</div>
+  			</div>
+	
+			<div class="control-group">
+				<label class="control-label">&{'quiz.congratulation'}</label>
+				<div class="controls">
+					<a class="btn btn-small" data-toggle="modal" href="#congratulations-edit-modal">&{'quiz.congratulation.edit'}</a>
+				</div>
+			</div>
+	
+			<div class="control-group">
+    			<label class="control-label"></label>
+    			<div class="controls">
+      				<input type="submit" value="&{'btn.save'}" class="btn btn-success"/>
+    			</div>
+  			</div>
+			
+			<div class="modal large-modal hide" id="description-edit-modal">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal">x</button>
+			    <h3>&{'quiz.description.firstpage'}</h3>
+			  </div>
+			  <div class="modal-body">
+				<textarea class="jquery_ckeditor" id="description-field" name="quiz.description" style="width:100%; height: 350px">${quiz.description?.raw()}</textarea>
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn" data-dismiss="modal">&{'btn.save'}</a>
+			  </div>
+		</div>
+		
+		<div class="modal large-modal hide" id="congratulations-edit-modal">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal">x</button>
+			    <h3>&{'quiz.description.lastpage'}</h3>
+			  </div>
+			  <div class="modal-body">
+				<textarea class="jquery_ckeditor" id="congratulations-field" name="quiz.congratulations" style="width:100%; height: 350px">${quiz.congratulations?.raw()}</textarea>
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn btn-success" data-dismiss="modal">&{'btn.save'}</a>
+			  </div>
+		</div>
+		
+		
+		#{/form}
+		
+	</div>
+	<div class="span6">
+	
+		<h3>&{'quiz.questions'}</h3>
+		
+		<br/>
+		<p>&{'quiz.move'}</p>
+		
+		#{if quiz.questions}
+			<ul id="sortable">
+			#{list items: quiz.questions, as: 'question'}
+				<li data-question-id="${question.id}">
+					<i class="icon-align-justify"></i>
+					<a href="@{Quizzes.editQuestion(quiz.name, question.id)}">${question.text}</a>
+					<a href="#" onclick="deleteQuestion(${question.id})"><i class="icon-remove"></i></a>
+				</li>
+			#{/list}
+			</ul>
+		#{/if}
+		#{else}
+			<p>&{'quiz.no.question'}</p>
+		#{/else}
+		
+		<a href="@{Quizzes.blankQuestion(quiz.name)}" class="btn btn-small"><i class="icon-plus-sign"></i> &{'quiz.new.question'}</a>
+		
+	</div>
+</div>
+
+#{form action: @Quizzes.deleteQuestion(name:quiz.name),
+	method: 'POST',
+	class: 'hide',
+	id: 'delete-form'}
+	<input type="hidden" name="id" id="delete-id" />
+#{/form}
+
+<script type="text/javascript">
+$(function() {
+	$('#sortable').sortable({
+		update: function(event, ui) {
+			var sort = [];
+			$('#sortable li').each(function (i, elt) {
+				var missionId = $(elt).data('question-id');
+				if (missionId) {
+					sort[i] = missionId;
+				}
+				$.ajax({
+					url: '@{Quizzes.saveSort(quiz.name)}',
+					type: 'post',
+					data: {
+						sort: sort
+					}
+				});
+			});
+		}
+	});
+	$( "#sortable" ).disableSelection();
+})
+</script>

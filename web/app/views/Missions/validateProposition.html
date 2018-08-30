@@ -1,0 +1,209 @@
+﻿#{extends 'main.html' /} 
+#{set title: herbonautes.titleSep + herbonautes.title /}
+
+#{if connectedLogin}
+	<script type="text/javascript" src="@{'/public/ckeditor/ckeditor.js'}"></script>
+	<script type="text/javascript" src="@{'/public/ckeditor/adapters/jquery.js'}"></script>
+
+	<script type="text/javascript">
+
+		$(function() {
+			var config = {
+				toolbar: #{include '/ckeditorToolbarSettings.html' /},
+
+			*{ filebrowserImageBrowseUrl: '/contents/images/browse', }*
+				filebrowserImageUploadUrl: '@{Contents.imagesUpload()}'
+			};
+
+			// Initialize the editor.
+			// Callback function can be passed and executed after full instance creation.
+			$('#presentation-field, #report-field').ckeditor(config);
+		});
+
+
+	</script>
+
+	<div class=page-header">
+		<h1>&{'mission.tab.proposition.mission'}</h1>
+	</div>
+
+
+
+	<div class="row">
+		<div class="span8">
+			<form class="form-horizontal">
+				<fieldset>
+					<legend>&{'mission.tab.description'}</legend>
+
+					#{field 'mission.title'}
+						<div class="control-group ${field.errorClass}">
+							<label class="control-label" for="${field.id}">&{field.name}</label>
+							<div class="controls">
+								<input
+										name="${field.name}"
+										type="text"
+										class="input-xlarge"
+										id="${field.id}"
+										value="${mission.title}" disabled="disabled" />
+
+							</div>
+						</div>
+					#{/field}
+
+					#{field 'mission.shortDescription'}
+						<div class="control-group ${field.errorClass}">
+							<label class="control-label" for="${field.id}">&{field.name}</label>
+							<div class="controls">
+										<textarea
+												name="${field.name}"
+												class="input-xlarge"
+												id="${field.id}" disabled="disabled" >${mission.shortDescription}</textarea>
+
+							</div>
+						</div>
+					#{/field}
+
+					#{field 'mission.principalTagString'}
+                        <div class="control-group ${field.errorClass}">
+                            <label class="control-label" for="${field.id}">&{field.name}</label>
+                            <div class="controls">
+										<textarea
+                                                name="${field.name}"
+                                                class="input-xlarge"
+                                                id="${field.id}" disabled="disabled" >${mission.principalTagString}</textarea>
+
+                            </div>
+                        </div>
+					#{/field}
+
+					<div class="control-group">
+						<label class="control-label">&{'mission.tab.description'}</label>
+						<div class="controls">
+							<a class="btn btn-small" data-toggle="modal" href="#presentation-edit-modal">&{'btn.visualize'}</a>
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Configuration</legend>
+
+					#{field 'mission.lang'}
+						<div class="control-group ${field.errorClass}">
+							<label class="control-label" for="${field.id}">&{field.name}</label>
+							<div class="controls">
+								<input
+										name="${field.name}"
+										type="text"
+										class="input-xlarge"
+										id="${field.id}"
+										value="&{'lang.' + mission.lang.trim()}" disabled="disabled" />
+
+							</div>
+						</div>
+					#{/field}
+
+
+					#{field 'mission.goal'}
+						<div class="control-group ${field.errorClass}">
+							<label class="control-label" for="${field.id}">&{field.name}</label>
+							<div class="controls">
+								<div class="input-append">
+									<input
+											name="${field.name}"
+											type="text"
+											class="input-xlarge"
+											id="${field.id}"
+											value="${mission.goal}"
+											disabled="disabled" />
+									<span class="add-on">&{'mission.tab.contribution'}</span>
+								</div>
+
+							</div>
+						</div>
+					#{/field}
+
+
+					#{field 'mission.openingDate'}
+						<div class="control-group ${field.errorClass}">
+							<label class="control-label" for="${field.id}">&{field.name}</label>
+							<div class="controls">
+								<input
+										name="${field.name}"
+										type="text"
+										placeholder="DD/MM/YYYY"
+										id="${field.id}"
+										value="${mission.openingDate?.format()}" disabled="disabled" />
+
+							</div>
+						</div>
+					#{/field}
+
+				</fieldset>
+
+                <fieldset>
+                    <legend>Gestion des spécimens</legend>
+
+                    <p>
+						%{
+							total = mission.id == null ? 0 : mission.getTotalSpecimensCount();
+						}%
+						#{if total < 2}
+							&{'mission.nb.specimens.one', total}
+						#{/if}
+						#{else}
+							&{'mission.nb.specimens.many', total}
+						#{/else}
+
+					</p>
+                    <a href="#" id="cartButton" class="btn btn-small"><i class="icon-shopping-cart"></i> &{'mission.specimens.cart.btn'}</a>
+
+                </fieldset>
+
+			</form>
+		</div>
+
+		<div class="span4" style="text-align:right">
+
+			#{form action: @Missions.validateProposition(), method: 'POST', class: 'inline-form', id: 'propositionForm', enctype: 'multipart/form-data'}
+				<input type="hidden" name="id" value="${mission.id}" />
+				<button class="btn btn-success" type="submit">&{'mission.btn.mission.proposition.validate'}</button>
+			#{/form}
+
+			#{form action: @Missions.reject(), method: 'POST', class: 'inline-form', enctype: 'multipart/form-data'}
+                <input type="hidden" name="id" value="${mission.id}" />
+				<button class="btn" type="submit">&{'mission.tab.cancel'}</button>
+			#{/form}
+
+
+		</div>
+
+	</div>
+
+
+	<div class="modal large-modal hide" id="presentation-edit-modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">x</button>
+			<h3>&{'mission.tab.mission.presentation.visualize'}</h3>
+		</div>
+		<div class="modal-body">
+			<textarea class="jquery_ckeditor" id="presentation-field"   name="mission.presentation" style="width:100%; height: 350px">${mission.presentation?.raw()}</textarea>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">&{'btn.close'}</a>
+		</div>
+
+	</div>
+
+	<script>
+		$('#cartButton').click(function(){
+			$('#propositionForm').attr('action', #{jsAction @Missions.propositionCartValidation() /});
+			$('#propositionForm').submit();
+		});
+	</script>
+
+#{/if}
+#{else }
+&{'connect.need.display.page'}
+#{/else}
+
+

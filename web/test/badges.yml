@@ -1,0 +1,7 @@
+#Badges
+
+badges.CollectorBadge(collector):
+    user: jon
+    
+badges.BotanistBadge(botanist):
+    user: jon

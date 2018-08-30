@@ -1,0 +1,39 @@
+#{extends 'main.html' /}
+#{set title: 'Admin liens' + herbonautes.titleSep + herbonautes.title /}
+
+<div class="row">
+	<div class="span12">
+
+		<h2>Liens</h2>
+				
+		<a href="@{Links.blank()}" class=" btn btn-small"><i class="icon-plus"></i> &{'link.add'}</a>
+	
+		<table class="table">
+			<thead>
+				<th>&{'link.lang'}</th>
+				<th>&{'link.title'}</th>
+				<th>&{'link.url'}</th>
+				<th>&{'header.about'}</th>
+				<th></th>
+			</thead>
+			<tbody>
+				#{list items: links, as: 'link'}
+				<tr>
+					<td>${link.lang}</td>
+					<td>${link.title}</td>
+					<td>${link.url}</td>
+					<td>#{if link.headerlink}<i class="icon-ok-sign"></i>#{/if}</td>
+					<td>
+						<a href="@{Links.edit(link.id)}">&{'link.edit'}</a> |
+						<a href="@{Links.delete(link.id)}">&{'link.delete'}</a>
+					</td>
+				</tr>
+				#{/list}
+			</tbody>
+		</table>
+		
+	
+	</div>
+	<div class="span2">
+	</div>
+</div>

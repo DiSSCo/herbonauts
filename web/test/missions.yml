@@ -1,0 +1,22 @@
+# Missions
+
+Mission(bonite):
+    title: Le voyage de "la Bonite"
+    description: Analyse des spécimens récoltés lors du tour du monde de la Bonite au 19ème.
+    openingDate: 8/8/2012
+    leader: jon
+    users:
+        - tim
+    specimens:
+        - P001
+        - P002
+
+Mission(orchidees):
+    title: Les orchidées en France
+    description: Identification des orchidées récoltées en France.
+    openingDate: 2/2/2012
+    leader: jon
+    users:
+        - jon
+    specimens:
+        - P003

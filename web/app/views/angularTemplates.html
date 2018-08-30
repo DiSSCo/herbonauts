@@ -1,0 +1,433 @@
+<script type="text/ng-template" id="question-help.html">
+    <b>Lorem ipsum</b>
+</script>
+
+
+<script type="text/ng-template" id="templates/question-unusable.html">
+
+    <a disabled class="btn btn-small" ng-if="disable()"
+            popover-placement="{{'right'}}"
+            popover-trigger="mouseenter"
+            popover-title="&{'btn.unusable.picture'}"
+            popover="&{'btn.unusable.picture.disable'}"
+            popover-append-to-body="true">
+        <i class="icon-ban-circle"></i> &{'btn.unusable.picture'}
+    </a>
+
+    <a ng-click="openUnusableModal()"
+       ng-if="!markedUnusable() && !disable()"
+       ng-class="{'btn btn-small' : true, 'btn-danger': unusableOver}"
+       ng-mouseover="unusableOver = true"
+       ng-mouseout="unusableOver = false"
+
+       popover-placement="{{popoverPlacement || 'right'}}"
+       popover-trigger="mouseenter"
+       popover-title="{{ question.label }}"
+       popover-html-unsafe="{{ question.helpHTML || ' ' }}"
+       popover-append-to-body="true" ><i ng-class="{'icon-trash' : true, 'icon-white': unusableOver}"></i> &{'btn.unusable.picture'}</a>
+
+    <a ng-click="cancel()"
+       ng-if="markedUnusable() && !disable()"
+       ng-class="{'btn btn-small' : true, 'btn-danger': !unusableOver}"
+       ng-mouseover="unusableOver = true"
+       ng-mouseout="unusableOver = false" style="width:130px">
+        <span ng-hide="unusableOver"><i class="icon-check icon-white"></i> &{'btn.unusable.picture'}</span>
+        <span ng-show="unusableOver"><i class="icon-share"></i> &{'btn.cancel'}</span>
+    </a>
+
+
+</script>
+
+<script type="text/ng-template" id="modal-unusable.html">
+
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">×</button>
+        <h3>Pour quelle raison la photo est-elle inutilisable ?</h3>
+    </div>
+    <div class="modal-body">
+        <form method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" id="unusable-form" class="ng-pristine ng-valid">
+
+            *{
+            <label><input type="radio" ng-model="answer.cause" value="0"> Pas de spécimen</label>
+            <label><input type="radio" ng-model="answer.cause" value="1"> Trop de spécimens</label>
+            <label><input type="radio" ng-model="answer.cause" value="2"> Pas d'étiquette</label>
+            <label><input type="radio" ng-model="answer.cause" value="3"> Trop d'étiquettes</label>
+            <label><input type="radio" ng-model="answer.cause" value="4"> Plante cultivée</label>
+            }*
+
+            <label ng-repeat="cause in causes"><input type="radio" ng-model="answer.cause" value="{{cause.value}}"> {{cause.value}}</label>
+
+        </form>	</div>
+    <div class="modal-footer">
+        <a class="btn" ng-click="cancel()">Annuler</a>
+        <a class="btn btn-success" ng-click="submit()">Confirmer</a>
+    </div>
+
+</script>
+
+
+
+
+<script type="text/ng-template" id="templates/question-dynamic.html">
+
+    <div ng-mouseover="showHiddenLinks = true" ng-mouseout="showHiddenLinks = false" 
+            *{ng-class="{ 'lock': isStatus('lock'), 'done': isStatus('done') }"}*>
+
+        <h4 class="title" ng-click="toggleQuestion(question)" ng-mouseover="showToggle = true" ng-mouseout="showToggle = false">
+            {{question.label}}
+            <a href="#" class="box-link close-box-link" ng-show="showToggle && isOpened(question)"><i class="icon-chevron-up"></i></a>
+            <a href="#" class="box-link open-box-link" ng-hide="!showToggle || isOpened(question)"><i class="icon-chevron-down"></i></a>
+        </h4>
+
+        <span class="lock-cause"></span>
+
+        <div ng-hide="isOpened(question)">
+            <div ng-show="question._validated">
+                *{
+                <em><answer-box question="question" answer="question._stat.validAnswer.jsonValue" specimen="specimen"></answer-box></em>
+                }*
+            </div>
+        </div>
+
+        <div ng-show="isOpened(question)">
+
+            <div ng-show="isStatus('lock')">
+                <span ng-show="question.minLevel > user.level">
+                    <em>Niveau {{ question.minLevel }} requis</em>
+                </span>
+                <span ng-show="question.minLevel <= user.level"><em>Quiz {{ question.neededQuiz.title }} requis</em>
+                    <a ng-href="{{ startQuizAction(question.neededQuiz.name) }}" ng-click="passQuiz(question)" class="btn btn-info btn-mini">Passer le quiz</a>
+                </span>
+            </div>
+
+            <div ng-show="isSubmitted()">
+                <em><answer-box question="question" answer="question._answer" specimen="specimen"></answer-box></em>
+            </div>
+
+            <div ng-hide="isSubmitted()">
+
+                <form id="form-{{ question.name }}" method="post" ng-submit="submit()" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="contribution-form" >
+
+                    <div ng-repeat="questionLine in question.configuration">
+
+                        <div ng-show="isVisible(questionLine)">
+
+
+
+                            <span ng-if="questionLine.type == 'list'">
+                                <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                 <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+
+                                <span ng-if="questionLine.options.display == 'combobox'">
+                                  <select ng-model="question._answer[questionLine.name]" ng-focus="clearError(questionLine.name)">
+                                        <option ng-selected="!question._answer[questionLine.name]" value="">Selectionnez une valeur</option>
+                                        <option ng-repeat="choice in questionLine.options.choice" ng-value="choice.value">{{choice.value}}</option>
+                                  </select>
+                                </span>
+                                <span ng-if="questionLine.options.display == 'radio'">
+                                    <span ng-repeat="choice in questionLine.options.choice">
+                                        <input ng-focus="clearError(questionLine.name)" type="radio"
+                                               ng-model="question._answer[questionLine.name]" ng-value="choice.value"> {{choice.value}}
+                                    </span>
+                                </span>
+                            </span>
+
+                            <span ng-if="questionLine.type == 'reference'">
+                                <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+
+                                <span ng-if="questionLine.options.display == 'combobox'">
+                                       *{    }*
+
+                                    <select ng-focus="clearError(questionLine.name)"
+                                            ng-class="{ 'error': question._errors[questionLine.name] }"
+                                            ng-model="question._answer[questionLine.name]"
+                                            ng-change="onUpdateReferenceRecords(questionLine)"
+                                            ng-options="{id:record.id,label:record.label} as record.label for record in referenceRecords[question.name][questionLine.name] track by record.id">
+
+
+                                    </select>
+
+                                       *{
+                                    <select ng-focus="clearError(questionLine.name)"
+                                            ng-class="{ 'error': question._errors[questionLine.name] }"
+                                            ng-model="question._answer[questionLine.name]"
+                                            ng-options="{id:record.id,label:record.label} as record.label for record in referenceRecords[questionLine.options.reference] track by record.id">
+                                        * {
+                                        <option ng-selected="!question._answer[questionLine.name]">Selectionnez une valeur</option>
+                                        <option ng-repeat="" ng-value="{{ { id: record.id, label: record.label } }}">{{record.label}}</option>
+                                        } *
+                                    </select>
+                                    }*
+                                </span>
+
+                                <span ng-if="questionLine.options.display == 'autocomplete' && !questionLine.options.multiple">
+
+                                    <input type="text"
+                                           placeholder="{{ questionLine.options.placeholder }}"
+                                           ng-focus="clearError(questionLine.name)"
+                                           ng-model="question._answer[questionLine.name]"
+                                           typeahead-on-select="onUpdateReferenceRecords(questionLine)"
+                                           ng-class="{ 'error': question._errors[questionLine.name] }"
+                                           typeahead="{ label: r.label, id: r.id } for r in suggestReferenceRecord(questionLine, $viewValue)"
+                                           typeahead-input-formatter="$model.label"
+                                           typeahead-template-url="reference-item-template.html"
+                                           typeahead-editable="true">
+
+                                </span>
+
+                                <span ng-if="questionLine.options.display == 'autocomplete' && questionLine.options.multiple">
+
+
+                                    <div sortable-list items="question._answer[questionLine.name].values" handle="'.sort-handle'">
+
+                                        <div ng-repeat="answerItem in question._answer[questionLine.name].values track by $index">
+
+                                            <span class="sort-handle" ng-show="questionLine.options.sortable && question._answer[questionLine.name].values && question._answer[questionLine.name].values.length > 1 && !question._answer[questionLine.name].unknownOrder"><i class="icon-th-list"></i></span>
+
+
+                                            <input type="text"
+                                                   placeholder="{{ questionLine.options.placeholder }}"
+                                                   ng-focus="clearError(questionLine.name)"
+                                                   ng-model="question._answer[questionLine.name].values[$index]"
+                                                   ng-class="{ 'error': question._errors[questionLine.name], 'warning': warningReferenceInput(questionLine, question._answer[questionLine.name].values[$index]) }"
+                                                   typeahead="{ label: r.label, id: r.id } for r in suggestReferenceRecord(questionLine, $viewValue)"
+                                                   typeahead-input-formatter="formatLabel($model)"
+                                                   typeahead-template-url="reference-item-template.html"
+                                                   typeahead-editable="true">
+
+
+                                            <a tooltip-placement="right" tooltip="Valeur invalide" tooltip-trigger="mouseenter"><i class="icon-exclamation-sign icon-warning"
+                                                   ng-show="warningReferenceInput(questionLine, question._answer[questionLine.name].values[$index])"
+                                                   ></i></a>
+
+                                            <a ng-click="removeAnswerItem(questionLine, $index)"><i class="icon-trash"></i></a>
+
+                                        </div>
+                                    </div>
+                                    <button ng-click="addAnswerItem(questionLine)" class="btn btn-mini" type="button">{{ questionLine.options.buttonLabel }}</button>
+                                    <span ng-if="questionLine.options.sortable && question._answer[questionLine.name].values && question._answer[questionLine.name].values.length > 1">&nbsp;&nbsp;<label style="display:inline"><input type="checkbox" ng-model="question._answer[questionLine.name].unknownOrder" /> <small>Ordre inconnu</small></label></span>
+                                     <br/><br/>
+                                </span>
+                            </span>
+
+                            <span ng-if="questionLine.type == 'checkbox'">
+                                <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+                                <label>
+                                    <input type="checkbox" ng-model="question._answer[questionLine.name]" ng-class="{ 'error': question._errors[questionLine.name] }" />
+                                    <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                </label>
+                            </span>
+
+                            <span ng-if="questionLine.type == 'date'">
+                                <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+                                <input type="text" placeholder="JJ/MM/AAAA" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name].raw" ng-class="{ 'error': question._errors[questionLine.name] }"/>
+                            </span>
+
+                            <span ng-if="questionLine.type == 'period'">
+                                <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+                                <input type="text" placeholder="Date ou période (JJ/MM/AAAA)" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name].start.raw" ng-class="{ 'input-half': showEndDate(question._answer[questionLine.name]), 'error': question._errors[questionLine.name] }" />
+                                <input type="text" ng-show="showEndDate(question._answer[questionLine.name])" placeholder="Date de fin" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name].end.raw" ng-class="{ 'input-half': true, 'error': question._errors[questionLine.name] }" />
+                            </span>
+
+                            <span ng-if="questionLine.type == 'text' && !questionLine.options.multiple">
+                                <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+                                <input type="text" placeholder="{{questionLine.options.placeholder}}" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name]" ng-class="{ 'error': question._errors[questionLine.name] }"/>
+                            </span>
+
+                            <span ng-if="questionLine.type == 'text' && questionLine.options.multiple">
+
+                                *{
+                                <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                <div sortable-list items="question._answer[questionLine.name]" handle="'.sort-handle'">
+                                <div ng-repeat="answerItem in question._answer[questionLine.name] track by $index">
+                                    <span class="sort-handle">==</span>
+                                    <input type="text" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name][$index]" />
+                                </div>
+                                </div>
+                                <button ng-click="addAnswerItem(questionLine)" type="button">Ajouter</button>
+                                }*
+
+
+                                <div sortable-list items="question._answer[questionLine.name].values" handle="'.sort-handle'">
+
+                                    <div ng-repeat="answerItem in question._answer[questionLine.name].values track by $index">
+
+                                        <span class="sort-handle" ng-show="questionLine.options.sortable && question._answer[questionLine.name].values && question._answer[questionLine.name].values.length > 1 && !question._answer[questionLine.name].unknownOrder"><i class="icon-th-list"></i></span>
+
+                                        <input type="text" placeholder="{{ questionLine.options.placeholder }}" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name].values[$index]" />
+
+                                        <a tooltip-placement="right" tooltip="Valeur invalide" tooltip-trigger="mouseenter"><i class="icon-exclamation-sign icon-warning"
+                                                                                                                               ng-show="warningReferenceInput(questionLine, question._answer[questionLine.name].values[$index])"
+                                                ></i></a>
+
+                                        <a ng-click="removeAnswerItem(questionLine, $index)"><i class="icon-trash"></i></a>
+
+                                    </div>
+                                </div>
+                                <button ng-click="addAnswerItem(questionLine)" class="btn btn-mini" type="button">{{ questionLine.options.buttonLabel }}</button>
+                                <span ng-if="questionLine.options.sortable && question._answer[questionLine.name].values && question._answer[questionLine.name].values.length > 1">&nbsp;&nbsp;<label style="display:inline"><input type="checkbox" ng-model="question._answer[questionLine.name].unknownOrder" /> <small>Ordre inconnu</small></label></span>
+                                 <br/><br/>
+
+                            </span>
+
+                            <span ng-if="questionLine.type == 'geo'">
+                                <dynamic-content template="questionLine.label" context="context"></dynamic-content>
+                                <p ng-if="question._errors[questionLine.name]" class="error-message">{{ question._errors[questionLine.name] }}</p>
+                                <div class="input-append">
+                                    <input type="text" class="input-small" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name].lat" />
+                                    <input type="text" class="input-small" ng-focus="clearError(questionLine.name)" ng-model="question._answer[questionLine.name].lng" />
+                                    <button ng-if="questionLine._map && showMap" type="button" ng-click="showMap(questionLine)" class="btn btn-small">
+                                        <span ng-show="questionLine._map.status == 'hidden'"><i class="icon-resize-full"></i> Carte</span>
+                                        <span ng-hide="questionLine._map.status == 'hidden'"><i class="icon-resize-small"></i> Carte</span>
+                                    </button>
+                                </div>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="buttons">
+                        <input type="submit" class="btn btn-small btn-success" value="Valider" />
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="hidden-links" ng-show="showHiddenLinks">
+            <a class="remove-link done" ng-click="cancel()" ng-show="isSubmitted()"><i class="icon-trash"></i></a>
+        </div>
+        <div ng-show="isStatus('done')"         class="status done"><i class="icon-ok-circle"></i></div>
+        <div ng-show="isStatus('unusable')"     class="status unusable"><i class="icon-ban-circle"></i></div>
+        <div ng-show="isStatus('lock')"         class="status lock"><i class="icon-lock"></i></div>
+        <div ng-show="isStatus('pending')"      class="status pending"><i class="icon-lock"></i></div>
+        <div ng-show="isStatus('conflicts') && isSubmitted()"    class="status conflicts"><i ng-click="clickShowConflicts()" class="icon-warning-sign"></i></div>
+        <div ng-show="isStatus('complete')"     class="status complete"><i class="icon-ok-sign"></i></div>
+
+        <div ng-hide="isSubmitted()" class="help"
+             popover-placement="{{popoverPlacement || 'right'}}"
+             popover-trigger="mouseenter"
+             popover-title="{{ question.label }}"
+             popover-html-unsafe="{{ question.helpHTML || ' ' }}"
+             popover-append-to-body="true"><a href="#" >&{'contribution.help'} <i class="icon-question-sign"></i></a></div>
+        <div class="loading" ng-show="question._loading"></div>
+    </div>
+
+</script>
+
+
+
+<script type="text/ng-template" id="templates/answer-dynamic-html.html">
+
+    <div ng-repeat="conf in question.configuration" ng-if="isVisible(conf)">
+
+        <span ng-if="conf.type == 'reference'">
+            <span ng-if="!conf.options.multiple">
+                <span ng-if="!answer[conf.name] && conf.options.mandatory"><em>Réponse vide</em></span>
+                <span ng-if="answer[conf.name]">{{ answer[conf.name].label }}</span>
+            </span>
+            <span ng-if="conf.options.multiple && answer[conf.name].values.length > 0">
+                <ul ng-if="answer[conf.name].unknownOrder">
+                    <li ng-repeat="val in answer[conf.name].values track by $index">
+                        {{ val.label }}
+                    </li>
+                </ul>
+                <ol ng-if="!answer[conf.name].unknownOrder">
+                    <li ng-repeat="val in answer[conf.name].values track by $index">
+                        {{ val.label }}
+                    </li>
+                </ol>
+            </span>
+            *{
+            <span ng-if="conf.options.multiple && answer[conf.name].values.length == 0">
+                <em>Réponse vide</em>
+            </span>
+            }*
+        </span>
+
+        <span ng-if="conf.type == 'checkbox'">
+           <span class="label" ng-if="answer[conf.name]">
+                <dynamic-content template="conf.label" context="context"></dynamic-content>
+           </span>
+        </span>
+
+        <span ng-if="conf.type == 'text'">
+            <span ng-if="answer[conf.name]">{{ answer[conf.name] }}</span>
+            <span ng-if="!answer[conf.name] && conf.options.mandatory"><em>Réponse vide</em></span>
+        </span>
+
+        <span ng-if="conf.type == 'date'">
+            <span ng-if="answer[conf.name]">{{ formatDate(answer[conf.name].ts) }}</span>
+            <span ng-if="!answer[conf.name]"><em>Réponse vide</em></span>
+        </span>
+
+         <span ng-if="conf.type == 'period'">
+            <span ng-if="answer[conf.name]">{{ formatPeriod(answer[conf.name].start.ts, answer[conf.name].end.ts) }}</span>
+            <span ng-if="!answer[conf.name]"><em>Réponse vide</em></span>
+        </span>
+
+         <span ng-if="conf.type == 'geo'">
+             <i class="icon-screenshot"></i> <b>Lat</b> {{ answer[conf.name].lat | number:3 }} , <b>Lng</b> {{ answer[conf.name].lng | number:3}}
+         </span>
+
+
+
+         <span ng-if="conf.type != 'period' && conf.type != 'geo' && conf.type != 'date' && conf.type != 'reference' && conf.type != 'checkbox' && conf.type != 'text'">
+            *{ {{ conf.name }} : }*
+            {{ answer[conf.name] }}
+         </span>
+
+    </div>
+
+</script>
+
+
+<script type="text/ng-template" id="templates/answer-dynamic-json.html">
+
+    <pre><code>{{ answerJson() }}</code></pre>
+
+</script>
+
+
+<script type="text/ng-template" id="reference-item-template.html">
+    <a>
+        <span ng-bind-html="match.model.label | typeaheadHighlight:query"></span>
+    </a>
+</script>
+
+
+<script type="text/ng-template" id="templates/geolocalisation-map.html">
+
+    <div class="geolocalisation-wrapper" ng-class="{ 'full': checkMapStatus('full') , 'half': checkMapStatus('half') , 'hidden' : checkMapStatus('hidden')  }">
+
+    *{ DIRECTIVE !!! }*
+        <div class="geolocalisation-map-container"></div>
+
+
+        <div class="geolocalisation-keywords-container" class="small">
+            <input type="text" id="geolocalisation-keywords" value=""
+                   ng-class="{'searching': searching}"
+                   ng-model="geolocationQuery" ng-focus="showSuggestions = true" />
+
+            <div ng-show="showSuggestions" class="geolocation-suggestions">
+
+                <div ng-repeat="suggestion in geolocationSuggestions" ng-click="placeSuggestionMarker(suggestion)">
+                    {{ suggestion.display_name }}
+                </div>
+            </div>
+        </div>
+        <div class="geolocalisation-buttons">
+            <a ng-hide="checkMapStatus('full') || checkMapStatus('hidden')" ng-click="conf._map.status = 'full'"><i class="icon-resize-full"></i></a>
+            <a ng-hide="checkMapStatus('half') || checkMapStatus('hidden')" ng-click="conf._map.status = 'half'"><i class="icon-resize-small"></i></a>
+            <a ng-hide="checkMapStatus('hidden')" ng-click="conf._map.status = 'hidden'"><i class="icon-remove"></i></a>
+        </div>
+    </div>
+
+
+</script>

@@ -1,0 +1,6 @@
+# Contents
+
+Content(presentation):
+    name: presentation
+    lang: fr
+    text: Premier texte de présentation avec un <a href="#">lien</a>

@@ -1,0 +1,13 @@
+#{extends 'mailLayout.html' /}
+
+<h1>&{'mail.alerts.title'}</h1>
+		
+<p>&{'mail.alerts.content'}</p>
+
+<ul>
+	#{list items: alerts, as: 'alert'}
+		<li>#{alertText alert, absoluteURL: true /}</li>
+	#{/list}
+</ul>
+
+

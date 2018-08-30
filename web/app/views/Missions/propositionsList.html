@@ -1,0 +1,33 @@
+#{extends 'main.html' /}
+#{set title: herbonautes.titleSep + herbonautes.title /}
+
+#{list items:propositions, as:'proposition'}
+    <div class="mission-box-index">
+        <table class="mission-table">
+            <tr>
+                <td class="description">
+                    <h4 class="mission-title">
+                        <a href="@{Missions.displayPropositionValidationForm(proposition.id)}">${proposition.title}</a>
+                    </h4>
+                    <p>${proposition.shortDescription}</p>
+
+					<br/>
+					<span>&{'mission.proposed.by'}: </span><span class="label label-info">${proposition.leader.login}</span>
+                </td>
+                <td style="text-align: right;">
+				    <div class="goal">
+					<span style="font-weight: bold;">&{'mission.goal'} :</span> ${proposition.goal} &{'mission.contributions'}
+                    </div>
+                    <div class="button">
+						<br />
+                        <a href="@{Missions.displayPropositionValidationForm(proposition.id)}" class="btn btn-primary">&{'mission.proposition.view'}</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+#{/list}
+#{if propositions.size() == 0}
+    <div style="text-align: center; margin-top: 10px; font-size: 14px;" class="noResults">&{'mission.propositions.no.result'}</div>
+#{/if}

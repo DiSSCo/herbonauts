@@ -1,0 +1,166 @@
+#{extends 'main.html' /}
+#{set title: '' /}
+
+<div ng-controller="MissionSettingsCartCtrl" ng-init="init(${mission.id})">
+
+
+    <div class="row">
+
+        <div class="span8">
+            <h2>${mission.title} <small>Gestion des spécimens</small></h2>
+            <a href="@{Missions.settings(mission.id)}?tab=cart" class="btn btn-small">Retour gestion de la mission</a>
+        </div>
+
+        <div class="span4">
+            <i class="icon-shopping-cart"></i> <b>Panier</b> (<a data-toggle="modal" href="#cart-details-modal">Détail</a>)<br/>
+            {{ specimenCount() }} spécimen<span ng-show="specimenCount() > 1">s</span><br/>
+            dans {{ queryCount() }} recherche<span ng-show="queryCount() > 1">s</span><br/>
+            <a class="btn btn-mini" ng-click="validateCart()" ng-hide="loading">
+                <span>Verser les spécimens dans la mission</span>
+            </a>
+            <a class="btn btn-mini disabled" ng-show="loading">
+                <span>Versement en cours...</span>
+            </a>
+        </div>
+
+    </div>
+
+    <hr/>
+
+
+    <div class="row">
+
+        <div class="span3">
+            <h3>Recherche</h3>
+
+            <br/>
+
+            <form ng-submit="newSearch()">
+
+
+                *{
+                <input type="text" placeholder="Collection" ng-model="q['C_COLLECTIONNAME']"     ng-change="suggest('C_COLLECTIONNAME')"/>
+                <input type="text" placeholder="Famille"    ng-model="q['T_FAMILY']"             ng-change="suggest('T_FAMILY')"/>
+                <input type="text" placeholder="Genre"      ng-model="q['T_GENUS']"              ng-change="suggest('T_GENUS')"/>
+                <input type="text" placeholder="Espèce"     ng-model="q['T_SPECIFICEPITHET']"    ng-change="suggest('T_SPECIFICEPITHET')"/>
+                }*
+
+                *{
+
+                <input type="text" placeholder="Collection" ng-model="q['C_COLLECTIONNAME']" typeahead="suggestion.key for suggestion in suggest('C_COLLECTIONNAME', $viewValue)">
+                <input type="text" placeholder="Famille"    ng-model="q['T_FAMILY']" typeahead="suggestion.key for suggestion in suggest('T_FAMILY', $viewValue)">
+                <input type="text" placeholder="Genre"      ng-model="q['T_GENUS']" typeahead="suggestion.key for suggestion in suggest('T_GENUS', $viewValue)">
+                <input type="text" placeholder="Espèce"     ng-model="q['T_SPECIFICEPITHET']" typeahead="suggestion.key for suggestion in suggest('T_SPECIFICEPITHET', $viewValue)">
+
+                }*
+
+                <input ng-repeat="searchField in searchFields" type="text" placeholder="{{ searchField.name }}" ng-model="q[searchField.key]" typeahead="suggestion.key for suggestion in suggest(searchField.key, $viewValue)">
+
+                <button class="btn btn-mini btn-success" type="submit">Rechercher</button>
+
+            </form>
+
+
+
+            *{
+            <ul>
+                <li ng-repeat="suggestion in suggestions">
+                    <a ng-click="select(suggestion.key)">{{suggestion.key}}</a>
+                </li>
+            </ul>
+            }*
+
+        </div>
+
+        <div class="span9">
+            <h3>Résultats  <span ng-show="!!result.hits">({{ result.hits }} specimens)</span></h3>
+
+            *{
+            <b>Hits :</b> {{ result.hits }}
+            <b>Page :</b>
+            }*
+
+
+            <b ng-show="!result.hits"><br/>Aucun spécimen</b>
+
+            <div class="pagination pagination-mini" ng-show="!!result.hits">
+                <ul>
+                    <li><a ng-click="search(result.pageIndex - 1)">Précédente</a></li>
+                    <li><a class="disabled">Page {{ result.pageIndex }} sur {{ result.pageCount }}</a></li>
+                    <li><a ng-click="search(result.pageIndex +1)">Suivante</a></li>
+                </ul>
+            </div>
+
+            <table class="specimen-results table table-hover" ng-show="!!result.hits">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" ng-checked="isAllSelected()" ng-click="toggleAllSpecimen()" /></th>
+                        <th>Image</th>
+                        <th>Infos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="s in result.specimens">
+                        <td><input type="checkbox" ng-checked="isSelected(s._id)" ng-click="toggleSpecimen(s._id)" /></td>
+                        <td><img ng-src="{{s.imageUrl}}" /></td>
+                        <td>
+                            Institution : <em>{{s._source.C_INSTITUTIONCODE}}</em><br/>
+                            Collection : <em>{{s._source.C_COLLECTIONCODE}}</em><br/>
+                            Famille : <em>{{s._source.T_FAMILY}}</em><br/>
+                            Genre : <em>{{s._source.T_GENUS}}</em>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="modal large-modal hide" id="cart-details-modal">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h3>Panier</h3>
+        </div>
+        <div class="modal-body">
+
+            <table class="table">
+
+                <tr>
+                    <th>Recherche</th>
+                    <th>Résultat</th>
+                    <th>Sélection</th>
+                    <th>Etat</th>
+                </tr>
+
+                <tr ng-repeat="q in cart.queries">
+                    <td>
+                        <div ng-repeat="searchField in searchFields" ng-show="!!q.query[searchField.key]">
+                            {{ searchField.name }} : <b>{{ q.query[searchField.key] }}</b>
+                        </div>
+                    </td>
+                    <td>{{ q.hits }}</td>
+                    <td>{{ selectedSpecimenCount(q) }}</td>
+                    <td>
+                       <div ng-show="q.loaded">Versé <a ng-click="removeQuery(q)">Annuler</a></div>
+                       <div ng-hide="q.loaded"><a ng-click="loadQuery(q)">Verser</a></div>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script src="@{'/public/js/herbonautes-app-chef.js'}" type="text/javascript"></script>
+
+
+

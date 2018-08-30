@@ -1,0 +1,68 @@
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Contribution Cartographie
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+   
+#{contributionBox type: 'GEOLOCALISATION', mission: mission}
+	
+	<div class="contribution-values">
+		
+		<h5>
+			<i class="icon-screenshot"></i> &{'lat.lng'} : 
+			<a href="#" onclick="showGeolocalisation()"><span data-value="default"></span></a>
+			<span data-value="precision"></span>
+			<span data-value="notPresent"></span>
+		</h5>
+	
+	</div>
+	
+	#{form 
+		action: @Contributions.addGeolocalisation(specimenId: specimen.id), 
+		method: 'POST',
+		class: 'contribution-form' }
+		
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+		
+		
+		
+		<br/>
+		<input type="hidden" maxlength="3" class="input-small" id="geolocalisation-latitude-type" />
+		<input type="hidden" maxlength="3" class="input-small" id="geolocalisation-longitude-type" />
+		
+		<div id="geolocalisation-main-form">
+			<div class="input-append">
+				<input type="hidden" maxlength="20" name="contribution.latitude" class="input-small" id="geolocalisation-latitude"  /> 
+				<input type="hidden" maxlength="20" name="contribution.longitude" class="input-small" id="geolocalisation-longitude"  />
+				<input type="text" maxlength="20" class="input-small" id="geolocalisation-latitude-ui" placeholder="&{'lat.placeholder'}" /> 
+				<input type="text" maxlength="20" class="input-small" id="geolocalisation-longitude-ui" placeholder="&{'lng.placeholder'}" />
+				<button type="button" id="geolocalisation-bnt-localize"  onclick="showGeolocalisation()" class="btn btn-small"><i class="icon-screenshot"></i> &{'btn.map'}</button>
+			</div>
+			
+			<div>
+				<input type="text" maxlenght="100" name="contribution.precision" placeholder="&{'precision.placeholder'}" />
+			</div>
+			
+			<label>
+				<input type="checkbox" value="true" name="contribution.notSure" />
+				&{'not.sure'}
+			</label>
+		</div>
+		
+		 <label>
+			<input type="checkbox" value="true" data-oncheck-hide="#geolocalisation-main-form" name="contribution.notPresent" />
+			&{'not.geolocalisable'}
+		</label> 
+		
+		<div class="buttons">
+			<input type="submit" id="geolocalisation-bnt-validate" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+		
+	#{/form}
+	
+#{/contributionBox}
+
+
+

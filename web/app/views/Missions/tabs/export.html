@@ -1,0 +1,25 @@
+
+
+<p>Vous pouver exporter les données validées (seuil de contribution atteint) ou l'ensemble des réponses
+    des herbonautes pour cette mission.</p>
+
+<p>Les données sont au format CSV.</p>
+
+<hr />
+
+<div ng-init="validAnswersOnly = true">
+
+    <p><label><input type="checkbox" ng-model="validAnswersOnly" /> Données validées</label></p>
+
+    <div ng-hide="validAnswersOnly">
+        <a target="_blank" href="@{Missions.exportUsersAnswers(mission.id, false, 20)}" class="btn"><i class="icon-eye-open"></i> Aperçu des données</a>
+        <a href="@{Missions.exportUsersAnswers(mission.id, true)}" class="btn btn-info"><i class="icon-white icon-download"></i> Export des données</a>
+    </div>
+
+    <div ng-show="validAnswersOnly">
+        <a target="_blank" href="@{Missions.exportValidAnswers(mission.id, false, 20)}" class="btn"><i class="icon-eye-open"></i> Aperçu des données</a>
+        <a href="@{Missions.exportValidAnswers(mission.id, true)}" class="btn btn-info"><i class="icon-white icon-download"></i> Export des données</a>
+    </div>
+
+
+</div>

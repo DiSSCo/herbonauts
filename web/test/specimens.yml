@@ -1,0 +1,22 @@
+#Specimens
+
+Specimen(P001):
+    institute: MNHN 
+    collection: P
+    code: P001
+    family: Rosa 
+    tilesLocation: http://localhost:9000/tiles/P001/
+ 
+Specimen(P002):
+    institute: MNHN 
+    collection: P
+    code: P002
+    family: Rosa 
+    tilesLBaseURL: http://localhost:9000/tiles/P002/ 
+ 
+Specimen(P003):
+    institute: MNHN 
+    collection: P
+    code: P003
+    family: Orchis 
+    tilesLBaseURL: http://localhost:9000/tiles/P003/

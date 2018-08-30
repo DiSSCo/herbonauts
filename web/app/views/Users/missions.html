@@ -1,0 +1,25 @@
+#{extends 'main.html' /}
+#{set title:'Les Récolteurs - Missions' /}
+
+
+
+<div class="row">
+	<div class="span8">
+   
+	<div class="content-box">
+		<h3>Mes missions (TODO page user != connected user)</h3>
+		<ul>
+			#{list items:missions, as:'mission'}
+				<li>#{missionBox mission:mission /}</li>
+			#{/list}
+		</ul>
+	</div>
+	
+	</div><!-- /.span8 -->
+	<div class="span4">
+		<div class="content-box">
+		</div>
+	</div>
+</div>
+
+

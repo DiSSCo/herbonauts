@@ -1,0 +1,22 @@
+#{extends 'main.html' /}
+#{set 'title'}
+&{'invitation'} ${herbonautes.titleSep + herbonautes.title}
+#{/set}
+
+<div class="row">
+    <div class="span12">
+
+        <h2>&{'invitation.title'}</h2>
+
+        <p>&{'invitation.text'}</p>
+
+        #{form method: 'POST', action: @controllers.Invitation.send() }
+
+            <textarea style="width:50%;height:200px" name="emails">${flash['emails']}</textarea><br/>
+
+            <button type="submit" class="btn btn-primary">&{'invitation.send.button'}</button>
+
+        #{/form}
+
+    </div>
+</div>

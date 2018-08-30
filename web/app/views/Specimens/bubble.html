@@ -1,0 +1,75 @@
+#{specimenLink specimen /}
+
+<dl class="bubble-infos">
+#{list items: attributes, as: 'attribute'}
+	#{if !attribute.todo}
+        <dt>${attribute.label}</dt>
+        <dd>
+			#{list items: attribute.validatedValue, as: 'val'}
+				#{if val.isBoolean}
+					#{if val.booleanValue}
+                        <em>${val.label}</em>
+					#{/if}
+				#{/if}
+				#{else}
+				${val.textValue}
+				#{/else}
+			#{/list}
+        </dd>
+	#{/if}
+#{/list}
+</dl>
+
+<div style="clear: both"></div>
+
+*{ <div>
+
+	#{specimenLink specimen /}
+
+	<dl class="bubble-infos">
+	#{list items: attributes, as: 'attribute'}
+		#{if !attribute.todo}
+			<dt>${attribute.label}</dt>
+			<dd>
+				#{list items: attribute.validatedValue, as: 'val'}
+					#{if val.isBoolean}
+						#{if val.booleanValue}
+						<em>${val.label}</em>
+						#{/if}
+					#{/if}
+					#{else}
+						${val.textValue}
+					#{/else}
+				#{/list}
+			</dd>
+		#{/if}
+	#{/list}
+	</dl>
+
+</div>
+
+}*
+
+*{
+<dl class="bubble-infos">
+	#{list items: contributionTypes, as: 'type'}
+	<dt>&{'contribution.' + type.toLowerCase()}</dt>
+	<dd>
+		#{set currentReport: reports[type] /}
+		#{set currentReportValid: currentReport && currentReport.complete && currentReport.validatedContribution /}
+		#{if userContributions && userContributions[type]}
+			#{contributionValue userContributions[type] /}
+			#{if !currentReportValid}
+			<em class="contribution-status">&{'bubble.contribution.to.be.completed'}</em>
+			#{/if}
+		#{/if}
+		#{elseif currentReportValid}
+			#{contributionReportValue currentReport /}
+		#{/elseif}
+		#{else}
+			<em class="contribution-status">&{'bubble.contribution.empty'}</em>
+		#{/else}
+	</dd>
+	#{/list}
+</dl>
+}*

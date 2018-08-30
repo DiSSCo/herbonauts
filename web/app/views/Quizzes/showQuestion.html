@@ -1,0 +1,31 @@
+#{extends 'main.html' /}
+
+#{set 'title'}
+	&{quiz.title} ${herbonautes.titleSep} ${herbonautes.title}
+#{/set}
+
+<h2>${quiz.title} <small>&{'Question'} ${number}/${totalNumber}</small></h2>
+
+#{if question.hasImage}
+	<div class="quiz-image">
+		<img src="@{Quizzes.image(id: question.id)}" />
+	</div>
+#{/if}
+
+<br/>
+
+<p>${question.text}</p>
+
+#{form action: @Quizzes.validateQuestion(quiz.name, number), method: 'POST'}
+<ul class="choices">
+#{list items: question.choices, as: 'choice'}
+	<li>
+		<input type="checkbox" name="answers" value="${choice.id}" />
+		${choice.text}
+	</li>
+#{/list}
+</ul>
+
+<input type="submit" class="btn" value="&{'btn.valid'}" />
+
+#{/form}

@@ -1,0 +1,48 @@
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Contribution Localité
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+   
+#{contributionBox type: 'LOCALITY', mission: mission}
+	
+	<span class="contribution-values">
+		<span class="value" data-value="notPresent"></span>
+		<span class="value" data-value="default"></span>
+		<span class="value" data-value="notSure"></span>
+	</span>
+	
+	#{form 
+		action: @Contributions.addLocality(specimenId: specimen.id), 
+		method: 'POST',
+		class: 'contribution-form' }
+
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+
+		<div id="locality-main-form"">
+	
+			<input type="text" name="contribution.locality" maxlength="300" />
+			
+			<br/>
+
+			<label>
+				<input type="checkbox" value="true" name="contribution.notSure" />
+				&{'not.sure'}
+			</label>
+	
+		</div>
+
+		<label>
+			<input type="checkbox" value="true" data-oncheck-hide="#locality-main-form" name="contribution.notPresent" />
+			&{'not.present'}
+		</label>
+
+		<div class="buttons">
+			<input type="submit" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+
+	#{/form}
+	
+#{/contributionBox}

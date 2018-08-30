@@ -1,0 +1,292 @@
+#{extends 'main.html' /} 
+#{set title: 'Nouvelle mission' + herbonautes.titleSep + herbonautes.title /}
+
+
+<script type="text/javascript" src="@{'/public/ckeditor/ckeditor.js'}"></script>
+<script type="text/javascript" src="@{'/public/ckeditor/adapters/jquery.js'}"></script>
+
+<script type="text/javascript">
+
+	$(function() {
+		var config = {
+			toolbar: #{include '/ckeditorToolbarSettings.html' /},
+			
+			*{ filebrowserImageBrowseUrl: '/contents/images/browse', }*
+			filebrowserImageUploadUrl: '@{Contents.imagesUpload()}'
+		};
+	
+		// Initialize the editor.
+		// Callback function can be passed and executed after full instance creation.
+		$('#presentation-field, #report-field').ckeditor(config);
+	});
+
+	
+</script>
+
+	<div class=page-header">
+		<h1>&{'mission.tab.new.mission'}</h1>
+	</div>
+
+#{form action: @Missions.create(), method: 'POST', class: 'form-horizontal', enctype: 'multipart/form-data'}
+		
+<div class="row">
+
+
+	
+	*{ifErrors}
+	<div class="span12">
+		<div class="alert alert-error">
+			 <h4 class="alert-heading">&{'mission.tab.error'}</h4>
+		    <ul>
+		        #{errors}
+		        <li>${error}</li>
+		        #{/errors}
+		    </ul>
+		</div>
+	</div>
+	#{/ifErrors}*
+	
+	<div class="span8">
+
+			<fieldset>
+							<legend>&{'mission.tab.description'}</legend>
+							
+							<div class="control-group">
+								<label class="control-label" for="input01">&{'mission.tab.mission.publish'}</label>
+								<div class="controls">
+									<label class="checkbox">
+			                			<input type="checkbox" name="mission.published" value="true"
+			                			${flash['mission.published'] ? 'checked' : ''} />
+			                			&{'mission.tab.visible'}
+			             			 </label>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label">&{'mission.tab.image.small'}</label>
+								<div class="controls">
+									<input type="file" name="image" />
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label">&{'mission.tab.image.big'}</label>
+								<div class="controls">
+									<input type="file" name="bigImage" />
+								</div>
+							</div>
+							
+							#{field 'mission.title'}
+							<div class="control-group ${field.errorClass}">
+								<label class="control-label" for="${field.id}">&{field.name}</label>
+								<div class="controls">
+									<input 
+										name="${field.name}" 
+										type="text" 
+										class="input-xlarge" 
+										id="${field.id}" 
+										value="${flash[field.name]}"/>
+									<span class="help-inline">${field.error}</span>
+								</div>
+							</div>
+							#{/field}
+
+							#{field 'mission.principalTagString'}
+								<div class="control-group ${field.errorClass}">
+									<label class="control-label" for="${field.id}">&{field.name}</label>
+									<div class="controls">
+										<input
+												name="${field.name}"
+												type="text"
+												class="input-xlarge"
+												id="${field.id}"
+												value="${flash[field.name]}"/>
+										<span class="help-inline">${field.error}</span>
+									</div>
+								</div>
+							#{/field}
+
+							#{field 'mission.shortDescription'}
+							<div class="control-group ${field.errorClass}">
+								<label class="control-label" for="${field.id}">&{field.name}</label>
+								<div class="controls">
+									<textarea 
+										name="${field.name}" 
+										class="input-xlarge" 
+										id="${field.id}">${flash[field.name]}</textarea>
+									<span class="help-inline">${field.error}</span>
+								</div>
+							</div>
+							#{/field}
+								
+							<div class="control-group">
+								<label class="control-label">&{'mission.tab.description'}</label>
+								<div class="controls">
+									<a class="btn btn-small" data-toggle="modal" href="#presentation-edit-modal">&{'btn.edit'}</a>
+								</div>
+							</div>
+							
+							*{
+							<div class="control-group">
+								<label class="control-label">Rapport</label>
+								<div class="controls with-sub-checkbox">
+									<a class="btn btn-small" data-toggle="modal" href="#report-edit-modal">Editer</a>
+									<label class="checkbox">
+			                			<input 
+			                				type="checkbox"
+			                				name="mission.reportPublished" 
+			                				value="true" 
+			                				${flash['mission.reportPublished'] ? 'checked' : ''}>
+			                			Afficher le rapport sur la page de mission
+			             			 </label>
+								</div>
+							</div>
+							}*
+							
+						</fieldset>
+						
+						<fieldset>
+							<legend>Configuration</legend>
+							
+							<div class="control-group #{ifError 'mission.lang'}error#{/ifError}">
+								<label class="control-label" for="input-lang">&{'mission.tab.langue'}</label>
+								<div class="controls">
+									<select name="mission.lang" id="input-lang">
+										#{list items: langs, as: 'lang'}
+											<option value="${lang.trim()}" ${(lang == flash['mission.lang']) ? 'selected' : ''}>&{'lang.' + lang.trim()}</option>
+										#{/list}
+									</select>
+									#{ifError 'mission.lang'}
+									<span class="help-inline">#{error 'mission.lang' /}</span>
+									#{/ifError}
+								</div>
+							</div>
+											
+							*{
+							#{field 'mission.goal'}
+							<div class="control-group ${field.errorClass}">
+								<label class="control-label" for="${field.id}">&{field.name}</label>
+								<div class="controls">
+									<div class="input-append">
+										<input 
+											name="${field.name}" 
+											type="text" 
+											class="input-xlarge" 
+											id="${field.id}"
+											value="${flash[field.name]}"/>
+										<span class="add-on">&{'mission.tab.contribution'}</span>
+									</div>
+									<span class="help-inline">${field.error}</span>
+								</div>
+							</div>
+							#{/field}
+							}*
+							
+							
+							*{<div class="control-group">
+								<label class="control-label" for="input01">&{'mission.tab.country.unique'}</label>
+								<div class="controls">
+									<label class="checkbox inline">
+			                			<input type="checkbox"  ${flash['oneCountry'] ? 'checked' : ''} name="oneCountry" value="true" id="check-country">
+			             			 </label>
+									<select name="countryId" id="select-country">
+										#{list items: countries, as: 'country'}
+											<option value="${country.id}" &{flash['mission.country']?.id == country.id ? 'selected' :  ''}>&{'country.' + country.iso}</option>
+										#{/list} 
+									</select>
+								</div>
+							</div>
+							
+							<script type="text/javascript">
+								function toggleDependantOnCheck() {
+									if ($('#check-country').is(':checked')) {
+										$('#select-country').show();
+									} else {
+										$('#select-country').hide();
+									}
+								}
+								toggleDependantOnCheck();
+								$('#check-country').change(toggleDependantOnCheck);
+							</script>}*
+							
+							#{field 'mission.openingDate'}
+							<div class="control-group ${field.errorClass}">
+								<label class="control-label" for="${field.id}">&{field.name}</label>
+								<div class="controls">
+									<input 
+										name="${field.name}" 
+										type="text" 
+										placeholder="DD/MM/YYYY"
+										id="${field.id}" 
+										value="${flash[field.name]}"/>
+									<span class="help-inline">${field.error}</span>
+								</div>
+							</div>
+							#{/field}
+							
+							
+							*{<div class="control-group">
+								<label class="control-label" for="input01">&{'mission.tab.ponderation'}</label>
+								<div class="controls">
+									<span class="uneditable-input">0</span>
+								</div>
+							</div>}*
+							
+						</fieldset>
+						
+						
+						*{<fieldset>
+							<legend>Ajout de spécimens</legend>
+							
+							<div class="control-group">
+								<label class="control-label" for="input-titre">&{'mission.tab.specimen.file'}</label>
+								<div class="controls">
+									<input type="file" name="specimensFile" />
+								</div>
+							</div>
+							
+						</fieldset>}*
+	</div>
+	
+	<div class="span4" style="text-align:right">
+	
+		<button class="btn btn-success" type="submit">&{'mission.btn.mission.create'}</button>
+        <a href="/" class="btn">&{'mission.tab.cancel'}</a>
+
+	</div>
+	
+</div>
+
+
+<div class="modal large-modal hide" id="presentation-edit-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">x</button>
+    <h3>&{'mission.tab.mission.presentation.edit'}</h3>
+  </div>
+  <div class="modal-body">
+	<textarea class="jquery_ckeditor" id="presentation-field"   name="mission.presentation" style="width:100%; height: 350px">${flash['mission.presentation']?.raw()}</textarea>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">&{'btn.close'}</a>
+    <a href="#" class="btn btn-primary" id="report-edit-save">&{'btn.save'}</a>
+  </div>
+  
+</div>
+
+*{
+Rapport inutile sur la première page
+<div class="modal large-modal hide" id="report-edit-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">x</button>
+    <h3>Rapport de la mission <small>édition</small></h3>
+  </div>
+  <div class="modal-body">
+  	<textarea class="jquery_ckeditor" id="report-field"   name="mission.report" style="width:100%; height: 350px">${mission.report?.raw()}</textarea>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">&{'btn.close'}</a>
+    <a href="#" class="btn btn-primary" id="report-edit-save">&{'btn.save'}</a>
+  </div>
+</div>}*
+
+		#{/form}

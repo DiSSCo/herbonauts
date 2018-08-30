@@ -1,0 +1,63 @@
+*{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Contribution Région niveau 2
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }*
+   
+#{contributionBox type: 'REGION_2', mission: mission}
+	
+	<span class="contribution-values">
+		<span class="value" data-value="notPresent"></span>
+		<span class="value" data-value="default"></span>
+		<span class="value" data-value="deducted"></span>
+		<span class="value" data-value="notSure"></span>
+	</span>
+	
+	#{form 
+		action: @Contributions.addRegionLevel2(specimenId: specimen.id), 
+		method: 'POST',
+		class: 'contribution-form' }
+		
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+
+		<div id="region2-main-form">
+	
+			<select name="contribution.regionLevel2.id" id="regionLevel2-field">
+			*{
+			<option value="" selected="selected">&{'select.region'}</option>
+			#{list items: regionsLevel2, as: 'regionLevel2'}
+				<option value="${regionLevel2.id}">${regionLevel2.name}</option>
+			#{/list}
+			}*
+			</select>
+			
+			<br/>
+			
+			<label>
+				<input type="checkbox" value="true" name="contribution.deducted" /> 
+				&{'deducted'}
+			</label>
+
+			<label>
+				<input type="checkbox" value="true" name="contribution.notSure" />
+				&{'not.sure'}
+			</label>
+			
+		</div>
+		
+		<label>
+			<input type="checkbox" value="true" data-oncheck-hide="#region2-main-form" name="contribution.notPresent" />
+			&{'not.present'}
+		</label>
+		
+		
+		<div class="buttons">
+			<input type="submit" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+	#{/form}
+		
+	
+#{/contributionBox}
+

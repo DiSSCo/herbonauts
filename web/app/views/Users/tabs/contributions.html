@@ -1,0 +1,190 @@
+
+
+
+<label>
+	<select ng-model="contributionMissionId" ng-change="resetContributionsPage()">
+        <option value="">Selectionnez une mission</option>
+		#{list userMissions}
+		<option value="${_.id}">${_.title}</option>
+		#{/list}
+	</select>
+</label>
+
+<div ng-if="!!contributionMissionId">
+<table
+        id="contributions-table"
+        class="table contributions paginable">
+
+    <thead>
+    <tr>
+        <th class="specimen">&{'specimen'}</th>
+        <th class="contribution" ng-repeat="q in questions">{{ q.shortLabel }}</th>
+    </tr>
+    </thead>
+
+
+    <tbody>
+    <tr ng-repeat="line in contributionLines">
+        <td>
+            <a href="{{specimenUrl(line.specimen)}}">{{ line.specimen.code }}</a><br/>
+            *{<span class="since" am-time-ago="line.lastModifiedAt"></span>}*
+            <span class="since" h-time-ago="line.lastModifiedAt" server-time="${new Date().getTime()}"></span>
+        </td>
+
+        <td ng-repeat="q in questions" class="contribution" ng-init="qa = questionAnswered(line, q.id)">
+                 <span ng-if="!qa">
+                    &middot;
+                 </span>
+                 <span ng-if="qa">
+					<i class="icon-ok-circle"></i>
+                 </span>
+        </td>
+
+		*{
+			<td colspan="${contributionTypes.size() + 2}">
+			<a href="#" class="btn btn-small" id="more-contributions-btn">&{'btn.more.contributions'}</a>
+			<a href="#" class="btn btn-small hide" id="more-contributions-loading" >&{'btn.loading'}</a>
+			<span class="hide" id="no-more-contributions">&{'no.more.contributions.to.show'}</span>
+			<span class="hide" id="no-contribution-yet">&{'no.contribution.yet'}</span></td>
+		}*
+
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="{{ questions.length + 2 }}">
+            <a ng-show="!noMoreContributions && !contributionLoading" class="btn btn-small" ng-click="nextContributionPage()">&{'btn.more.contributions'}</a>
+            <a ng-show="!!contributionLoading" class="btn btn-small" disabled>&{'btn.loading'}</a>
+            <span ng-show="noMoreContributions">&{'no.more.contributions.to.show'}</span>
+    </tr>
+    </tfoot>
+
+</table>
+
+
+</div>
+
+<div ng-if="!contributionMissionId">
+	Selectionnez une mission
+</div>
+
+
+*{ <table
+	id="contributions-table"
+	class="table contributions paginable"
+	data-paginate-url="@{Users.specimenWithContributions(user.login)}"
+	data-paginate-btn="#more-contributions-btn">
+
+	<thead>
+		<tr>
+			<th class="specimen">&{'Specimens'}</th>
+			#{list items: contributionTypes, as: 'type'}
+			<th class="contribution" data-type="${type}">&{'contribution.' + type.toLowerCase() + '.short'}</th>
+			#{/list}
+		</tr>
+	</thead>
+	
+	<tbody>
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="${contributionTypes.size() + 2}"> 
+				<a href="#" class="btn btn-small" id="more-contributions-btn">&{'btn.more.contributions'}</a>
+				<a href="#" class="btn btn-small hide" id="more-contributions-loading" >&{'btn.loading'}</a>
+				<span class="hide" id="no-more-contributions">&{'no.more.contributions.to.show'}</span>
+				<span class="hide" id="no-contribution-yet">&{'no.contribution.yet'}</span>
+			</td>
+		</tr>
+	</tfoot>
+	
+</table>
+      
+      <script type="text/javascript">
+      	
+      	$('#contributions-table').bind('page-received', function(event, datas) {
+      		
+      		var types = 
+      			$('#contributions-table th.contribution').map(function() { 
+      				return $(this).data('type');
+      			});
+      		
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').show();
+      		
+      		function _reportHTML(contributions, type) {
+      			if (contributions == null || contributions[type] == null) {
+      				return '&middot';
+      			} else {
+      				return '<i class="icon-ok-circle"></i>';
+      			}
+      		}
+      		
+      		$.each(datas, function(specimenShort, contributions) {
+      			
+      			var tds = [];
+      			
+      			var maxDate = {
+      					timestamp: 0
+      			};
+      			var specimen = null;
+      			
+      			$.each(types, function(i, type) {
+      				tds[i+1] = '<td class="contribution">' + _reportHTML(contributions, type) + '</td>';
+      				if (contributions[type]) {
+      					var contribution = contributions[type];
+      					if (!specimen) {
+      						specimen = contribution.specimen;
+      					}
+      					if (contribution.date.timestamp > maxDate.timestamp) {
+      						maxDate = contribution.date;
+      					}
+      				}
+      			});
+      			
+      			tds[0] = '<td>' + 
+	  				herbonautes.links.specimen(specimen) +
+	  				'<br/><span class="since">' + maxDate.since + '</span>' +
+	  				'</td>';
+      			
+      			$('<tr/>').html(tds.join(''))
+      				.appendTo('#contributions-table');
+      			
+      		});
+
+      		// Scroll vers le bas de la table (+ 100 px)
+      		$(window).scrollTop(
+      				$('#contributions-table').height() + 
+      				$('#contributions-table').position().top - 
+      				$(window).height() + 
+      				100); // 100 px de marge
+      		
+      		return false;
+      		
+      	}).bind('page-loading', function(event) {
+      		
+      		$('#more-contributions-btn').hide();
+      		$('#more-contributions-loading').show();
+      		
+      	}).bind('page-no-data', function(event) {
+      		
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').hide();
+      		
+      		if ($('#contributions-table').data('current-page')) {
+      			$('#no-more-contributions').show();
+      		} else {
+      			$('#no-contribution-yet').show();
+      		}
+      		
+      		
+      		
+      	}).bind('page-error', function(event) {
+      		
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').show();
+      		
+      	});
+      	
+      	
+}*

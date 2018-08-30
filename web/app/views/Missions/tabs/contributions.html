@@ -1,0 +1,95 @@
+
+<label><input type="checkbox" ng-model="contributionWithConflictsOnly" ng-change="resetContributionsPage()" /> &{'only.conflicts'}</label>
+
+<table
+    id="contributions-table"
+    class="table contributions paginable">
+
+    <thead>
+        <tr>
+            <th class="specimen">&{'specimen'}</th>
+            <th class="contribution" ng-repeat="q in questions">{{ q.shortLabel }}</th>
+        </tr>
+    </thead>
+
+
+    <tbody>
+        <tr ng-repeat="stat in contributionsStats">
+            <td>
+                <a ng-href="{{ specimenPageUrl(stat, missionId) }}">{{ stat.specimen.code }}</a><br/>
+                *{<span class="since" am-time-ago="stat.lastModifiedAt"></span>}*
+                <span class="since" h-time-ago="stat.lastModifiedAt" server-time="${new Date().getTime()}"></span>
+
+            </td>
+
+            <td ng-repeat="q in questions" class="contribution" ng-init="qs = questionStat(stat, q.name)">
+                 <span ng-if="!qs">
+                    &middot;
+                 </span>
+                 <span ng-if="qs">
+                    <span
+                                    style="cursor:pointer"
+                                        tooltip-placement="{{ 'top '}}"
+                                       tooltip-trigger="mouseenter"
+                                       tooltip="{{ contributionTooltip(qs) }}"
+                                       ng-class="{ 'badge': true, 'badge-success': qs.validated, 'badge-warning': qs.conflicts  }">{{ qs.answerCount }}</span>
+                 </span>
+            </td>
+
+            *{
+                <td colspan="${contributionTypes.size() + 2}">
+                <a href="#" class="btn btn-small" id="more-contributions-btn">&{'btn.more.contributions'}</a>
+                <a href="#" class="btn btn-small hide" id="more-contributions-loading" >&{'btn.loading'}</a>
+                <span class="hide" id="no-more-contributions">&{'no.more.contributions.to.show'}</span>
+                <span class="hide" id="no-contribution-yet">&{'no.contribution.yet'}</span></td>
+            }*
+        </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="{{ questions.length + 2 }}">
+        <a ng-show="!noMoreContributions && !contributionLoading" class="btn btn-small" ng-click="nextContributionsPage()">&{'btn.more.contributions'}</a>
+            <a ng-show="!!contributionLoading" class="btn btn-small" disabled>&{'btn.loading'}</a>
+        <span ng-show="noMoreContributions">&{'no.more.contributions.to.show'}</span>
+    </tr>
+    </tfoot>
+
+</table>
+
+*{
+<table
+	id="contributions-table"
+	class="table contributions paginable"
+	data-paginate-url="@{Missions.specimenWithContributionReports(mission.id)}"
+	data-paginate-btn="#more-contributions-btn">
+
+
+
+	<thead>
+		<tr>
+			<th class="specimen">&{'specimen'}</th>
+			#{list items: contributionTypes, as: 'type'}
+			<th class="contribution" data-type="${type}">&{'contribution.' + type.toLowerCase() + '.short'}</th>
+			#{/list}
+			<th class="contribution" data-type="UNUSABLE">&{'contribution.unusable.short'}</th>
+       
+		</tr>
+	</thead>
+	
+	<tbody> 
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="${contributionTypes.size() + 2}"> 
+				<a href="#" class="btn btn-small" id="more-contributions-btn">&{'btn.more.contributions'}</a>
+				<a href="#" class="btn btn-small hide" id="more-contributions-loading" >&{'btn.loading'}</a>
+				<span class="hide" id="no-more-contributions">&{'no.more.contributions.to.show'}</span>
+				<span class="hide" id="no-contribution-yet">&{'no.contribution.yet'}</span></td>
+		</tr>
+	</tfoot>
+	
+</table>
+
+}*
+      

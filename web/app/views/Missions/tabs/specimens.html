@@ -1,0 +1,99 @@
+<table 
+	id="contributions-table"
+	class="table contributions paginable"
+	data-paginate-url="@{Missions.specimenWithContributionReports(mission.id)}"
+	data-paginate-btn="#more-contributions-btn">
+
+	<thead>
+		<tr>
+			<th class="specimen">&{'specimen'}</th>
+			#{list items: contributionTypes, as: 'type'}
+			<th class="contribution" data-type="${type}">&{'contribution.' + type.toLowerCase() + '.short'}</th>
+			#{/list}
+			<th class="contribution" data-type="UNUSABLE">&{'contribution.unusable.short'}</th>
+       
+		</tr>
+	</thead>
+	
+	<tbody> 
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="${contributionTypes.size() + 2}"> 
+				<a href="#" class="btn btn-small" id="more-contributions-btn">&{'btn.more.contributions'}</a>
+				<a href="#" class="btn btn-small hide" id="more-contributions-loading" >&{'btn.loading'}</a>
+				<span class="hide" id="no-more-contributions">&{'no.more.contributions'}</span>
+			</td>
+		</tr>
+	</tfoot>
+	
+</table>
+      
+      <script type="text/javascript">
+      	
+      	$('#contributions-table').bind('page-received', function(event, datas) {
+      		
+      		var types = 
+      			$('#contributions-table th.contribution').map(function() { 
+      				return $(this).data('type');
+      			});
+      		
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').show();
+      		
+      		function _reportHTML(reports, type) {
+      			if (reports == null || reports[type] == null || reports[type].count == 0) {
+      				return '&middot';
+      			} else {
+      				var className = 'badge';
+      				if (reports[type].complete) {
+      					className += ' badge-success';
+      				} else if (reports[type].conflicts) {
+      					className += ' badge-warning';
+      				}
+      				return '<span class="' + className + '">' + reports[type].count + '</span>';
+      			}
+      		}
+      		
+      		$.each(datas, function(index, specimen) {
+      			
+      			var tds = [];
+      			tds[0] = '<td>' + 
+      				herbonautes.links.specimen(specimen) +
+      				'<br/><span class="since">' + specimen.since + '</span>' +
+      				'</td>';
+      			$.each(types, function(i, type) {
+      				tds[i+1] = '<td class="contribution">' + _reportHTML(specimen.reports, type) + '</td>';
+      			});
+      			
+      			$('<tr/>').html(tds.join(''))
+      				.appendTo('#contributions-table');
+      			
+      		});
+
+      		// Scroll vers le bas de la table (+ 100 px)
+      		$(window).scrollTop(
+      				$('#contributions-table').height() + 
+      				$('#contributions-table').position().top - 
+      				$(window).height() + 
+      				100); // 100 px de marge
+      		
+      		return false;
+      		
+      	}).bind('page-no-data', function(event) {
+      		
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').hide();
+      		$('#no-more-contributions').show();
+      		
+      	}).bind('page-loading', function(event) {
+      		$('#more-contributions-btn').hide();
+      		$('#more-contributions-loading').show();
+      	}).bind('page-error', function(event) {
+      		$('#more-contributions-loading').hide();
+      		$('#more-contributions-btn').show();
+      	});
+      	
+      	
+      </script>

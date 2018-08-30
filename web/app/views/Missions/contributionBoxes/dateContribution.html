@@ -1,0 +1,60 @@
+*{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+	Boite de contribution 'date'
+	include dans /views/Missions/contributionBoard.html
+    
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}* 
+
+#{contributionBox type: 'DATE', mission: mission}
+
+	<span class="contribution-values">
+		<span data-value="notPresent"></span>
+		<span data-value="default"></span>
+		<span data-value="notSure"></span>
+	</span>
+
+	#{form 
+		action: @Contributions.addDate(specimenId: specimen.id), 
+		method: 'POST',
+		class: 'contribution-form'}
+	
+		<input type="hidden" name="contribution.mission.id" value="${mission.id}" />
+		<input type="hidden" name="contribution.specimen.id" value="${specimen.id}" />
+		<input type="hidden" name="contribution.user.id" value="${connectedId}" />
+		
+		<div class="date-select">
+			
+			<div id="date-select">
+				<label style="display:inline"><input type="radio" data-oncheck-show="#collect-date" data-oncheck-hide="#collect-period" value="false" checked name="contribution.period" /> &{'date'}</label>
+				<label style="display:inline"><input type="radio" data-oncheck-hide="#collect-date" data-oncheck-show="#collect-period" value="true" name="contribution.period" /> &{'period'}</label>
+				
+				<br/>
+				
+				<div id="collect-date" class="radio-dependant">
+					<input type="text" name="contribution.collectDate" class="input-small date-input" placeholder="&{'date.format'}" maxlength="10" size="10" /><br/>
+				</div>
+				
+				<div id="collect-period" class="radio-dependant">
+					&{'date.from'} <input type="text" name="contribution.collectStartDate" class="input-small date-input" placeholder="&{'date.format'}" maxlength="10" size="10" /> 
+					&{'date.to'} <input type="text" name="contribution.collectEndDate" class="input-small date-input" placeholder="&{'date.format'}" maxlength="10" size="10" /><br/>
+				</div>
+				
+				<label>
+					<input type="checkbox" name="contribution.notSure" value="true" /> &{'not.sure'}
+				</label>
+			</div><!-- /#date-select -->
+			
+			<label>
+				<input type="checkbox" value="true" data-oncheck-hide="#date-select" name="contribution.notPresent" />
+				&{'not.present'}
+			</label>
+			
+		</div>
+
+		<div class="buttons">
+			<input type="submit" class="btn btn-small btn-success" value="&{'btn.validate'}" />
+		</div>
+
+	#{/form}
+	
+#{/contributionBox}

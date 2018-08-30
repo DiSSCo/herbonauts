@@ -1,0 +1,139 @@
+
+<div class="row">
+
+    <div class="span2">
+
+        <h4>Modèles</h4>
+
+        <p><a ng-click="setDefaultQuestions()" class="btn btn-mini btn-info">Mission par défaut</a></p>
+
+        <ul ng-repeat="q in templates">
+            <li>{{q.label}}
+                <a ng-hide="isTemplateUsed(q)" ng-click="addQuestion(q)">Ajouter</a>
+                <a ng-show="isTemplateUsed(q)" ng-click="removeQuestion(q)">Retirer</a>
+            </li>
+        </ul>
+
+
+
+    </div>
+
+
+    <div class="span6">
+
+        <h4>Questions de la mission</h4>
+
+        <p>
+            *{ <button class="btn btn-mini btn-success" ng-click="saveQuestions()">Enregistrer</button>  }*
+            <button class="btn btn-mini" ng-click="reloadQuestions()"><i class="icon-refresh"></i>  Mettre à jour la configuration de toutes les questions</button>
+        </p>
+
+        <div id="mission-questions">
+
+            <div ng-repeat="q in questions" class="question">
+
+                <div>
+                    <span class="sort-handle"><i class="icon-th-list"></i></span> <b>{{q.label}}</b>
+
+                    <em ng-if="isQuestionMandatory(q)" class="pull-right">Obligatoire</em>
+
+                    <a ng-if="!isQuestionMandatory(q)" class="pull-right" ng-click="removeQuestion(q)" title="Retirer la question"><i class="icon-trash"></i></a>
+                    <a ng-if="!isQuestionMandatory(q)" class="pull-right" ng-click="reloadQuestion(q)" title="Mettre à jour la configuration depuis le modèle"><i class="icon-refresh"></i></a><br>
+
+
+                </div>
+
+                <div ng-if="missingParentRefByQuestionName[q.name]">
+                    <hr/>
+
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:35%"><b>{{ missingParentRefByQuestionName[q.name].label }}</b></td>
+
+                            <td><input type="text"
+                                       placeholder="{{ missingParentRefByQuestionName[q.name].label }}"
+                                       ng-model="confForMissingRef[q.name].options.defaultParentRef"
+                                       typeahead="{ label: r.label, id: r.id } for r in suggestReferenceRecord(missingParentRefByQuestionName[q.name].id, $viewValue)"
+                                       typeahead-input-formatter="$model.label"
+                                       typeahead-template-url="reference-item-template.html"
+                                       typeahead-editable="true"></td>
+                        </tr>
+                        <tr ng-if="!confForMissingRef[q.name].options.defaultParentRef.id">
+                            <td></td>
+                            <td><span >Indiquer une valeur pour
+                                {{ missingParentRefByQuestionName[q.name].label }} ou ajouter une question comportant ce référentiel.</span></td>
+                        </tr>
+
+                    </table>
+
+
+
+                </div>
+
+                <hr/>
+                <table style="width:100%">
+                    <tr ng-show="q.name != 'unusable'" >
+                        <td style="width:35%">Niveau herbonaute requis</td>
+                        <td><input type="number" class="input-small" ng-model="q.minLevel" size="2" /></td>
+                    </tr>
+                    <tr ng-show="q.name != 'unusable'" >
+                        <td>Quiz requis</td>
+                        <td><select ng-model="q.neededQuiz.id" ng-options="q.id as q.name for q in quizzes">
+                            <option value="">Aucun quiz</option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Seuil de validation</td>
+                        <td>
+                            <input type="number" ng-model="q.validationLevel" class="input-small" size="2"/>
+                            contributions sans conflit
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Aide  <span
+                                       popover-placement="{{ 'right'}}"
+                                       popover-trigger="mouseenter"
+                                       popover-title="{{ q.label }}"
+                                       popover-html-unsafe="{{ q.helpHTML || ' ' }}"
+                                       popover-append-to-body="true"><a href="#" ><i class="icon-question-sign"></i></a></span>
+                        </td>
+                        <td>
+                            <textarea ng-model="q.helpHTML"></textarea>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<style>
+    .question {
+        border: 1px solid #999;
+        padding: 1em;
+        margin-bottom: 5px;
+        border-radius: 3px;
+        background: #FFF;
+    }
+    .sort-handle {
+        cursor: move;
+    }
+</style>
+
+<script type="text/ng-template" id="reference-item-template.html">
+    <a>
+        <span ng-bind-html="match.model.label | typeaheadHighlight:query"></span>
+    </a>
+</script>
+
+
+
