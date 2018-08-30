@@ -60,6 +60,7 @@ public class Herbonautes {
 
 	public String recolnatApiEndpoint;
 	public String recolnatApiKey;
+	public boolean recolnatEnabled;
 
 	public boolean recolnatMenuShow;
 	public String recolnatMenuUrl;
@@ -101,6 +102,8 @@ public class Herbonautes {
 		recolnatApiKey = getString("recolnat.api.key", "");
 		recolnatMenuShow = getBoolean("recolnat.menu.show", false);
 		recolnatMenuUrl = getString("recolnat.menu.url", "");
+
+		recolnatEnabled = getBoolean("recolnat.enabled", false);
 
 		tilesRootURL = getString("herbonautes.tiles.root.url", "");
 		forceTiled = getBoolean("herbonautes.force.tiled", false);

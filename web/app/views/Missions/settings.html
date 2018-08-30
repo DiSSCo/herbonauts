@@ -66,13 +66,21 @@
 <div class="tabbable"> <!-- Only required for left/right tabs -->
 <ul class="nav nav-tabs">
     <li><a id="parameters-tab" href="#tab1" data-toggle="tab">&{'tab.parameters'}</a></li>
-    <li><a id="cart-tab" href="#tab-cart" data-toggle="tab">&{'tab.specimens'}</a></li>
+
+    #{if herbonautes.recolnatEnabled}
+        <li><a id="cart-tab" href="#tab-cart" data-toggle="tab">&{'tab.specimens'}</a></li>
+    #{/if}
+
+
     <li><a id="questions-tab" href="#tab-questions" data-toggle="tab">&{'tab.questions'}</a></li>
     *{<li><a id="specimens-tab" href="#tab2" data-toggle="tab">&{'tab.contributions'}</a></li>}*
     <li><a id="announcements-tab" href="#tab3" data-toggle="tab">&{'tab.announcements'}</a></li>
     <li><a id="members-tab" href="#tab4" data-toggle="tab">&{'tab.members'}</a></li>
     <li><a id="export-tab" href="#tab-export" data-toggle="tab">&{'tab.export'}</a></li>
+
+    #{if herbonautes.recolnatEnabled}
     <li><a id="recolnat-tab" href="#tab-recolnat" data-toggle="tab">&{'tab.recolnat'}</a></li>
+    #{/if}
 </ul>
 <div class="tab-content">
 <div class="tab-pane" id="tab-questions">
@@ -81,17 +89,21 @@
 
 </div>
 
+#{if herbonautes.recolnatEnabled}
 <div class="tab-pane" id="tab-cart">
     #{include './tabs/cart.html' /}
 </div>
+#{/if}
 
 <div class="tab-pane" id="tab-export">
     #{include './tabs/export.html' /}
 </div>
 
+#{if herbonautes.recolnatEnabled}
 <div class="tab-pane" id="tab-recolnat">
     #{include './tabs/recolnat.html' /}
 </div>
+#{/if}
 
 <div class="tab-pane" id="tab1">
 #{form

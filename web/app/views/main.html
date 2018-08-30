@@ -199,6 +199,8 @@
             var elasticIndex = '${play.configuration.get("elastic.index")}';
 			var elasticHostExplore = '${play.configuration.get("explore.elasticsearch.host")}';
             var elasticHostHerbonautes = '${play.configuration.get("herbonautes.elasticsearch.host.public")}';
+
+            var herbonautesBaseUrl = '${play.configuration.get("application.baseUrl", "/")}';
         </script>
 
         #{get 'moreScripts' /}
@@ -456,14 +458,58 @@
 		  				<br>
 		  				<br>
 
-                        <p>La connexion est assurée par le portail d'authentification <b>Recolnat</b>.</p>
+						#{if herbonautes.recolnatEnabled}
 
-                        <p>Utilisez le même mot de passe si vous êtes déjà inscrit.</p>
+							<p>La connexion est assurée par le portail d'authentification <b>Recolnat</b>.</p>
 
-                        <a class="btn btn-info" href="@{modules.cas.SecureCAS.login()}">Se connecter</a>
+							<p>Utilisez le même mot de passe si vous êtes déjà inscrit.</p>
+
+							<a class="btn btn-info" href="@{modules.cas.SecureCAS.login()}">Se connecter</a>
+
+							#{if play.configuration.get("herbonautes.login.form.debug", false)}
+
+                                <br/>
+                                <br/>
+                                <hr/>
+                                <h3>Login (no CAS)</h3>
+                                <br/>
+								#{form
+								action: @Application.login(),
+								method: 'POST',
+								id: 'login-form'}
+
+                                    <p id="login-error" class="text-error hide">&{'error.bad.login.or.password'}</p>
 
 
+                                    <input type="text" name="login" placeholder="&{'placeholder.login.or.email'}" />
+                                    <input type="password" name="password" placeholder="&{'placeholder.password'}" />
+                                    <input type="submit" class="btn btn-small"  value="&{'btn.login'}" />
 
+								#{/form}
+
+							#{/if}
+
+						#{/if}
+						#{else}
+
+							#{form
+							action: @Application.login(),
+							method: 'POST',
+							id: 'login-form'}
+
+                                <p id="login-error" class="text-error hide">&{'error.bad.login.or.password'}</p>
+
+
+                                <input type="text" name="login" placeholder="&{'placeholder.login.or.email'}" />
+                                <input type="password" name="password" placeholder="&{'placeholder.password'}" />
+                                <input type="submit" class="btn btn-small"  value="&{'btn.login'}" />
+
+							#{/form}
+
+						#{/else}
+
+
+						*{
                         #{if play.configuration.get("herbonautes.login.form.debug", false)}
 
 							<br/>
@@ -487,6 +533,7 @@
 
 						#{/if}
 
+						}*
 		  				
 		  			</td>
 		  			<td style="vertical-align: top;width:260px;padding-left: 15px">
@@ -506,11 +553,30 @@
 		  					<input type="submit" class="btn btn-small" value="&{'btn.signup'}" />
 		  				#{/form}}*
 
-                        <p>L'inscription se fait sur le portail <b>Recolnat</b>.</p>
+						#{if herbonautes.recolnatEnabled}
 
-                        <p>Choisissez <b>Créer un compte</b> ou connectez-vous avec votre compte <b>Facebook</b>.</p>
+							<p>L'inscription se fait sur le portail <b>Recolnat</b>.</p>
 
-                        <a class="btn btn-info" href="@{modules.cas.SecureCAS.login()}">S'inscrire</a>
+							<p>Choisissez <b>Créer un compte</b> ou connectez-vous avec votre compte <b>Facebook</b>.</p>
+
+							<a class="btn btn-info" href="@{modules.cas.SecureCAS.login()}">S'inscrire</a>
+
+						#{/if}
+						#{else}
+							#{form
+							action: @Application.signup(),
+							method: 'POST',
+							id: 'signup-form'}
+                                <input type="text" name="login" placeholder="&{'placeholder.signup.login'}"/>
+                                <p class="text-error hide error-login"></p>
+                                <input type="text" name="email" placeholder="&{'placeholder.signup.email'}" />
+                                <p class="text-error hide error-email"></p>
+                                <input type="password" name="password" placeholder="&{'placeholder.signup.password'}" />
+                                <p class="text-error hide error-password"></p>
+                                <input type="submit" class="btn btn-small" value="&{'btn.signup'}" />
+							#{/form}
+						#{/else}
+
 		  			</td>
 		  		</tr>
                 *{

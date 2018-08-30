@@ -380,10 +380,10 @@ function fillMissionsMenu(user) {
 
 function redirectIfVisitorIndex() {
 	if (visitorIndex) {
-		window.location.href = '/';
-		return false;
+		window.location.href = herbonautesBaseUrl;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 function currentLang() {
@@ -415,6 +415,7 @@ function onSignupError(jqXHR) {
 
 function onConnect() {
 	redirectIfVisitorIndex();
+
 	fillProfileMenu();
 	fillMissionsMenu();
 	showConnected();
@@ -438,7 +439,9 @@ function loginProcess(success) {
 			url: $form.attr('action'),
 			data: $form.serialize(),
 			success: function(user) {
-				redirectIfVisitorIndex();
+				if (redirectIfVisitorIndex()) {
+					return;
+				}
 				fillProfileMenu();
 				showConnected();
 				fillMissionsMenu();

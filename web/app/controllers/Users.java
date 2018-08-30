@@ -519,21 +519,24 @@ public class Users extends Application {
 			flash.put("warning", Messages.get("user.confirm.email", user.getEmail()));
 		}
 
+		if (Herbonautes.get().recolnatEnabled) {
 
-		try {
-			RecolnatUser recolnatUser = RecolnatAPIClient.getUserByLogin(login);
-			recolnatUser.firstname = savedUser.getFirstName();
-			recolnatUser.lastname = savedUser.getLastName();
-			RecolnatAPIClient.updateUser(recolnatUser);
+			try {
+				RecolnatUser recolnatUser = RecolnatAPIClient.getUserByLogin(login);
+				recolnatUser.firstname = savedUser.getFirstName();
+				recolnatUser.lastname = savedUser.getLastName();
+				RecolnatAPIClient.updateUser(recolnatUser);
 
-			if (imageAvatar != null) {
-				Logger.info("Change user avatar in recolnat");
-				String data = Base64.encodeBase64String(imageAvatar.getData());
-				RecolnatAPIClient.updateAvatar(recolnatUser, data);
+				if (imageAvatar != null) {
+					Logger.info("Change user avatar in recolnat");
+					String data = Base64.encodeBase64String(imageAvatar.getData());
+					RecolnatAPIClient.updateAvatar(recolnatUser, data);
+				}
+
+			} catch (Exception e) {
+				Logger.error(e, "Impossible de mettre l'utilisateur à jour");
 			}
 
-		} catch (Exception e) {
-			Logger.error(e, "Impossible de mettre l'utilisateur à jour");
 		}
 
 		User.findByLogin(login, false); // Clear cache
