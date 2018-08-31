@@ -16,8 +16,16 @@
  */
 package controllers.modules.cas;
 
+
+import libs.XML;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
+import play.libs.WS;
 import play.modules.cas.CASUtils;
 import play.modules.cas.annotation.Check;
 import play.modules.cas.models.CASUser;
@@ -25,26 +33,40 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Router;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
  * request. If the user is note logged, it redirect the user to the CAS login page and authenticate it.
- * 
+ *
  * @author bsimard
- * 
+ * @author Patch referer Jonathan Geslin
  */
 public class SecureCAS extends Controller {
 
     /**
      * Action for the login route. We simply redirect to CAS login page.
-     * 
+     *
      * @throws Throwable
      */
     public static void login() throws Throwable {
+
+        Logger.debug("LOGIN IN MODULE OVERRIDE");
+
         // We must avoid infinite loops after success authentication
         if (!Router.route(request).action.equals("modules.cas.SecureCAS.login")) {
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
+        } else {
+            String url = request.headers.get("referer").value();
+            Cache.add("url_" + session.getId(), url, "10min");
         }
+
+        Logger.info("Put session in cache " + session.getId());
 
         // we redirect the user to the cas login page
         String casLoginUrl = CASUtils.getCasLoginUrl(false);
@@ -53,7 +75,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Action for the logout route. We clear cache & session and redirect the user to CAS logout page.
-     * 
+     *
      * @throws Throwable
      */
     public static void logout() throws Throwable {
@@ -76,7 +98,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Action when the user authentification or checking rights fails.
-     * 
+     *
      * @throws Throwable
      */
     public static void fail() throws Throwable {
@@ -85,14 +107,14 @@ public class SecureCAS extends Controller {
 
     /**
      * Action for the CAS return.
-     * 
+     *
      * @throws Throwable
      */
     public static void authenticate() throws Throwable {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
         if (ticket != null) {
-            Logger.debug("[SecureCAS]: Try to validate ticket " + ticket);
+            Logger.info("[SecureCAS]: Try to validate ticket " + ticket);
             CASUser user = CASUtils.valideCasTicket(ticket);
             if (user != null) {
                 isAuthenticated = Boolean.TRUE;
@@ -104,6 +126,7 @@ public class SecureCAS extends Controller {
 
         if (isAuthenticated) {
             // we redirect to the original URL
+            Logger.info("Get session in cache " + session.getId());
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());
             if (url == null) {
@@ -111,9 +134,8 @@ public class SecureCAS extends Controller {
             }
             Logger.debug("[SecureCAS]: redirect to url -> " + url);
             redirect(url);
-        }
-        else {
-            fail();
+        } else {
+            forbidden();
         }
     }
 
@@ -133,10 +155,10 @@ public class SecureCAS extends Controller {
 
     /**
      * Method that do CAS Filter and check rights.
-     * 
+     *
      * @throws Throwable
      */
-    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
+    @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack"})
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
@@ -152,8 +174,7 @@ public class SecureCAS extends Controller {
             if (actionCheck != null) {
                 check(actionCheck);
             }
-        }
-        else {
+        } else {
             Logger.debug("[SecureCAS]: user is not authenticated");
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
@@ -166,7 +187,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Function to check the rights of the user. See your implementation of the Security class with the method check.
-     * 
+     *
      * @param check
      * @throws Throwable
      */
@@ -178,5 +199,6 @@ public class SecureCAS extends Controller {
             }
         }
     }
+
 
 }
