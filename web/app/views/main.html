@@ -466,29 +466,6 @@
 
 							<a class="btn btn-info" href="@{modules.cas.SecureCAS.login()}">Se connecter</a>
 
-							#{if play.configuration.get("herbonautes.login.form.debug", false)}
-
-                                <br/>
-                                <br/>
-                                <hr/>
-                                <h3>Login (no CAS)</h3>
-                                <br/>
-								#{form
-								action: @Application.login(),
-								method: 'POST',
-								id: 'login-form'}
-
-                                    <p id="login-error" class="text-error hide">&{'error.bad.login.or.password'}</p>
-
-
-                                    <input type="text" name="login" placeholder="&{'placeholder.login.or.email'}" />
-                                    <input type="password" name="password" placeholder="&{'placeholder.password'}" />
-                                    <input type="submit" class="btn btn-small"  value="&{'btn.login'}" />
-
-								#{/form}
-
-							#{/if}
-
 						#{/if}
 						#{else}
 
