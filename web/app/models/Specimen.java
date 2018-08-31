@@ -38,9 +38,8 @@ public class Specimen extends DatedModificationsModel<Specimen> {
     private boolean tiled;
     private boolean tilingError; // Pb rencontré par le batch
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "MASTER_ID")
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MASTER_ID")
     private SpecimenMaster master;
 
     private boolean displayed;
@@ -194,21 +193,21 @@ public class Specimen extends DatedModificationsModel<Specimen> {
 
         boolean isUtil = true;
         for (ContributionAnswer a : answers) {
-        	
+
             SpecimenAttribute attribute = new SpecimenAttribute();
             attribute.label = ContributionQuestion.getQuestionLabel(a.getQuestionId());
             attribute.sortIndex = ContributionQuestion.getQuestionSortIndex(a.getQuestionId());
             attribute.validatedValue = a.toHumanValue();
-            attributes.add(attribute); 
+            attributes.add(attribute);
             doneQuestionsIds.add(a.getQuestionId());
             System.out.println("aa");
             if("unusable".equals(ContributionQuestion.getQuestionName(a.getQuestionId()))){
-            	isUtil=false;
+                isUtil=false;
             }
-            
+
         }
 
-        for (ContributionQuestion q : questions) { 
+        for (ContributionQuestion q : questions) {
             if (!"unusable".equals(q.getName()) && !doneQuestionsIds.contains(q.id) && isUtil == true) {
                 SpecimenAttribute attribute = new SpecimenAttribute();
                 attribute.label = q.getLabel();
@@ -218,7 +217,7 @@ public class Specimen extends DatedModificationsModel<Specimen> {
 
             }
 //            else{
-//            	attributes.clear();       
+//            	attributes.clear();
 //            }
         }
 
@@ -618,7 +617,7 @@ public class Specimen extends DatedModificationsModel<Specimen> {
     public boolean isCompleted() {
 
         List<ContributionSpecimenStat> stat = find("select c from ContributionSpecimenStat c " +
-        "where c.specimen.id = ?", this.id).fetch();
+                "where c.specimen.id = ?", this.id).fetch();
 
         if (stat.size() == 0) {
             return false;
@@ -628,21 +627,6 @@ public class Specimen extends DatedModificationsModel<Specimen> {
     }
 
     public SpecimenMaster getMaster() {
-        if (master == null) {
-            this.master = new SpecimenMaster();
-
-            this.master.setId(this.id);
-            this.master.setInstitute(this.institute);
-            this.master.setCollection(this.collection);
-            this.master.setCode(this.code);
-
-            this.master.setFamily(this.family);
-            this.master.setGenus(this.genus);
-            this.master.setSpecificEpithet(this.specificEpithet);
-
-            this.master.setSonneratURL(this.sonneratURL);
-            this.master.setTropicosURL(this.tropicosURL);
-        }
         return master;
     }
 

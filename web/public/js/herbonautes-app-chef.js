@@ -702,6 +702,10 @@ herbonautesApp.service('CartService', ['$http', function($http) {
         return $http.get(herbonautes.ctxPath + '/missions/' + missionId + '/specimens/count');
     }
 
+    this.commonMissionsCount = function(missionId) {
+        return $http.get(herbonautes.ctxPath + '/missions/' + missionId +  '/settings/cart/incommon')
+    }
+
     ///missions/{id}/settings/cart/cancel
     /*this.save = function(missionId, cart) {
         return $http.post('/missions/' + missionId + '/settings/cart', cart);
@@ -782,8 +786,13 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
             if ($scope.mission.loading) {
                 $timeout(updateSpecimenCount, countUpdateInterval);
             }
-        })
+        });
+    }
 
+    function updateCommonMissionsCount($scope) {
+        CartService.commonMissionsCount($scope.missionId).then(function(response) {
+            $scope.commonMissionsCounts = response.data;
+        });
     }
 
     $scope.specimenPerMissionLimit = 0;
@@ -830,6 +839,8 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
             $scope.cart.cartItems.push($scope.currentCartItem);
         }
         $scope.currentCartItem._current = true;
+
+        updateCommonMissionsCount($scope);
 
         //
 

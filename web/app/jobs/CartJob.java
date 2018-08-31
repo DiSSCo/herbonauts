@@ -19,7 +19,7 @@ import java.util.*;
 @NoTransaction
 public class CartJob extends Job  {
 
-	private Long missionId;
+    private Long missionId;
 
     private RecolnatSearchClient search = new RecolnatSearchClient();
 
@@ -29,9 +29,9 @@ public class CartJob extends Job  {
     }
 
 
-	@Override
-	public void doJob() throws Exception {
-         syncCart();
+    @Override
+    public void doJob() throws Exception {
+        syncCart();
     }
 
 
@@ -107,7 +107,7 @@ public class CartJob extends Job  {
                 JPA.rollbackTx("default");
             }
         }
-	}
+    }
 
     private boolean processChanges(Mission mission, Long queryId) throws SpecimenLimitException {
         try {
@@ -185,22 +185,14 @@ public class CartJob extends Job  {
         try {
             JPA.startTx("default", false);
 
-            Specimen existing = Specimen.find("code = ?", catalogNumber).first();
+            Specimen specimen = Specimen.find("code = ? and mission.id = ?", catalogNumber, mission.id).first();
 
-            if (existing == null) {
-                Logger.error("  %s n'existe pas, pas de suppression !", catalogNumber);
-                JPA.closeTx("default");
-                return;
-            } else if (!existing.getMission().id.equals(mission.id)) {
-                Logger.error("  %s dans une autre mission, pas de suppression !", catalogNumber);
-                JPA.closeTx("default");
-                return;
+            if (specimen != null) {
+                specimen.delete();
+                Logger.info("  %s supprimé de la mission %s", catalogNumber, mission.getTitle());
+            } else {
+                Logger.error("  %s n'est pas dans la mission %s", catalogNumber, mission.getTitle());
             }
-
-            Specimen specimen = (Specimen) Specimen.find("code = ?", catalogNumber).fetch(1).get(0);
-            specimen.delete();
-
-            Logger.info("  %s supprimé", catalogNumber);
 
             JPA.closeTx("default");
         } catch (Throwable t) {
@@ -209,6 +201,34 @@ public class CartJob extends Job  {
 
             JPA.rollbackTx("default");
         }
+
+        //try {
+        //    JPA.startTx("default", false);
+//
+        //    Specimen existing = Specimen.find("code = ?", catalogNumber).first();
+//
+        //    if (existing == null) {
+        //        Logger.error("  %s n'existe pas, pas de suppression !", catalogNumber);
+        //        JPA.closeTx("default");
+        //        return;
+        //    } else if (!existing.getMission().id.equals(mission.id)) {
+        //        Logger.error("  %s dans une autre mission, pas de suppression !", catalogNumber);
+        //        JPA.closeTx("default");
+        //        return;
+        //    }
+//
+        //    Specimen specimen = (Specimen) Specimen.find("code = ?", catalogNumber).fetch(1).get(0);
+        //    specimen.delete();
+//
+        //    Logger.info("  %s supprimé", catalogNumber);
+//
+        //    JPA.closeTx("default");
+        //} catch (Throwable t) {
+//
+        //    Logger.error(t, "error specimen");
+//
+        //    JPA.rollbackTx("default");
+        //}
     }
 
     private void removeSpecimenFromId(Mission mission, String exploreId) {
@@ -272,8 +292,6 @@ public class CartJob extends Job  {
                 return;
             }
 
-            /* CREATE MASTER */
-            /*
             Boolean masterExisting = SpecimenMaster.count("code = ?", recolnatSpecimen.catalogNumber) > 0;
 
             SpecimenMaster master = null;
@@ -297,10 +315,9 @@ public class CartJob extends Job  {
             } else {
                 master = SpecimenMaster.find("code = ?", recolnatSpecimen.catalogNumber).first();
             }
-            */
 
             Specimen specimen = new Specimen();
-            //specimen.setMaster(master);
+            specimen.setMaster(master);
             specimen.setCode(recolnatSpecimen.catalogNumber);
             specimen.setInstitute(recolnatSpecimen.institution);
             specimen.setCollection(recolnatSpecimen.collection);
@@ -382,5 +399,5 @@ public class CartJob extends Job  {
     public static class SpecimenLimitException extends Exception {
 
     }
-	
+
 }

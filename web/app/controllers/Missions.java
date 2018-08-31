@@ -1740,6 +1740,17 @@ public class Missions extends Application {
         ok();
     }
 
+
+
+    @Transactional(readOnly = true)
+    public static void inCommonSpecimen(Long id) {
+        Security.forbiddenIfNotLeader();
+
+        List<Cart.MissionSpecimenCount> inCommonMissionCount = Cart.getInCommonMissionCount(id);
+
+        renderJSON(inCommonMissionCount);
+    }
+
     @Transactional(readOnly = true)
     public static void existingSpecimens(Long id) throws IOException {
         Mission mission = Mission.findById(id);

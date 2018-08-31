@@ -59,7 +59,7 @@ public class Application extends Controller {
 
 
 		if (request.isAjax() || request.url.endsWith(".jpg")) {
-			Logger.info("Ignore args for" + request.url);
+			Logger.trace("Ignore args for" + request.url);
 			return;
 		}
 

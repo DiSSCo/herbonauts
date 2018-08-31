@@ -3282,6 +3282,7 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
         $scope.onQueryKeyPress = function($event) {
             if ($event.keyCode == 27) {
                 $event.target.blur();
+                //$scope.onQueryBlur();
                 return;
             }
 

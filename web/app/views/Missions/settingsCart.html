@@ -128,6 +128,10 @@
             </h3>
 
 
+            <!-- Common missions -->
+
+
+
 
             *{
             <b>Hits :</b> {{ result.hits }}
@@ -218,6 +222,15 @@
         </div>
 
         <div class="span3">
+
+            <div ng-if="commonMissionsCounts.length > 1" style="margin-bottom: 1em; padding: 0.5em; background: #f2dede">
+                <h3>Autres missions</h3>
+                <br>
+                <p>Certains spécimens sélectionnés sont communs à d'autres missions</p>
+                <div ng-repeat="missionSpecimenCount in commonMissionsCounts" ng-if="missionId != missionSpecimenCount.missionId">
+                    {{ missionSpecimenCount.missionTitle }} ({{ missionSpecimenCount.commonSpecimenCount }})
+                </div>
+            </div>
 
             <h3>Panier</h3>
 
