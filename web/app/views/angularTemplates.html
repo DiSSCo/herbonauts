@@ -412,8 +412,12 @@
 
         <div class="geolocalisation-keywords-container" class="small">
             <input type="text" id="geolocalisation-keywords" value=""
+                   placeholder="&{'placeholder.geolocation'}"
                    ng-class="{'searching': searching}"
-                   ng-model="geolocationQuery" ng-focus="showSuggestions = true" />
+                   ng-blur="onQueryBlur()"
+                   ng-keyup="onQueryKeyPress($event)"
+                   ng-model="geolocationQuery"
+                   ng-focus="showSuggestions = true" />
 
             <div ng-show="showSuggestions" class="geolocation-suggestions">
 
