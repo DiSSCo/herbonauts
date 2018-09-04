@@ -3269,6 +3269,8 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
 
     function initSuggestionInput($scope) {
 
+        $scope.selectedIndex = -1;
+
         $scope.onQueryBlur = function() {
             console.log("Query blur");
             $timeout(function() {
@@ -3281,6 +3283,26 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
         $scope.onQueryKeyPress = function($event) {
             if ($event.keyCode == 27) {
                 $event.target.blur();
+                return;
+            }
+
+            if ($event.keyCode == 38) {
+                // up
+                $scope.selectedIndex = ($scope.selectedIndex - 1) % $scope.geolocationSuggestions.length;
+                return;
+            }
+
+            if ($event.keyCode == 40) {
+                // down
+                $scope.selectedIndex = ($scope.selectedIndex + 1) % $scope.geolocationSuggestions.length;
+                return;
+            }
+
+
+            if ($event.keyCode == 13 && $scope.selectedIndex > -1) {
+                var suggestion = $scope.geolocationSuggestions[$scope.selectedIndex];
+                $scope.placeSuggestionMarker(suggestion);
+                return;
             }
         }
 
@@ -3366,7 +3388,11 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
                 $scope.geolocationSuggestions = response.data;
                 $scope.showSuggestions = true;
                 $scope.searching = false;
+
+                $scope.selectedIndex = -1;
             });
+
+
 
             //$scope.$apply(function() {
             //    $scope.geolocationSuggestions = [

@@ -2465,7 +2465,8 @@ table.legend .square,
 	padding: 8px;
 }
 
-.geolocation-suggestions > div:hover {
+.geolocation-suggestions > div:hover,
+.geolocation-suggestions .hover {
 	background: #8c9f1c;
 	color: #FFF;
 }
