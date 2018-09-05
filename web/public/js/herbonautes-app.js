@@ -3272,10 +3272,9 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
         $scope.selectedIndex = -1;
 
         $scope.onQueryBlur = function() {
-            console.log("Query blur");
             $timeout(function() {
                 $scope.showSuggestions = false;
-            }, 100)
+            }, 1000)
 
             return true;
         }
