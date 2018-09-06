@@ -3352,6 +3352,8 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
                     lng: lon
                 }
                 //$scope.$digest();
+                // Change center
+                map.setView(new L.LatLng(lat, lon), 15);
             }
 
         }
@@ -3674,7 +3676,6 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
         });
 
         marker.setIcon(icon);
-
         marker.setLatLng(pos);
 
         if (!!event && !$scope.question._submitted) {
@@ -3683,6 +3684,13 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
                 lng: marker.getLatLng().lng
             }
             $scope.$apply();
+        }
+
+        // Move map to marker
+        if (marker && marker.getLatLng()) {
+            var lat = marker.getLatLng().lat;
+            var lng = marker.getLatLng().lng;
+            map.setView(new L.LatLng(lat, lng), map.getZoom(), { animated: true })
         }
 
     }
