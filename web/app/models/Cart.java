@@ -31,6 +31,9 @@ public class Cart {
         public String missionTitle;
         public Integer commonSpecimenCount;
 
+        public MissionSpecimenCount() {
+        }
+
         public MissionSpecimenCount(Long missionId, String missionTitle, Integer commonSpecimenCount) {
             this.missionId = missionId;
             this.missionTitle = missionTitle;

@@ -329,6 +329,8 @@ GET     /missions/{id}/settings/cart/items              Missions.getCartItems
 POST    /missions/{id}/settings/cart/items				Missions.saveCartItem
 GET     /missions/{id}/settings/cart/loading	        Missions.isLoadingCart
 GET     /missions/{id}/settings/cart/incommon	        Missions.inCommonSpecimen
+GET     /missions/{id}/settings/cart/exceptions         Missions.getImportExceptions
+POST    /missions/{id}/settings/cart/exceptions/{ignoreId}/{mode}	        Missions.saveImportException
 POST    /missions/{id}/settings/cart/sync	            Missions.syncCart
 POST    /missions/{id}/settings/cart/cancel	            Missions.cancelModifications
 POST    /missions/{id}/settings/existing	            Missions.existingSpecimens

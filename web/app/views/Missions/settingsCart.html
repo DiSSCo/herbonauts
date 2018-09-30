@@ -206,14 +206,18 @@
                             </table>
                         </td>
                         <td>
-                            <span ng-show="!!s._existing">
-                                <span ng-if="s._existing.mission.id == missionId">
-                                    <em>Déjà chargé</em>
-                                </span>
-                                <span ng-if="s._existing.mission.id != missionId">
-                                     <b class="alert-warning">Mission {{ s._existing.mission.title }}</b>
-                                </span>
-                            </span>
+                            <div ng-show="!!s._existing">
+                                <div ng-repeat="existing in s._existing">
+                                    <span ng-if="existing.mission.id == missionId">
+                                        <em>Déjà chargé</em>
+                                    </span>
+                                </div>
+                                <div ng-repeat="existing in s._existing">
+                                    <span ng-if="existing.mission.id != missionId">
+                                         <b class="alert-warning">Mission {{ existing.mission.title }}</b>
+                                    </span>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -223,13 +227,23 @@
 
         <div class="span3">
 
-            <div ng-if="commonMissionsCounts.length > 1" style="margin-bottom: 1em; padding: 0.5em; background: #f2dede">
+            <div ng-if="commonMissionsCounts.length > 1" class="mission-common-box">
                 <h3>Autres missions</h3>
                 <br>
                 <p>Certains spécimens sélectionnés sont communs à d'autres missions</p>
-                <div ng-repeat="missionSpecimenCount in commonMissionsCounts" ng-if="missionId != missionSpecimenCount.missionId">
+
+                <div class="mission-common"
+                     ng-class="{ 'mission-common--ignored' : isMissionIdIgnored(missionSpecimenCount.missionId) }"
+                     ng-repeat="missionSpecimenCount in commonMissionsCounts" ng-if="missionId != missionSpecimenCount.missionId">
+                    <div class="mission-common-title">
                     {{ missionSpecimenCount.missionTitle }} ({{ missionSpecimenCount.commonSpecimenCount }})
+                    </div>
+                    <div class="mission-common-buttons">
+                        <a class="mission-common-ignore" ng-click="ignoreMissionId(missionSpecimenCount.missionId)">Ignorer</a>
+                        <a class="mission-common-import" ng-click="importMissionId(missionSpecimenCount.missionId)">Importer</a>
+                    </div>
                 </div>
+
             </div>
 
             <h3>Panier</h3>
