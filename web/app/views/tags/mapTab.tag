@@ -67,6 +67,12 @@ map.addLayer(markers);
 
             _.each(markers, function(m) {
 
+                // Fix user contribution geolocation
+                if (!!m.position) {
+                    m.latitude = m.position.lat;
+                    m.longitude = m.position.lng;
+                }
+
                 if (!m.latitude || !m.longitude) {
                     return;
 				}

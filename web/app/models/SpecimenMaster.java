@@ -12,11 +12,9 @@ import java.util.List;
 /**
  * Spécimen
  */
-//@Entity
-//@Table(name="H_SPECIMEN_MASTER")
-public class SpecimenMaster {
-
-    private Long id;
+@Entity
+@Table(name="H_SPECIMEN_MASTER")
+public class SpecimenMaster extends Model {
 
     private String institute;
     private String collection;
@@ -112,7 +110,7 @@ public class SpecimenMaster {
     public static Long getContributionsCount(List<Specimen> specimens) {
         Long count = 0l;
         for (Specimen specimen : specimens) {
-            count += Specimen.count("select count(c) from ContributionAnswer c where c.deleted != true and c.userId is not null and c.specimenId = ?", specimen.id);
+            count += count("select count(c) from ContributionAnswer c where c.deleted != true and c.userId is not null and c.specimenId = ?", specimen.id);
         }
         return count;
     }
@@ -153,13 +151,5 @@ public class SpecimenMaster {
             }
             return sb.toString();
         }
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 }

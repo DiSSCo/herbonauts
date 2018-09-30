@@ -89,6 +89,15 @@ public class MissionCartQuery extends Model {
         return existing;
     }
 
+    public static void markAllQueriesNotSync(Long missionId) {
+        List<MissionCartQuery> queries = MissionCartQuery.find("missionId = ?", missionId).fetch();
+        for (MissionCartQuery query : queries) {
+            query.setSync(false);
+            query.save();
+        }
+    }
+
+
     public Long getMissionId() {
         return missionId;
     }

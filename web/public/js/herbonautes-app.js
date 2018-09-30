@@ -3260,26 +3260,67 @@ function toDecimal(val, type) {
     return decimal * neg;
 }
 
-herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', function(QuestionUtils, $http) {
+herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$timeout', function(QuestionUtils, $http, $timeout) {
 
     var map,
         marker,
         autocomplete;
 
+
     function initSuggestionInput($scope) {
 
+        $scope.selectedIndex = -1;
+
+        $scope.onQueryBlur = function() {
+            $timeout(function() {
+                $scope.showSuggestions = false;
+            }, 1000)
+
+            return true;
+        }
+
+        $scope.onQueryKeyPress = function($event) {
+            if ($event.keyCode == 27) {
+                $event.target.blur();
+                //$scope.onQueryBlur();
+                return;
+            }
+
+            if ($event.keyCode == 38) {
+                // up
+                $scope.selectedIndex = ($scope.selectedIndex - 1) % $scope.geolocationSuggestions.length;
+                return;
+            }
+
+            if ($event.keyCode == 40) {
+                // down
+                $scope.selectedIndex = ($scope.selectedIndex + 1) % $scope.geolocationSuggestions.length;
+                return;
+            }
+
+
+            if ($event.keyCode == 13 && $scope.selectedIndex > -1) {
+                var suggestion = $scope.geolocationSuggestions[$scope.selectedIndex];
+                $scope.placeSuggestionMarker(suggestion);
+                return;
+            }
+        }
+
         $scope.geolocationSuggestions = [
-            { name: "Meaux" },
-            { name: "Clermont" },
-            { name: "St-Etienne" }
         ];
 
-        console.log("Geoloc suggestions", $scope.geolocationSuggestions);
 
         $scope.placeSuggestionMarker = function(suggestion) {
 
+            console.log("Place marker");
+
             var lat = +suggestion.lat,
                 lon = +suggestion.lon;
+
+
+            $scope.selectedSuggestion = suggestion.display_name;
+            $scope.geolocationQuery = suggestion.display_name;
+
 
             //if (place.geometry.viewport) {
             //    map.fitBounds(place.geometry.viewport);
@@ -3311,7 +3352,9 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', functi
                     lat: lat,
                     lng: lon
                 }
-                $scope.$apply();
+                //$scope.$digest();
+                // Change center
+                map.setView(new L.LatLng(lat, lon), 15);
             }
 
         }
@@ -3332,7 +3375,12 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', functi
                 return;
             }
 
-            console.log("Search suggestions", $scope.geolocationQuery);
+            if ($scope.selectedSuggestion == $scope.geolocationQuery) {
+                // cancel first search after marker placed
+                $scope.selectedSuggestion = "";
+                return;
+            }
+
             var q = $scope.geolocationQuery;
 
             $scope.searching = true;
@@ -3342,7 +3390,11 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', functi
                 $scope.geolocationSuggestions = response.data;
                 $scope.showSuggestions = true;
                 $scope.searching = false;
+
+                $scope.selectedIndex = -1;
             });
+
+
 
             //$scope.$apply(function() {
             //    $scope.geolocationSuggestions = [
@@ -3354,6 +3406,8 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', functi
         $scope.$watch('geolocationQuery', _.debounce(searchSuggestions, 1000));
 
     }
+
+
 
     function resetInput($scope, element) {
         $scope.$apply(function() {
@@ -3623,7 +3677,6 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', functi
         });
 
         marker.setIcon(icon);
-
         marker.setLatLng(pos);
 
         if (!!event && !$scope.question._submitted) {
@@ -3632,6 +3685,13 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', functi
                 lng: marker.getLatLng().lng
             }
             $scope.$apply();
+        }
+
+        // Move map to marker
+        if (marker && marker.getLatLng()) {
+            var lat = marker.getLatLng().lat;
+            var lng = marker.getLatLng().lng;
+            map.setView(new L.LatLng(lat, lng), map.getZoom(), { animated: true })
         }
 
     }

@@ -834,6 +834,7 @@ public class Missions extends Application {
      */
     @Transactional(readOnly = true)
     public static void specimensCount(Long id) {
+
         Mission mission = Mission.findById(id);
         if(mission.isProposition()) {
             if(!Security.isConnected() || Security.connectedUser().getLevel() < Herbonautes.get().missionProposalMinLevel)
@@ -845,6 +846,8 @@ public class Missions extends Application {
         Long countTotal = mission.getTotalSpecimensCount();
         Long countTiled = mission.getTiledSpecimensCount();
         Boolean loading = Mission.isLoading(id) || mission.isLoadingCart();
+
+
 
         JsonObject state = new JsonObject();
         state.addProperty("count", count);
@@ -1738,6 +1741,64 @@ public class Missions extends Application {
         }
         new CartJob(id).now();
         ok();
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public static void inCommonSpecimen(Long id) {
+        Security.forbiddenIfNotLeader();
+
+        List<Cart.MissionSpecimenCount> inCommonMissionCount = Cart.getInCommonMissionCount(id);
+
+        // Force adding import exceptions
+        List<MissionImportException> exceptions = MissionImportException.findImportExceptionByMissionId(id);
+        for (MissionImportException exception : exceptions) {
+            boolean alreadyInCount = false;
+            for (Cart.MissionSpecimenCount count : inCommonMissionCount) {
+                if (count.missionId.equals(exception.getIgnoreMissionId())) {
+                    alreadyInCount = true;
+                    break;
+                }
+            }
+            if (!alreadyInCount) {
+                MissionSimple mission = MissionSimple.findById(exception.getIgnoreMissionId());
+                Cart.MissionSpecimenCount ignoredCount = new Cart.MissionSpecimenCount();
+                ignoredCount.missionId = exception.getIgnoreMissionId();
+                ignoredCount.missionTitle = mission.getTitle();
+                ignoredCount.commonSpecimenCount = 0;
+                inCommonMissionCount.add(ignoredCount);
+            }
+
+        }
+
+        renderJSON(inCommonMissionCount);
+    }
+
+    @Transactional(readOnly = true)
+    public static void getImportExceptions(Long id) {
+        Security.forbiddenIfNotLeader();
+
+        List<MissionImportException> exceptions = MissionImportException.findImportExceptionByMissionId(id);
+        renderJSON(exceptions);
+    }
+
+    public static void saveImportException(Long id, Long ignoreId, String mode) {
+        Security.forbiddenIfNotLeader();
+
+        Logger.info("Import exception in %d from %d (%s)", id, ignoreId, mode);
+
+        if ("import".equals(mode)) {
+            MissionImportException.importMission(id, ignoreId);
+        }
+        if ("ignore".equals(mode)) {
+            MissionImportException.ignoreMission(id, ignoreId);
+        }
+
+        // Force cart Job for all queries
+        MissionCartQuery.markAllQueriesNotSync(id);
+
+        renderJSON("{ \"done\": true }");
     }
 
     @Transactional(readOnly = true)

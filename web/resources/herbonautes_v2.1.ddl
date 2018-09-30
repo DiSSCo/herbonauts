@@ -66,3 +66,13 @@ FROM
 
 -- Update master id
 UPDATE H_SPECIMEN SET MASTER_ID = ID WHERE MASTER_ID IS NULL;
+
+--
+-- Mission import exception (pour éviter d'importer des specimens dans plusieurs missions)
+--
+CREATE TABLE H_MISSION_IMPORT_EXCEPTION (
+    ID                         number(19, 0),
+    MISSION_ID                 number(19, 0),
+    IGNORE_MISSION_ID          number(19,0),
+    constraint pk_h_mission_exc primary key (ID)
+);

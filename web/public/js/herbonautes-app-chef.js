@@ -702,6 +702,19 @@ herbonautesApp.service('CartService', ['$http', function($http) {
         return $http.get(herbonautes.ctxPath + '/missions/' + missionId + '/specimens/count');
     }
 
+    this.commonMissionsCount = function(missionId) {
+        return $http.get(herbonautes.ctxPath + '/missions/' + missionId +  '/settings/cart/incommon')
+    }
+
+    this.getImportExceptions = function(missionId) {
+        return $http.get(herbonautes.ctxPath + '/missions/' + missionId +  '/settings/cart/exceptions')
+    }
+
+    this.saveImportException = function(missionId, ignoreMissionId, mode) {
+        return $http.post(herbonautes.ctxPath + '/missions/' + missionId +  '/settings/cart/exceptions/' + ignoreMissionId + '/' + mode);
+    }
+
+
     ///missions/{id}/settings/cart/cancel
     /*this.save = function(missionId, cart) {
         return $http.post('/missions/' + missionId + '/settings/cart', cart);
@@ -782,8 +795,37 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
             if ($scope.mission.loading) {
                 $timeout(updateSpecimenCount, countUpdateInterval);
             }
-        })
+        });
+    }
 
+    function updateCommonMissionsCount($scope) {
+        CartService.commonMissionsCount($scope.missionId).then(function(response) {
+            $scope.commonMissionsCounts = response.data;
+        });
+    }
+
+    function updateImportExceptions($scope) {
+        CartService.getImportExceptions($scope.missionId).then(function(response) {
+            $scope.importExceptions = response.data;
+        });
+    }
+
+    $scope.isMissionIdIgnored = function(missionId) {
+        return !!_.find($scope.importExceptions, { ignoreMissionId: missionId });
+    }
+
+    $scope.importMissionId = function(missionId) {
+        CartService.saveImportException($scope.missionId, missionId, "import").then(function() {
+            updateCartItems();
+            updateImportExceptions($scope);
+        });
+    }
+
+    $scope.ignoreMissionId = function(missionId) {
+        CartService.saveImportException($scope.missionId, missionId, "ignore").then(function() {
+            updateCartItems();
+            updateImportExceptions($scope);
+        });
     }
 
     $scope.specimenPerMissionLimit = 0;
@@ -831,6 +873,8 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
         }
         $scope.currentCartItem._current = true;
 
+        updateCommonMissionsCount($scope);
+        updateImportExceptions($scope);
         //
 
     }
@@ -948,7 +992,12 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
                     var result = _.find($scope.result.specimens, function(h) {
                         return h._source.catalognumber == existing.code;
                     });
-                    result._existing = existing;
+
+                    if (!result._existing) {
+                        result._existing = []
+                    }
+
+                    result._existing.push(existing);
                 });
                 //console.log("existing", response.data);
             })

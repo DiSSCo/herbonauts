@@ -824,3 +824,5 @@ mail.email.change.subject.more1=Confirmer en cliquant sur le <a href="%s">lien</
 mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigateur %s
 
 message.email.change.success=Votre adresse mail a été modifiée
+
+placeholder.geolocation=Enter a location

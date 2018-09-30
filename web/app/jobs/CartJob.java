@@ -19,9 +19,11 @@ import java.util.*;
 @NoTransaction
 public class CartJob extends Job  {
 
-	private Long missionId;
+    private Long missionId;
 
     private RecolnatSearchClient search = new RecolnatSearchClient();
+
+    private List<MissionImportException> exceptions;
 
     public CartJob(Long missionId) {
         super();
@@ -29,14 +31,17 @@ public class CartJob extends Job  {
     }
 
 
-	@Override
-	public void doJob() throws Exception {
-         syncCart();
+    @Override
+    public void doJob() throws Exception {
+        syncCart();
     }
 
 
 
     public void syncCart() throws Exception {
+
+        Logger.info("Sync cart");
+
 
         Mission mission = null;
         List<MissionCartQuery> queries = null;
@@ -44,7 +49,10 @@ public class CartJob extends Job  {
 
         try {
 
-            JPA.startTx("default", false);
+            JPA.startTx("default", false);Logger.warn("===> START TX");
+
+            // Load exceptions
+            this.exceptions = MissionImportException.findImportExceptionByMissionId(missionId);
 
             mission = Mission.findById(missionId);
             queries = MissionCartQuery.find("missionId = ?", missionId).fetch();
@@ -53,15 +61,17 @@ public class CartJob extends Job  {
             mission.setLoadingCart(true);
             mission.save();
 
-            JPA.closeTx("default");
+            JPA.closeTx("default");Logger.warn("===> CLOSE TX");
 
         } catch (Throwable t) {
             JPA.rollbackTx("default");
         }
 
+
         if (mission == null) {
             return;
         }
+
 
         try {
 
@@ -95,25 +105,30 @@ public class CartJob extends Job  {
 
             try {
 
-                JPA.startTx("default", false);
+                JPA.startTx("default", false);Logger.warn("===> START TX");
                 mission = Mission.findById(missionId);
 
                 mission.setLoadingCart(false);
                 mission.save();
 
-                JPA.closeTx("default");
+                JPA.closeTx("default");Logger.warn("===> CLOSE TX");
             } catch (Throwable t) {
                 Logger.error(t, "Error");
                 JPA.rollbackTx("default");
             }
         }
-	}
+    }
 
     private boolean processChanges(Mission mission, Long queryId) throws SpecimenLimitException {
+
+
         try {
-            JPA.startTx("default", false);
+            JPA.startTx("default", false);Logger.warn("===> START TX");
+
 
             MissionCartQuery query = MissionCartQuery.findById(queryId);
+
+
 
             if (query.getTextFile() != null) {
                 Logger.info("  Import file");
@@ -140,9 +155,18 @@ public class CartJob extends Job  {
                         importSpecimenFromId(mission, exploreId);
                     }
                 }
+
+                if (diff.size() == 0) {
+                    Logger.info("  - no diff found, force import all selection (probably exception change)");
+                    for (String exploreId : query.getSelection()) {
+                        Logger.info("    - Import specimen (explore id: %s)", exploreId);
+                        importSpecimenFromId(mission, exploreId);
+                    }
+                }
+
             }
 
-            JPA.closeTx("default");
+            JPA.closeTx("default");Logger.warn("===> CLOSE TX");
 
             return true;
 
@@ -180,35 +204,103 @@ public class CartJob extends Job  {
 
     }
 
+    private void removeSpecimenFromCatalogNumberNoTx(Mission mission, String catalogNumber) {
+
+        try {
+
+            Specimen specimen = Specimen.find("code = ? and mission.id = ?", catalogNumber, mission.id).first();
+
+            if (specimen != null) {
+                specimen.delete();
+                Logger.info("  %s supprimé de la mission %s", catalogNumber, mission.getTitle());
+            } else {
+                Logger.error("  %s n'est pas dans la mission %s", catalogNumber, mission.getTitle());
+            }
+
+        } catch (Throwable t) {
+
+            Logger.error(t, "error specimen");
+
+        }
+
+        //try {
+        //    JPA.startTx("default", false);Logger.warn("===> START TX");
+//
+        //    Specimen existing = Specimen.find("code = ?", catalogNumber).first();
+//
+        //    if (existing == null) {
+        //        Logger.error("  %s n'existe pas, pas de suppression !", catalogNumber);
+        //        JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+        //        return;
+        //    } else if (!existing.getMission().id.equals(mission.id)) {
+        //        Logger.error("  %s dans une autre mission, pas de suppression !", catalogNumber);
+        //        JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+        //        return;
+        //    }
+//
+        //    Specimen specimen = (Specimen) Specimen.find("code = ?", catalogNumber).fetch(1).get(0);
+        //    specimen.delete();
+//
+        //    Logger.info("  %s supprimé", catalogNumber);
+//
+        //    JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+        //} catch (Throwable t) {
+//
+        //    Logger.error(t, "error specimen");
+//
+        //    JPA.rollbackTx("default");
+        //}
+    }
+
     private void removeSpecimenFromCatalogNumber(Mission mission, String catalogNumber) {
 
         try {
-            JPA.startTx("default", false);
+            JPA.startTx("default", false);Logger.warn("===> START TX");
 
-            Specimen existing = Specimen.find("code = ?", catalogNumber).first();
+            Specimen specimen = Specimen.find("code = ? and mission.id = ?", catalogNumber, mission.id).first();
 
-            if (existing == null) {
-                Logger.error("  %s n'existe pas, pas de suppression !", catalogNumber);
-                JPA.closeTx("default");
-                return;
-            } else if (!existing.getMission().id.equals(mission.id)) {
-                Logger.error("  %s dans une autre mission, pas de suppression !", catalogNumber);
-                JPA.closeTx("default");
-                return;
+            if (specimen != null) {
+                specimen.delete();
+                Logger.info("  %s supprimé de la mission %s", catalogNumber, mission.getTitle());
+            } else {
+                Logger.error("  %s n'est pas dans la mission %s", catalogNumber, mission.getTitle());
             }
 
-            Specimen specimen = (Specimen) Specimen.find("code = ?", catalogNumber).fetch(1).get(0);
-            specimen.delete();
-
-            Logger.info("  %s supprimé", catalogNumber);
-
-            JPA.closeTx("default");
+            JPA.closeTx("default");Logger.warn("===> CLOSE TX");
         } catch (Throwable t) {
 
             Logger.error(t, "error specimen");
 
             JPA.rollbackTx("default");
         }
+
+        //try {
+        //    JPA.startTx("default", false);Logger.warn("===> START TX");
+//
+        //    Specimen existing = Specimen.find("code = ?", catalogNumber).first();
+//
+        //    if (existing == null) {
+        //        Logger.error("  %s n'existe pas, pas de suppression !", catalogNumber);
+        //        JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+        //        return;
+        //    } else if (!existing.getMission().id.equals(mission.id)) {
+        //        Logger.error("  %s dans une autre mission, pas de suppression !", catalogNumber);
+        //        JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+        //        return;
+        //    }
+//
+        //    Specimen specimen = (Specimen) Specimen.find("code = ?", catalogNumber).fetch(1).get(0);
+        //    specimen.delete();
+//
+        //    Logger.info("  %s supprimé", catalogNumber);
+//
+        //    JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+        //} catch (Throwable t) {
+//
+        //    Logger.error(t, "error specimen");
+//
+        //    JPA.rollbackTx("default");
+        //}
     }
 
     private void removeSpecimenFromId(Mission mission, String exploreId) {
@@ -232,7 +324,7 @@ public class CartJob extends Job  {
                 specimens = search.search(terms, false, 1, 1);
             }
             if (specimens.size() > 0) {
-                convertAndSaveSpecimen(mission, specimens.get(0));
+                convertAndSaveSpecimen(mission, specimens.get(0), true);
             } else {
                 Logger.info("No specimen found : %s", code);
             }
@@ -248,7 +340,7 @@ public class CartJob extends Job  {
             Logger.info("Page %d (%d)", page, pageSize);
             for (RecolnatSearchClient.RecolnatSpecimen specimen : specimens) {
                 Logger.info("- %s", specimen.catalogNumber);
-                convertAndSaveSpecimen(mission, specimen);
+                convertAndSaveSpecimen(mission, specimen, true);
             }
             page++;
         }
@@ -258,22 +350,72 @@ public class CartJob extends Job  {
 
 
     private void convertAndSaveSpecimen(Mission mission, RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen) throws SpecimenLimitException {
+        convertAndSaveSpecimen(mission, recolnatSpecimen, false);
+    }
+
+    private void convertAndSaveSpecimen(Mission mission, RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen, boolean noTx) throws SpecimenLimitException {
 
         try {
-            JPA.startTx("default", false);
+            if (!noTx) {
+                JPA.startTx("default", false);
+                Logger.warn("===> START TX");
+            }
 
             checkSpecimenLimit();
+
+            Logger.info("---------");
+            Logger.info("CONVERT AND SAVE %s", recolnatSpecimen.catalogNumber);
+
+
+            // Is ignored if exist is other missions
+
+            List<Long> exceptionsMissionIdList = new ArrayList<Long>();
+            for (MissionImportException exception : this.exceptions) {
+                exceptionsMissionIdList.add(exception.getIgnoreMissionId());
+            }
+
+            Logger.info("  Exception mission id list:");
+            for (Long id : exceptionsMissionIdList) {
+                Logger.info("  - %s", id);
+            }
+
+            boolean isIgnored = (exceptionsMissionIdList.size() > 0) && Specimen.find("code = :code and mission.id IN (:idList)")
+                    .setParameter("code", recolnatSpecimen.catalogNumber)
+                    .setParameter("idList", exceptionsMissionIdList)
+                    .fetch().size() > 0;
+
 
             Boolean existing = Specimen.find("code = ? and mission.id = ?", recolnatSpecimen.catalogNumber, mission.id).fetch().size() > 0;
 
             if (existing) {
                 Logger.error("  %s déjà en base !", recolnatSpecimen.catalogNumber);
-                JPA.closeTx("default");
+
+
+                if (isIgnored) {
+                    // Should be deleted
+                    Logger.info("  Exists but ignored -> Force remove");
+                    removeSpecimenFromCatalogNumberNoTx(mission, recolnatSpecimen.catalogNumber);
+                }
+
+                if (!noTx) {
+                    JPA.closeTx("default");
+                    Logger.warn("===> CLOSE TX");
+                }
                 return;
             }
 
-            /* CREATE MASTER */
-            /*
+
+
+            if (isIgnored) {
+                Logger.info("  %s ignored from exceptions", recolnatSpecimen.catalogNumber);
+                if (!noTx) {
+                    JPA.closeTx("default");
+                    Logger.warn("===> CLOSE TX");
+                }
+                return;
+            }
+
+
             Boolean masterExisting = SpecimenMaster.count("code = ?", recolnatSpecimen.catalogNumber) > 0;
 
             SpecimenMaster master = null;
@@ -297,10 +439,9 @@ public class CartJob extends Job  {
             } else {
                 master = SpecimenMaster.find("code = ?", recolnatSpecimen.catalogNumber).first();
             }
-            */
 
             Specimen specimen = new Specimen();
-            //specimen.setMaster(master);
+            specimen.setMaster(master);
             specimen.setCode(recolnatSpecimen.catalogNumber);
             specimen.setInstitute(recolnatSpecimen.institution);
             specimen.setCollection(recolnatSpecimen.collection);
@@ -336,24 +477,27 @@ public class CartJob extends Job  {
             tagLink.create();
             Logger.info("  > %s créé", recolnatSpecimen.catalogNumber);
 
-            JPA.closeTx("default");
+            if (!noTx) {
+                JPA.closeTx("default");
+                Logger.warn("===> CLOSE TX");
+            }
         } catch (Throwable t) {
 
             Logger.error(t, "error specimen");
 
-            JPA.rollbackTx("default");
+            if (!noTx) JPA.rollbackTx("default");
         }
 
     }
 
     private void importSpecimenFromId(Mission mission, String exploreId) throws SpecimenLimitException {
         RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen = this.search.getSpecimen(exploreId);
-        convertAndSaveSpecimen(mission, recolnatSpecimen);
+        convertAndSaveSpecimen(mission, recolnatSpecimen, true);
     }
 
     private void markQuerySync(Long queryId) {
         try {
-            JPA.startTx("default", false);
+            JPA.startTx("default", false);Logger.warn("===> START TX");
 
             MissionCartQuery query = MissionCartQuery.findById(queryId);
             query.setAllSelected(query.getAllSelectedDraft());
@@ -363,7 +507,7 @@ public class CartJob extends Job  {
             query.setSync(true);
             query.save();
 
-            JPA.closeTx("default");
+            JPA.closeTx("default");Logger.warn("===> CLOSE TX");
         } catch (Throwable t) {
 
             Logger.error(t, "error specimen");
@@ -382,5 +526,5 @@ public class CartJob extends Job  {
     public static class SpecimenLimitException extends Exception {
 
     }
-	
+
 }

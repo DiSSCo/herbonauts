@@ -2465,7 +2465,8 @@ table.legend .square,
 	padding: 8px;
 }
 
-.geolocation-suggestions > div:hover {
+.geolocation-suggestions > div:hover,
+.geolocation-suggestions .hover {
 	background: #8c9f1c;
 	color: #FFF;
 }
@@ -2476,4 +2477,51 @@ table.legend .square,
 
 .geolocalisation-keywords-container {
 	z-index: 1500 !important;
+}
+
+/* Common specimens alert */
+
+.mission-common-box {
+	margin-bottom: 1em;
+	padding: 5px;
+	background: #f2dede;
+}
+
+.mission-common:hover {
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.mission-common {
+	display: flex;
+	justify-content: space-between;
+	padding: 5px 5px;
+	margin: 0 -5px
+}
+
+.mission-common+.mission-common {
+	border-top: 1px solid rgba(255, 255, 255, 0.5)
+}
+
+.mission-common-buttons {
+	text-align: right;
+	display: none;
+}
+.mission-common:hover .mission-common-buttons {
+	display: block;
+}
+
+.mission-common--ignored .mission-common-title {
+	text-decoration: line-through;
+}
+
+
+.mission-common-import {
+	display: none;
+}
+
+.mission-common--ignored .mission-common-import {
+	display: block;
+}
+.mission-common--ignored .mission-common-ignore {
+	display: none;
 }

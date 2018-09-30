@@ -411,13 +411,21 @@
 
 
         <div class="geolocalisation-keywords-container" class="small">
+
+            <!-- ng-blur="onQueryBlur()" -->
+
             <input type="text" id="geolocalisation-keywords" value=""
+                   placeholder="&{'placeholder.geolocation'}"
                    ng-class="{'searching': searching}"
-                   ng-model="geolocationQuery" ng-focus="showSuggestions = true" />
+                   ng-blur="onQueryBlur()"
+                   ng-keyup="onQueryKeyPress($event)"
+                   ng-model="geolocationQuery"
+                   ng-focus="showSuggestions = true" />
 
             <div ng-show="showSuggestions" class="geolocation-suggestions">
-
-                <div ng-repeat="suggestion in geolocationSuggestions" ng-click="placeSuggestionMarker(suggestion)">
+                <div ng-repeat="suggestion in geolocationSuggestions"
+                     ng-class="{'hover': selectedIndex == $index }"
+                     ng-click="placeSuggestionMarker(suggestion)">
                     {{ suggestion.display_name }}
                 </div>
             </div>
