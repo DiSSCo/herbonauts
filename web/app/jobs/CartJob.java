@@ -1,6 +1,8 @@
 package jobs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import conf.Herbonautes;
+import libs.Json;
 import models.*;
 import models.tags.Tag;
 import models.tags.TagLink;
@@ -13,6 +15,7 @@ import play.db.jpa.NoTransaction;
 import play.jobs.Job;
 import play.libs.Codec;
 import services.RecolnatSearchClient;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 
@@ -148,11 +151,11 @@ public class CartJob extends Job  {
                 Collection<String> diff = CollectionUtils.disjunction(query.getSelection(), query.getSelectionDraft());
                 for (String exploreId : diff) {
                     if (query.getSelection().contains(exploreId)) {
-                        Logger.info("  - " + exploreId);
-                        removeSpecimenFromId(mission, exploreId);
+                        Logger.info("  - " + exploreId + " (" + query.getIndexName() + ")");
+                        removeSpecimenFromId(mission, exploreId, query.getIndexName());
                     } else {
-                        Logger.info("  + " + exploreId);
-                        importSpecimenFromId(mission, exploreId);
+                        Logger.info("  + " + exploreId + " (" + query.getIndexName() + ")");
+                        importSpecimenFromId(mission, exploreId, query.getIndexName());
                     }
                 }
 
@@ -160,7 +163,7 @@ public class CartJob extends Job  {
                     Logger.info("  - no diff found, force import all selection (probably exception change)");
                     for (String exploreId : query.getSelection()) {
                         Logger.info("    - Import specimen (explore id: %s)", exploreId);
-                        importSpecimenFromId(mission, exploreId);
+                        importSpecimenFromId(mission, exploreId, query.getIndexName());
                     }
                 }
 
@@ -188,12 +191,12 @@ public class CartJob extends Job  {
         int page = 1;
         int pageSize = 100;
         List<RecolnatSearchClient.RecolnatSpecimen> specimens = null;
-        while ((specimens = search.search(query.getTerms(), query.getNoCollectInfo(), page, pageSize)).size() > 0) {
+        while ((specimens = search.search(query.getIndexName(), query.getTerms(), query.getNoCollectInfo(), page, pageSize)).size() > 0) {
             for (RecolnatSearchClient.RecolnatSpecimen specimen : specimens) {
 
                 if (!query.getSelectionDraft().contains(specimen._id)) {
                     Logger.info("- %s", specimen.catalogNumber);
-                    removeSpecimenFromId(mission, specimen._id);
+                    removeSpecimenFromId(mission, specimen._id, query.getIndexName());
                 } else {
                     Logger.info("- %s in selection, skip remove", specimen.catalogNumber);
                 }
@@ -211,7 +214,9 @@ public class CartJob extends Job  {
             Specimen specimen = Specimen.find("code = ? and mission.id = ?", catalogNumber, mission.id).first();
 
             if (specimen != null) {
+                SpecimenMedia.deleteMediaBySpecimenId(specimen.getId());
                 specimen.delete();
+
                 Logger.info("  %s supprimé de la mission %s", catalogNumber, mission.getTitle());
             } else {
                 Logger.error("  %s n'est pas dans la mission %s", catalogNumber, mission.getTitle());
@@ -260,6 +265,7 @@ public class CartJob extends Job  {
             Specimen specimen = Specimen.find("code = ? and mission.id = ?", catalogNumber, mission.id).first();
 
             if (specimen != null) {
+                SpecimenMedia.deleteMediaBySpecimenId(specimen.getId());
                 specimen.delete();
                 Logger.info("  %s supprimé de la mission %s", catalogNumber, mission.getTitle());
             } else {
@@ -303,8 +309,8 @@ public class CartJob extends Job  {
         //}
     }
 
-    private void removeSpecimenFromId(Mission mission, String exploreId) {
-        RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen = this.search.getSpecimen(exploreId);
+    private void removeSpecimenFromId(Mission mission, String exploreId, String index) {
+        RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen = this.search.getSpecimen(index, exploreId);
         removeSpecimenFromCatalogNumber(mission, recolnatSpecimen.catalogNumber);
     }
 
@@ -318,10 +324,10 @@ public class CartJob extends Job  {
             code = code.replaceAll("[^a-zA-Z0-9]", "");
 
             terms.put("catalognumber", code.toLowerCase());
-            List<RecolnatSearchClient.RecolnatSpecimen> specimens = search.search(terms, true, 1, 1);
+            List<RecolnatSearchClient.RecolnatSpecimen> specimens = search.search(query.getIndexName(), terms, true, 1, 1);
 
             if (specimens.size() == 0) {
-                specimens = search.search(terms, false, 1, 1);
+                specimens = search.search(query.getIndexName(), terms, false, 1, 1);
             }
             if (specimens.size() > 0) {
                 convertAndSaveSpecimen(mission, specimens.get(0), true);
@@ -336,7 +342,7 @@ public class CartJob extends Job  {
         int page = 1;
         int pageSize = 100;
         List<RecolnatSearchClient.RecolnatSpecimen> specimens = null;
-        while ((specimens = search.search(query.getTerms(), query.getNoCollectInfo(), page, pageSize)).size() > 0) {
+        while ((specimens = search.search(query.getIndexName(), query.getTerms(), query.getNoCollectInfo(), page, pageSize)).size() > 0) {
             Logger.info("Page %d (%d)", page, pageSize);
             for (RecolnatSearchClient.RecolnatSpecimen specimen : specimens) {
                 Logger.info("- %s", specimen.catalogNumber);
@@ -440,6 +446,8 @@ public class CartJob extends Job  {
                 master = SpecimenMaster.find("code = ?", recolnatSpecimen.catalogNumber).first();
             }
 
+            Logger.info("Build specimen");
+
             Specimen specimen = new Specimen();
             specimen.setMaster(master);
             specimen.setCode(recolnatSpecimen.catalogNumber);
@@ -454,8 +462,43 @@ public class CartJob extends Job  {
             specimen.setSpecificEpithet(recolnatSpecimen.specificEpithet);
             specimen.setLastModified(new Date());
             specimen.setAlea(Codec.hexMD5(recolnatSpecimen.catalogNumber));
+
+            Logger.info("Save specimen");
+
+            Logger.info("" + specimen.getMaster().getId());
+            Logger.info("" + specimen.getCode());
+            Logger.info("" + specimen.getInstitute());
+            Logger.info("" + specimen.getCollection());
+            Logger.info("" + specimen.getMission().getId());
+            Logger.info("" + specimen.getFamily());
+            Logger.info("" + specimen.getGenus());
+            Logger.info("" + specimen.getSpecificEpithet());
+            Logger.info("" + specimen.getLastModified());
+            Logger.info("" + specimen.getAlea());
+
+
+
             specimen.save();
+
+            Logger.info("Refresh specimen");
+
             specimen.refresh();
+
+            // Create media list
+
+            Long number = 1L;
+            for (RecolnatSearchClient.RecolnatSpecimenMedia media :recolnatSpecimen.media) {
+                SpecimenMedia m = new SpecimenMedia();
+                m.setSpecimenId(specimen.getId());
+                m.setMediaNumber(number);
+                m.setMediaId(media.id);
+                m.setUrl(media.url);
+                m.save();
+                number++;
+            }
+
+
+            Logger.info("Build tag");
             Tag tag = Tag.findByLabel(specimen.getCode());
             if(tag == null) {
                 tag = new Tag();
@@ -490,8 +533,8 @@ public class CartJob extends Job  {
 
     }
 
-    private void importSpecimenFromId(Mission mission, String exploreId) throws SpecimenLimitException {
-        RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen = this.search.getSpecimen(exploreId);
+    private void importSpecimenFromId(Mission mission, String exploreId, String index) throws SpecimenLimitException {
+        RecolnatSearchClient.RecolnatSpecimen recolnatSpecimen = this.search.getSpecimen(index, exploreId);
         convertAndSaveSpecimen(mission, recolnatSpecimen, true);
     }
 
@@ -517,6 +560,7 @@ public class CartJob extends Job  {
     }
 
     public void checkSpecimenLimit() throws SpecimenLimitException {
+        Logger.info("Check specimen limit");
         long count = Specimen.count("mission.id = ?", missionId);
         if (count >= Herbonautes.get().specimenPerMissionLimit) {
             throw new SpecimenLimitException();

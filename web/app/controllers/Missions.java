@@ -1651,7 +1651,7 @@ public class Missions extends Application {
         renderJSON(queries);
     }
 
-    public static void cartUploadFile(Long id, File codeFile) throws IOException {
+    public static void cartUploadFile(Long id, File codeFile, String index) throws IOException {
 
         String codes = FileUtils.readFileToString(codeFile);
 
@@ -1667,6 +1667,7 @@ public class Missions extends Application {
         cartQuery.setTextFile(textFile);
         cartQuery.setHits((long) codes.split("\n").length);
         cartQuery.setSync(false);
+        cartQuery.setIndexName(index);
         cartQuery.save();
 
         renderJSON(cartQuery);
@@ -1704,6 +1705,7 @@ public class Missions extends Application {
         existing.setHits(query.getHits());
         existing.setAllSelectedDraft(query.getAllSelectedDraft());
         existing.setSelectionDraft(query.getSelectionDraft());
+        existing.setIndexName(query.getIndexName());
         //existing.setSync(false);
 
 
@@ -1817,9 +1819,17 @@ public class Missions extends Application {
             catalogNumbers.add(node.asText());
         }
 
-        List<Specimen> specimens = JPA.em().createQuery("select s from Specimen s where s.code in :catalogNumbers")
-                                           .setParameter("catalogNumbers", catalogNumbers)
-                                           .getResultList();
+
+
+        List<Specimen> specimens = null;
+
+        if (catalogNumbers.size() > 0) {
+            specimens = JPA.em().createQuery("select s from Specimen s where s.code in :catalogNumbers")
+                    .setParameter("catalogNumbers", catalogNumbers)
+                    .getResultList();
+        } else {
+            specimens = new ArrayList<Specimen>();
+        }
 
 
         GsonBuilder gson = GsonUtils.getGsonBuilder();

@@ -119,6 +119,7 @@ public class Json {
         if (jsonNode.has("allSelected"))    query.setAllSelected(jsonNode.get("allSelected").asBoolean());
         if (jsonNode.has("allSelectedDraft"))    query.setAllSelectedDraft(jsonNode.get("allSelectedDraft").asBoolean());
         if (jsonNode.has("hits"))    query.setHits(jsonNode.get("hits").asLong());
+        if (jsonNode.has("indexName"))    query.setIndexName(jsonNode.get("indexName").asText());
 
         HashMap<String, String> terms = new HashMap<String, String>();
         if (jsonNode.hasNonNull("terms")) {

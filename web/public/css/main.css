@@ -2525,3 +2525,71 @@ table.legend .square,
 .mission-common--ignored .mission-common-ignore {
 	display: none;
 }
+
+
+/* Media */
+
+.media-box {
+	border-top: 1px solid #999;
+	font-size: 14px;
+}
+
+.media-carousel {
+	margin: 0 -5px;
+}
+
+.media-carousel > div {
+	display: inline-block;
+	width: 20%;
+	box-sizing: border-box;
+	padding: 5px;
+}
+
+.media-carousel > div > a {
+	display: block;
+	height: 50px;
+	overflow: hidden;
+	border: 1px solid #EEE;
+	box-sizing: border-box;
+	position: relative;
+}
+
+.media-number {
+	display: block;
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	padding: 2px;
+	width: 15px;
+	text-align: center;
+	color: #2796b6;
+	background: #FFF;
+
+
+	font-size: 10px;
+	border-radius: 3px;
+}
+
+.media-carousel > div.media-current > a {
+	border: 3px solid #2796b6;
+}
+
+.media-image {
+	object-fit: contain;
+}
+
+.media-buttons {
+	background: #CCC;
+	border: 1px solid #999;
+	padding: 5px;
+	border-radius: 5px;
+	position: absolute;
+	/* top: 0; */
+	top: 110px;
+	width: 120px;
+	left: calc(50% + 105px);
+	z-index: 1000;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}

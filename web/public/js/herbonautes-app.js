@@ -520,6 +520,10 @@ herbonautesApp.service('ContributionService', ['$http', function($http) {
         return $http.get(herbonautes.ctxPath + '/missions/' + missionId + '/specimens/' + specimenId + '/mark');
     }
 
+    this.getSpecimenMedia = function(specimenId) {
+        return $http.get(herbonautes.ctxPath + '/specimens/' + specimenId + '/media');
+    }
+
 }]);
 
 herbonautesApp.service('QuestionUtils', [function() {
@@ -2333,7 +2337,24 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
                 $scope.defaultZoom);
     }
 
+    function initSpecimenMediaBoard(media) {
+        initializeSpecimenMediaMap(
+            $scope.tilesRootURL,
+            $scope.specimen.institute,
+            $scope.specimen.collection,
+            $scope.specimen.code,
+            media,
+            $scope.defaultZoom);
+    }
+
+
     function loadSpecimen(specimenId, callback) {
+
+        $scope.specimenMediaList = [];
+        $scope.currentMediaIndex = 0;
+
+        console.log('LOAD SPECIMEN ' + specimenId);
+
 
         setAllLoading(true);
         resetAnswers($scope.questions);
@@ -2346,6 +2367,12 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
 
         ContributionService.getSpecimen($scope.missionId, $scope.specimenId).then(function(response) {
             $scope.specimen = response.data;
+
+            // Load media list
+            ContributionService.getSpecimenMedia(specimenId).then(function(response) {
+                $scope.specimenMediaList = response.data;
+                initSpecimenMediaBoard($scope.specimenMediaList[0]);
+            });
 
             if (!$scope.context) {
                 $scope.context = {
@@ -2371,7 +2398,8 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
             //$scope.tilesRootURL;
 
             console.log("call init specimen board")
-            initSpecimenBoard();
+            // initSpecimenBoard();
+            // CHANGE DONE IN GET SPECIMEN MEDIA
 
             //setAllLoading(false);
 
@@ -2430,6 +2458,33 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
                 });
             });
         });
+    }
+
+    $scope.mediaImageUrl = function(media) {
+        return $scope.tilesRootURL +
+            $scope.specimen.institute + '/' +
+            $scope.specimen.collection + '/' +
+            $scope.specimen.code + '/' +
+            media.mediaNumber +
+            '/tile_0_0_0.jpg'
+    }
+
+    $scope.setCurrentMedia = function(index) {
+        var media = $scope.specimenMediaList[index];
+        $scope.currentMediaIndex = index;
+        // console.log("set current media", media);
+        $scope.currentMedia = media;
+        initSpecimenMediaBoard(media);
+    }
+
+    $scope.setPreviousMedia = function() {
+        $scope.currentMediaIndex = ($scope.currentMediaIndex + $scope.specimenMediaList.length - 1) % $scope.specimenMediaList.length;
+        $scope.setCurrentMedia($scope.currentMediaIndex);
+    }
+
+    $scope.setNextMedia = function() {
+        $scope.currentMediaIndex = ($scope.currentMediaIndex + 1) % $scope.specimenMediaList.length;
+        $scope.setCurrentMedia($scope.currentMediaIndex);
     }
 
     $scope.nextSpecimen = function() {

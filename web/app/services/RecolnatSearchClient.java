@@ -22,12 +22,12 @@ import java.util.Map;
 
 public class RecolnatSearchClient {
 
-    private static final String BASE_URL = "http://search.recolnat.org/botanique";
+    private static final String BASE_URL = "http://search.recolnat.org/";
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    public RecolnatSpecimen getSpecimen(String id) {
-        String json = WS.url(BASE_URL + "/specimens/" + id).get().getString();
+    public RecolnatSpecimen getSpecimen(String index, String id) {
+        String json = WS.url(BASE_URL + index + "/specimens/" + id).get().getString();
         RecolnatSpecimen specimen = null;
         try {
             JsonNode jsonNode = mapper.readTree(json);
@@ -40,7 +40,7 @@ public class RecolnatSearchClient {
         return specimen;
     }
 
-    public List<RecolnatSpecimen> search(Map<String, String> query, Boolean noCollectInfo, int page, int pageSize) {
+    public List<RecolnatSpecimen> search(String index, Map<String, String> query, Boolean noCollectInfo, int page, int pageSize) {
         //JsonElement result = WS.url("").post().getJson();
         //result.getAsJsonObject().get("");
 
@@ -50,7 +50,7 @@ public class RecolnatSearchClient {
 
         Logger.info("Query : %s", jsonQuery);
 
-        WS.WSRequest body = WS.url(BASE_URL + String.format("/_search?from=%d&size=%d", i, pageSize))
+        WS.WSRequest body = WS.url(BASE_URL + index + String.format("/_search?from=%d&size=%d", i, pageSize))
                 .body(jsonQuery);
 
         String json = body
@@ -222,6 +222,9 @@ public class RecolnatSearchClient {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class RecolnatSpecimenMedia {
+
+        @JsonProperty
+        public String id;
 
         @JsonProperty("identifier")
         public String url;

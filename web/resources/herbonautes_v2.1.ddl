@@ -76,3 +76,43 @@ CREATE TABLE H_MISSION_IMPORT_EXCEPTION (
     IGNORE_MISSION_ID          number(19,0),
     constraint pk_h_mission_exc primary key (ID)
 );
+
+
+ALTER TABLE H_MISSION_CART_QUERY
+ADD INDEX_NAME VARCHAR(20);
+
+UPDATE H_MISSION_CART_QUERY SET INDEX_NAME = 'botanique';
+
+--
+-- SPECIMEN MEDIA (plusieurs images pour spécimens zoologiques)
+--
+CREATE TABLE H_SPECIMEN_MEDIA (
+    id number(19,0) not null,
+    specimen_id number(19, 0) not null,
+    media_number number(19, 0) not null,
+    media_id varchar2(255 char),
+    url varchar2(255 char),
+    tileHeight number(10,0),
+    tileWidth number(10,0),
+    tiled number(1,0) not null,
+    tilingError number(1,0) not null,
+    primary key (id)
+);
+CREATE INDEX h_spe_media_idx ON H_SPECIMEN_MEDIA(specimen_id);
+
+--
+-- Init previous media
+--
+INSERT INTO H_SPECIMEN_MEDIA
+SELECT
+  id,
+  id as specimen_id,
+  1 as media_number,
+  '_IMPORT_' as media_id,
+  sonneraturl as url,
+  tileHeight,
+  tileWidth,
+  tiled,
+  tilingError
+FROM
+  H_SPECIMEN;

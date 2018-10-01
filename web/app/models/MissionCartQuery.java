@@ -20,6 +20,9 @@ public class MissionCartQuery extends Model {
     @JoinColumn(name="text_file_id")
     private TextFile textFile;
 
+    @Column(name="INDEX_NAME")
+    private String indexName;
+
     @Column(name="HITS")
     private Long hits;
 
@@ -97,6 +100,13 @@ public class MissionCartQuery extends Model {
         }
     }
 
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
+    }
 
     public Long getMissionId() {
         return missionId;

@@ -28,6 +28,7 @@ herbonautesApp.service('RecolnatSearch', ['ElasticSearch', function(ElasticSearc
 
         search: function(cartItem, page, pageSize) {
 
+
             var andQuery = [];
             for (var k in cartItem.terms){
                 if (cartItem.terms.hasOwnProperty(k)) {
@@ -89,7 +90,7 @@ herbonautesApp.service('RecolnatSearch', ['ElasticSearch', function(ElasticSearc
             };
 
             return ElasticSearch.search({
-                index: 'botanique',
+                index: cartItem.indexName,
                 from: ((page - 1) * pageSize),
                 size: pageSize,
                 body: {
@@ -100,7 +101,12 @@ herbonautesApp.service('RecolnatSearch', ['ElasticSearch', function(ElasticSearc
 
         },
 
-        suggest: function(field, q) {
+        suggest: function(field, q, indexName) {
+
+            if (!indexName) {
+                indexName = 'botanique';
+            }
+
             var query = {
                     filtered: {
                         query: {
@@ -127,7 +133,7 @@ herbonautesApp.service('RecolnatSearch', ['ElasticSearch', function(ElasticSearc
                };
 
             return ElasticSearch.search({
-                index: 'botanique',
+                index: indexName,
                 //from: (($scope.pagination.current_page - 1) * $scope.limit),
                 size: 0,
                 body: {
@@ -753,11 +759,14 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
 
 
     $scope.newCartItem = {
+        indexName: 'botanique',
         noCollectInfo: true,
         terms: {
              /*COLLECTIONNAME: "herbarium specimens of the muséum d'histoire naturelle of aix-en-provence (aix)"*/
         }
     }
+
+    $scope.textFileIndexName = 'botanique';
 
     $scope.cart = {
         cartItems: []
@@ -854,6 +863,7 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
 
         var existingItem = _.find($scope.cart.cartItems, function(item) {
             return !item.textFile && item.noCollectInfo == $scope.newCartItem.noCollectInfo &&
+                item.indexName == $scope.newCartItem.indexName &&
                 _.isEqual(item.terms, cleanTerms);
         });
 
@@ -861,6 +871,7 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
             $scope.currentCartItem = existingItem;
         } else {
             $scope.currentCartItem = {
+                indexName: $scope.newCartItem.indexName,
                 noCollectInfo: $scope.newCartItem.noCollectInfo,
                 terms: _.extend({}, cleanTerms),
                 allSelected: false,
@@ -883,7 +894,7 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
 
     $scope.suggest = function(field, val) {
         $scope.suggestField = field;
-        return RecolnatSearch.suggest(field, /*$scope.q[field] */ val.toLowerCase()).then(function(response) {
+        return RecolnatSearch.suggest(field, /*$scope.q[field] */ val.toLowerCase(), $scope.newCartItem.indexName).then(function(response) {
             $scope.suggestions = response.aggregations.general.buckets;
             return $scope.suggestions;
         });
@@ -903,6 +914,7 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
             url: url,
             method: 'POST',
             data: {
+                index: $scope.textFileIndexName,
                 codeFile: $("#codeFile"), // a jqLite type="file" element, upload() will extract all the files from the input and put them into the FormData object before sending.
             }
         }).then(
@@ -912,6 +924,7 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
                 $scope.fileName = response.data.textFile.name;
                 $scope.fileLoading = false;
                 $scope.cart.cartItems.push(response.data);
+
                 $scope.setCurrentCartItem(response.data);
                 //console.log(response.data); // will output whatever you choose to return from the server on a successful upload
             },
@@ -933,6 +946,7 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
             $scope.fileName = item.textFile.name;
             $scope.result = {};
         } else {
+            $scope.newCartItem.indexName = item.indexName;
             $scope.newCartItem.noCollectInfo = item.noCollectInfo;
             $scope.newCartItem.terms = _.extend({}, item.terms);
             $scope.newSearch();
@@ -960,9 +974,12 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
 
     $scope.hasSpecimenImage = hasSpecimenImage;
 
+
     $scope.search = function(page) {
 
         console.log("Search", $scope.currentCartItem, page, $scope.pageSize);
+
+
 
         RecolnatSearch.search($scope.currentCartItem, page, $scope.pageSize).then(function(response) {
             $scope.result.specimens = response.hits.hits;

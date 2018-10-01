@@ -6,7 +6,7 @@ import static controllers.Security.connectedLogin;
 import java.util.*;
 
 import conf.Herbonautes;
-import models.SpecimenMaster;
+import models.*;
 import models.questions.ContributionAnswer;
 import models.questions.ContributionQuestion;
 import models.questions.special.GeolocalisationStaticAnswer;
@@ -16,10 +16,7 @@ import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.NoTransaction;
 import play.db.jpa.Transactional;
-import models.Mission;
-import models.Specimen;
 import models.comments.SpecimenComment;
-import models.User;
 import models.contributions.Contribution;
 import models.contributions.GeolocalisationContribution;
 import models.contributions.reports.ContributionReport;
@@ -305,6 +302,12 @@ public class Specimens extends Application {
 		renderJSON(geos, SpecimenSimpleJsonSerializer.get());
 	}
 
+
+	@Transactional(readOnly = true)
+	public static void specimenMedia(Long id) {
+		List<SpecimenMedia> mediaList = SpecimenMedia.find("specimenId = ?", id).fetch();
+		renderJSON(mediaList);
+	}
 	/**
 	 * Retourne la liste des types requis pour le specimens
 	 * (union des type requis pour les missions du specimen)

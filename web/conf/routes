@@ -108,7 +108,8 @@ GET		/specimens/{id}/contributions/geos				Specimens.geolocalisationContribution
 GET		/specimens/{institute}/{collection}/{code}		Specimens.show
 POST	/specimens/{id}/displayed						Specimens.markDisplayed
 GET		/specimens/{id}/bubble							Specimens.bubble
-GET		/specimens/bubbles							Specimens.bubbles
+GET		/specimens/bubbles							    Specimens.bubbles
+GET     /specimens/{id}/media                           Specimens.specimenMedia
 GET		/specimens										Specimens.list
 
 

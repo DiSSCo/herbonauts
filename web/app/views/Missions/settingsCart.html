@@ -64,6 +64,12 @@
             <br/>
 
             <form ng-submit="newSearch()">
+
+                <select ng-model="newCartItem.indexName">
+                    <option value="botanique">Botanique</option>
+                    <option value="zoologie">Zoologie</option>
+                </select><br/>
+
                 <input type="checkbox" ng-model="newCartItem.noCollectInfo" /> Spécimens sans information de récolte<br/> <br/>
                 <input ng-repeat="searchField in searchFields" type="text" placeholder="{{ searchField.name }}" ng-model="newCartItem.terms[searchField.key]" typeahead="suggestion.key for suggestion in suggest(searchField.key, $viewValue)">
                 <button class="btn btn-mini btn-success" type="submit">Rechercher</button>
@@ -94,7 +100,13 @@
             <div ng-hide="fileLoading">
             <form ng-submit="uploadFile()">
 
+                <select ng-model="textFileIndexName">
+                    <option value="botanique">Botanique</option>
+                    <option value="zoologie">Zoologie</option>
+                </select><br>
+
                 <input type="file" id="codeFile" />
+
 
                 <button class="btn btn-mini btn-success" type="submit">Importer</button>
 
@@ -276,6 +288,9 @@
                 </div>
             </div>
 
+            <br>
+            <h3>Sélections</h3>
+            <br>
 
             <div ng-class="{ 'cart-item' : true, 'current' : item._current }" ng-repeat="item in cart.cartItems"  ng-show="selectedSpecimensCount(item)">
 
@@ -292,12 +307,13 @@
                 </div>
 
                 <div ng-if="!isFileItem(item)">
-                    <span ng-show="!item.sync"><em>Modifié</em><br/></span>
+                    <!-- <b>Critères :</b>  --> <span ng-show="!item.sync"><em>Modifié</em><br/></span>
 
-                    <b>Critères :</b>
-                    <div ng-show="item.noCollectInfo">Sans info de récolte</div>
-                    <div ng-hide="item.noCollectInfo">Avec info de récole</div>
-                    <div ng-repeat="(k, v) in item.terms">{{ k }} = {{ v }}</div>
+
+                    <div><b>Index : </b> {{ item.indexName }}</div>
+                    <div ng-show="item.noCollectInfo"><b>Sans info de récolte</b></div>
+                    <div ng-hide="item.noCollectInfo"><b>Avec info de récolte</b></div>
+                    <div ng-repeat="(k, v) in item.terms"><b>{{ k }} : </b>{{ v }}</div>
 
                     <b>Nombre de résultats : </b><span>{{ item.hits }}</span><br/>
                     <b>Spécimens sélectionnés : </b><span>{{ selectedSpecimensCount(item) }}</span><br/>
