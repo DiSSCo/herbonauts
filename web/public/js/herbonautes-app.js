@@ -3521,6 +3521,11 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
             zoomControl: false
         }).addTo(map);
 
+        // Add distance measure
+        window.leafletMeasure = L.control.measure({
+            position: 'bottomright'
+        }).addTo(map);
+
         map.zoomControl.setPosition('bottomright');
 
         window.leafletMap = map;
@@ -3596,6 +3601,12 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
 
     function onClick($scope) {
         return function (event) {
+
+            if (window.leafletMeasure._measuring && leafletMeasure._lastPoint) {
+                console.log("Measuring, cancel point");
+                return;
+            }
+
             initMarker($scope, event);
             resetInput($scope);
         }
