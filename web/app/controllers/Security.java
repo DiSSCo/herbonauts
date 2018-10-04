@@ -79,10 +79,10 @@ public class Security extends Controller {
 
 		//Logger.info("Connect user %s (%d,%d)", user.getLogin(), user.getLongitude(), user.getLatitude());
 
-		if (user.getLongitude() != null && user.getLatitude() != null) {
-			session.put("locationSaved", true);
-		}
-
+		//if (user.getLongitude() != null && user.getLatitude() != null) {
+		//	session.put("locationSaved", true);
+		//}
+//
 		if (user.getFacebookId() != null) {
 			session.put(USER_IS_FB, true);
 		}

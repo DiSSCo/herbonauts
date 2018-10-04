@@ -708,13 +708,15 @@
 
         </script>
 
-		*{
+		<!-- ${session.get('locationSaved')} -->
+
+		<!-- -->
 		#{if isConnected && !session.get('locationSaved')}
         <script>
 			herbonautes.getGeolocation('${connectedLogin}');
 		</script>
 		#{/if}
-		}*
+
 
 
     <script type="text/ng-template" id="template/popover/popover-html-unsafe-popup.html">

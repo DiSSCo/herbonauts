@@ -731,6 +731,9 @@ herbonautes.saveUserLocation = function(login, latitude, longitude) {
 }
 
 herbonautes.getGeolocation = function(login) {
+
+	console.log("Get geolocation");
+
 	function onLocation(geolocation) {
 		var lat = geolocation.coords.latitude,
 			lng = geolocation.coords.longitude;

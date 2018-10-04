@@ -68,10 +68,8 @@ public class User extends DatedModificationsModel<User> {
 	private boolean admin;
 
 	// Location
-	@Transient
 	private Double latitude;
 
-	@Transient
 	private Double longitude;
 
     @Column(name = "TEAM")
