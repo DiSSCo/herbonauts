@@ -454,7 +454,7 @@ public class Users extends Application {
 		Logger.info(" - lastName:%s", user.getLastName());
 		Logger.info(" - city:%s", user.getCity());
 		Logger.info(" - email:%s (%s)", user.getEmail(), savedUser.getEmail());
-		Logger.info(" - alerts:%s %s %s", user.isReceiveMails(), user.isAlertMission(), user.isAlertSpecimen());
+		Logger.info(" - alerts: %s %s %s", user.isReceiveMails(), user.isAlertMission(), user.isAlertSpecimen());
 		
 		if (needPassword(savedUser, user) && !Security.passwordMatch(savedUser, password)) {
 			flash.error(Messages.get("bad.password"));
@@ -511,6 +511,8 @@ public class Users extends Application {
 			
 		}
 
+		Logger.info("Save user");
+
 		savedUser.save();
 
 		// Envoi de notification d'envoie de mail
@@ -518,6 +520,8 @@ public class Users extends Application {
 			EmailConfirmation.createAndSend(Security.connectedUser(), user.getEmail());
 			flash.put("warning", Messages.get("user.confirm.email", user.getEmail()));
 		}
+
+		Logger.info("Update user in Recolnat ? " + Herbonautes.get().recolnatEnabled);
 
 		if (Herbonautes.get().recolnatEnabled) {
 

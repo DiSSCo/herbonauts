@@ -1,13 +1,14 @@
 package models;
 
 
+import models.questions.ContributionAnswer;
+import models.questions.ContributionQuestion;
+import play.Logger;
 import play.db.jpa.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Spécimen
@@ -113,6 +114,25 @@ public class SpecimenMaster extends Model {
             count += count("select count(c) from ContributionAnswer c where c.deleted != true and c.userId is not null and c.specimenId = ?", specimen.id);
         }
         return count;
+    }
+
+    public static Set<Long> getAllContributorUserId(Long masterId) {
+
+        HashSet<Long> userIds = new HashSet<Long>();
+
+        List<Specimen> specimens = Specimen.find("master.id = ?", masterId).fetch();
+
+        Logger.info("Found " + specimens.size() + " specimens");
+        for (Specimen specimen : specimens) {
+
+            List<ContributionAnswer> answers = ContributionAnswer.findAllUserAnswersForSpecimen(specimen.getId());
+            for (ContributionAnswer a : answers) {
+                userIds.add(a.getUserId());
+            }
+
+        }
+
+        return userIds;
     }
 
     public List<Specimen.SpecimenAttribute>  getAttributesForUser(Long id) {

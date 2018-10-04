@@ -52,7 +52,7 @@ public class CartJob extends Job  {
 
         try {
 
-            JPA.startTx("default", false);Logger.warn("===> START TX");
+            JPA.startTx("default", false);Logger.warn("===> START TX syncCart");
 
             // Load exceptions
             this.exceptions = MissionImportException.findImportExceptionByMissionId(missionId);
@@ -108,7 +108,7 @@ public class CartJob extends Job  {
 
             try {
 
-                JPA.startTx("default", false);Logger.warn("===> START TX");
+                JPA.startTx("default", false);Logger.warn("===> START TX syncCart finnaly");
                 mission = Mission.findById(missionId);
 
                 mission.setLoadingCart(false);
@@ -126,7 +126,7 @@ public class CartJob extends Job  {
 
 
         try {
-            JPA.startTx("default", false);Logger.warn("===> START TX");
+            JPA.startTx("default", false);Logger.warn("===> START TX processChanges");
 
 
             MissionCartQuery query = MissionCartQuery.findById(queryId);
@@ -260,7 +260,7 @@ public class CartJob extends Job  {
     private void removeSpecimenFromCatalogNumber(Mission mission, String catalogNumber) {
 
         try {
-            JPA.startTx("default", false);Logger.warn("===> START TX");
+            //JPA.startTx("default", false);Logger.warn("===> START TX removeSpecimenFromCatalogNumber");
 
             Specimen specimen = Specimen.find("code = ? and mission.id = ?", catalogNumber, mission.id).first();
 
@@ -272,12 +272,12 @@ public class CartJob extends Job  {
                 Logger.error("  %s n'est pas dans la mission %s", catalogNumber, mission.getTitle());
             }
 
-            JPA.closeTx("default");Logger.warn("===> CLOSE TX");
+            //JPA.closeTx("default");Logger.warn("===> CLOSE TX removeSpecimenFromCatalogNumber");
         } catch (Throwable t) {
 
             Logger.error(t, "error specimen");
 
-            JPA.rollbackTx("default");
+            //JPA.rollbackTx("default");
         }
 
         //try {
@@ -482,8 +482,6 @@ public class CartJob extends Job  {
 
             Logger.info("Refresh specimen");
 
-            specimen.refresh();
-
             // Create media list
 
             Long number = 1L;
@@ -498,8 +496,9 @@ public class CartJob extends Job  {
             }
 
 
-            Logger.info("Build tag");
+            Logger.info("Build tag for target " + master.getId());
             Tag tag = Tag.findByLabel(specimen.getCode());
+            Logger.info("Tag already exists for code %s" + specimen.getCode());
             if(tag == null) {
                 tag = new Tag();
                 tag.setTagLabel(specimen.getCode());
@@ -511,13 +510,16 @@ public class CartJob extends Job  {
                 }
                 tag.create();
                 tag.refresh();
+
+                TagLink tagLink = new TagLink();
+                tagLink.setLinkType(TagLinkType.SPECIMEN);
+                tagLink.setTagId(tag.getId());
+                tagLink.setTargetId(master.getId());
+                tagLink.setPrincipal(true);
+                tagLink.create();
             }
-            TagLink tagLink = new TagLink();
-            tagLink.setLinkType(TagLinkType.SPECIMEN);
-            tagLink.setTagId(tag.getId());
-            tagLink.setTargetId(specimen.getId());
-            tagLink.setPrincipal(true);
-            tagLink.create();
+
+
             Logger.info("  > %s créé", recolnatSpecimen.catalogNumber);
 
             if (!noTx) {
@@ -540,7 +542,7 @@ public class CartJob extends Job  {
 
     private void markQuerySync(Long queryId) {
         try {
-            JPA.startTx("default", false);Logger.warn("===> START TX");
+            JPA.startTx("default", false);Logger.warn("===> START TX markQuerySync");
 
             MissionCartQuery query = MissionCartQuery.findById(queryId);
             query.setAllSelected(query.getAllSelectedDraft());

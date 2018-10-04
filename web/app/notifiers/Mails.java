@@ -7,8 +7,10 @@ import javax.mail.internet.InternetAddress;
 import models.*;
 import models.alerts.Alert;
 
+import models.contributions.Contribution;
 import models.discussions.Discussion;
 import models.discussions.Message;
+import models.questions.ContributionAnswer;
 import models.tags.Tag;
 import models.tags.TagType;
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +22,7 @@ import conf.Herbonautes;
 
 import play.Logger;
 import play.Play;
+import play.db.jpa.JPA;
 import play.exceptions.MailException;
 import play.exceptions.TemplateNotFoundException;
 import play.i18n.Messages;
@@ -231,6 +234,10 @@ public class Mails extends Mailer {
 		args.put("nMessagesMax", nMessagesMax);
 		args.put("nMessages", messagesByDiscussionId.size());
 
+
+
+
+
 		if(null != messagesByDiscussionId && ! messagesByDiscussionId.isEmpty()){
 			List<Message> discussionmessages= new ArrayList<Message>();
 			if(messagesByDiscussionId.size()>nMessagesMax){
@@ -243,9 +250,7 @@ public class Mails extends Mailer {
 
 			args.put("discussionMessages", discussionmessages);
 
-			for(Message m : discussionmessages){
-				System.out.println(m.getText()+ " : "+m.isFirst());
-			}
+
 		}
 		
 		args.put("url", url);
@@ -255,12 +260,66 @@ public class Mails extends Mailer {
 		List<Tag> tags = Tag.findByDiscussionId(d.getId());
 		users.addAll(User.getUsersBySubscribedTags(tags));
 
+
 		args.put("tags", tags);
 
 
+		List<Long> specimenUsersAdded = new ArrayList<Long>();
+		List<Long> missionUsersAdded = new ArrayList<Long>();
+
+		Set<Long> specimenUserUserIds = new HashSet<Long>();
+
 		Tag uniqueContextTag = null;
 		for (Tag tag : tags) {
+
+			if (tag.getTagType() == TagType.SPECIMEN) {
+				// Add users that contributed to specimen
+				if (!specimenUsersAdded.contains(tag.getTargetId())) {
+					Logger.info("Add users that contributed to specimen for discussion notification (" + tag.getTargetId() + ")");
+					// Add
+
+					Set<Long> userIds = SpecimenMaster.getAllContributorUserId(tag.getTargetId());
+
+
+					Logger.info("Found contributors: " + userIds);
+
+					specimenUserUserIds.addAll(userIds);
+
+					specimenUsersAdded.add(tag.getTargetId());
+
+				}
+			}
+
+			if (tag.getTagType() == TagType.MISSION) {
+				if (!missionUsersAdded.contains(tag.getTargetId())) {
+					// Add mission members
+					Logger.info("Add users that are in mission for discussion notification");
+
+					Mission mission = Mission.findById(tag.getTargetId());
+
+					for (User u : mission.getUsers()) {
+						if (u.isAlertMission()) {
+							users.add(u);
+						}
+					}
+
+					missionUsersAdded.add(tag.getTargetId());
+				}
+			}
+
+			// Add specimen Users
+			for (Long id : specimenUserUserIds) {
+				User u = User.findById(id);
+				if (u.isAlertSpecimen()) {
+					users.add(u);
+				}
+			}
+
+
 			if (tag.getTagType() == TagType.SPECIMEN || tag.getTagType() == TagType.MISSION) {
+
+
+
 				if (uniqueContextTag == null) {
 					uniqueContextTag = tag;
 				} else {
@@ -272,14 +331,16 @@ public class Mails extends Mailer {
 		}
 
 		Logger.info("Unique context tag : " + (uniqueContextTag != null ? uniqueContextTag.getTagLabel() : "<null>"));
+		Logger.info("Unique context tag id : " + (uniqueContextTag != null ? uniqueContextTag.getTargetId() : "null"));
 
 		args.put("uniqueContextTag", uniqueContextTag);
 
 		if (uniqueContextTag != null && uniqueContextTag.getTagType() == TagType.SPECIMEN) {
-			Specimen specimen = Specimen.findById(uniqueContextTag.getTargetId());
+			SpecimenMaster specimen = SpecimenMaster.findById(uniqueContextTag.getTargetId());
 			args.put("specimen", specimen);
 		} else if (uniqueContextTag != null && uniqueContextTag.getTagType() == TagType.MISSION) {
 			Mission mission = Mission.findById(uniqueContextTag.getTargetId());
+			mission.getUsers();
 			args.put("mission", mission);
 		}
 

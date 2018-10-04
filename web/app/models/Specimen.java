@@ -242,6 +242,8 @@ public class Specimen extends DatedModificationsModel<Specimen> {
     }
 
 
+
+
     public List<User> getContributors() {
         return JPA.em()
                 .createQuery(

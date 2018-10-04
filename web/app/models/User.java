@@ -80,7 +80,7 @@ public class User extends DatedModificationsModel<User> {
     @Column(name = "RECOLNAT_UUID")
     private String recolnatUUID;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "H_TAGS_SUBSCRIPTION", joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
 			inverseJoinColumns = {@JoinColumn(name = "tag_id", nullable = false)})
 	private List<Tag> tags;
@@ -93,13 +93,11 @@ public class User extends DatedModificationsModel<User> {
 	//@Column(name = "deleted")
 	private Boolean deleted = false;
 
-	@Transient
-	//@Column(name = "ALERT_MISSION")
-	private boolean alertMission = true;
+	@Column(name = "ALERT_MISSION")
+	private boolean alertMission;
 
-	@Transient
-	//@Column(name = "ALERT_SPECIMEN")
-	private boolean alertSpecimen = true;
+	@Column(name = "ALERT_SPECIMEN")
+	private boolean alertSpecimen;
 
 	public Date getLastUpdateDate() {
 		return lastUpdateDate;
@@ -438,6 +436,8 @@ public class User extends DatedModificationsModel<User> {
 	@PrePersist
 	public void onCreate() {
 		this.setReceiveMails(true);
+		this.setAlertMission(true);
+		this.setAlertSpecimen(true);
 		this.setRegistrationDate(new Date());
 		this.lastUpdateDate = new Date();
 	}
