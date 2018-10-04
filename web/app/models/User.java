@@ -89,8 +89,7 @@ public class User extends DatedModificationsModel<User> {
 	@Column(name = "LAST_UPDATE_DATE")
 	public Date lastUpdateDate;
 
-	@Transient
-	//@Column(name = "deleted")
+	@Column(name = "deleted")
 	private Boolean deleted = false;
 
 	@Column(name = "ALERT_MISSION")
