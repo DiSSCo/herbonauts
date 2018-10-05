@@ -44,8 +44,7 @@ public class Main {
 			// Test exists
 			// TODO remove hardcoded file name
 			String existingTileImagePath = imageBaseDir + "tile_2_0_0.jpg";
-us
-git
+
 			if (new File(existingTileImagePath).exists()) {
 				System.out.print("[" + specimen.getStringPath() + "]");
 				System.out.println(" >> Already exists >> SKIP");
