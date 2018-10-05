@@ -43,7 +43,7 @@ public class Main {
 
 			// Test exists
 			// TODO remove hardcoded file name
-			String existingTileImagePath = imageBaseDir + "1/tile_2_0_0.jpg";
+			String existingTileImagePath = imageBaseDir + "tile_2_0_0.jpg";
 
 			if (new File(existingTileImagePath).exists()) {
 				System.out.print("[" + specimen.getStringPath() + "]");
@@ -68,7 +68,11 @@ public class Main {
 					try {
 
 
-						String mediaBaseDir = Conf.IMAGES_ROOT_DIRECTORY + specimen.getStringPath() + "/" + media.getMediaNumber() + "/";
+						String mediaBaseDir = Conf.IMAGES_ROOT_DIRECTORY + specimen.getStringPath() + "/";
+						if (media.getMediaNumber() > 1) {
+							// First media images at root
+							mediaBaseDir += media.getMediaNumber() + "/";
+						}
 						String mediaOriginalImageFile = mediaBaseDir + "original.jpg";
 
 						System.out.print("  - media " + media.getMediaNumber());
@@ -107,14 +111,14 @@ public class Main {
 
 				System.out.print("All media tiled");
 
-				System.out.println(" >> Create symbolic links for images");
-
-
-				for (String linkFileName : LINK_FILES) {
-					String target = imageBaseDir + "1/" + linkFileName;
-					String link = imageBaseDir + linkFileName;
-					Runtime.getRuntime().exec(new String[]{"ln", "-s", target, link});
-				}
+				//System.out.println(" >> Create symbolic links for images");
+//
+//
+				//for (String linkFileName : LINK_FILES) {
+				//	String target = imageBaseDir + "1/" + linkFileName;
+				//	String link = imageBaseDir + linkFileName;
+				//	Runtime.getRuntime().exec(new String[]{"ln", "-s", target, link});
+				//}
 
 				SpecimenRepository.get().markAsTiled(specimen);
 				

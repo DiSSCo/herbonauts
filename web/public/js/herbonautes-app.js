@@ -2461,12 +2461,16 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
     }
 
     $scope.mediaImageUrl = function(media) {
-        return $scope.tilesRootURL +
+        var imageUrl =  $scope.tilesRootURL +
             $scope.specimen.institute + '/' +
             $scope.specimen.collection + '/' +
-            $scope.specimen.code + '/' +
-            media.mediaNumber +
-            '/tile_0_0_0.jpg'
+            $scope.specimen.code + '/';
+
+        if (media.mediaNumber > 1) {
+            imageUrl += media.mediaNumber + '/'
+        }
+        imageUrl += 'tile_0_0_0.jpg';
+        return imageUrl;
     }
 
     $scope.setCurrentMedia = function(index) {

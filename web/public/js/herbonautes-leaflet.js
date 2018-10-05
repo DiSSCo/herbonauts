@@ -18,12 +18,15 @@ function getTilesUrl(rootURL, institute, collection, code) {
 }
 
 function getTilesMediaUrl(rootURL, institute, collection, code, media) {
-    return rootURL +
+    var url =  rootURL +
         institute + '/' +
         collection + '/' +
-        code + '/' +
-        media.mediaNumber +
-        '/tile_{z}_{x}_{y}.jpg'
+        code + '/';
+
+    if (media.mediaNumber > 1) {
+        url = url + media.mediaNumber + '/'
+    }
+    return url + 'tile_{z}_{x}_{y}.jpg';
 }
 
 function initializeSpecimenMediaMap(rootURL, institute, collection, code, media, defaultZoom) {
