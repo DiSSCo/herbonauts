@@ -422,6 +422,7 @@ alert.quit.mission.success=
 not.opened.yet.mission=This mission is not yet opened
 not.opened.yet.member=User %s is banned in the mission
 
+mission.show.contributions.count=contributions
 mission.show.specimens.count=specimens count
 mission.show.tiles.creation=Creation of tiles
 mission.show.leader=Leader

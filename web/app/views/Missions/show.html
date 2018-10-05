@@ -82,6 +82,11 @@
                 </script> #{/if}</dd>
 
 
+        <!--  -->
+        #{set contributionsCount: mission.getContributionsCount() /}
+        <dt>&{'mission.show.contributions.count'}</dt>
+        <dd>${contributionsCount}</dd>
+
 
         <dt>&{'mission.show.leader'}</dt>
         <dd><a href="@{Users.show(mission.leader?.login)}">${mission.leader?.login}</a></dd>
@@ -183,13 +188,7 @@
                             <span class="item">&{membersCount <= 1 ? 'member' : 'members'}</span>
                             </div>
                         </div>
-                <!--		<div class="span2">
-                            <div class="stat">
-                                #{set contributionsCount: mission.getContributionsCount() /}
-                                <span class="count">${contributionsCount}</span>
-                                <span class="item">&{contributionsCount <= 1 ? 'contribution' : 'contributions'}</span>
-                            </div>
-                        </div> -->
+
 
                         <div class="span2">
                             <div class="stat">
@@ -214,6 +213,8 @@
             <div class="span3">
                 #{set contributionsCount: mission.getContributionsCount() /}
                 <h4>&{'mission.state'}</h4>
+
+
                 %{
                     if (mission.goal > 0) {
                         goalRatio = mission.getContributionsCount() * 100 / mission.goal;
@@ -229,7 +230,9 @@
                     <div class="bar" style="width: ${goalRatio}%"></div>
 
                 </div>
+
                 &{'goal'} : <span>${contributionsCount} / ${mission.goal} &{'contributions'}</span>
+
             </div>
             }*
 

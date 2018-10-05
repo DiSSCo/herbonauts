@@ -437,6 +437,7 @@ alert.quit.mission.success=Vous ne faites désormais plus partie de la mission
 not.opened.yet.mission=La mission n'est pas encore ouverte
 not.opened.yet.member=Merci de vous être inscrit à la mission, cependant, celle-ci n'est pas encore ouverte, vous recevrez un e-mail de la part de son responsable dès sa mise en ligne.
 
+mission.show.contributions.count=Contributions
 mission.show.specimens.count=Nombre de spécimens
 mission.show.tiles.creation=Génération des tuiles
 mission.show.leader=Chef de mission
