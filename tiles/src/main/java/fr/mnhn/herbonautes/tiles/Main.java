@@ -109,7 +109,7 @@ public class Main {
 
 
 
-				System.out.print("All media tiled");
+				System.out.println("All media tiled");
 
 				//System.out.println(" >> Create symbolic links for images");
 //
