@@ -1,6 +1,5 @@
 .idea
 /tmp
-/lib
 *.iml
 *.iws
 *.ipr
@@ -11,7 +10,7 @@
 bin/
 /db
 .eclipse
-/lib/
+/lib/ojdbc5.jar
 /logs/
 /modules/*
 !/modules/cas-3.1
