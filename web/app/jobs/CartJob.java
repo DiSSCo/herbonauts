@@ -465,27 +465,19 @@ public class CartJob extends Job  {
 
             Logger.info("Save specimen");
 
-            Logger.info("" + specimen.getMaster().getId());
-            Logger.info("" + specimen.getCode());
-            Logger.info("" + specimen.getInstitute());
-            Logger.info("" + specimen.getCollection());
-            Logger.info("" + specimen.getMission().getId());
-            Logger.info("" + specimen.getFamily());
-            Logger.info("" + specimen.getGenus());
-            Logger.info("" + specimen.getSpecificEpithet());
-            Logger.info("" + specimen.getLastModified());
-            Logger.info("" + specimen.getAlea());
-
-
-
             specimen.save();
-
-            Logger.info("Refresh specimen");
 
             // Create media list
 
             Long number = 1L;
+            HashSet<String> addedMediaId = new HashSet<String>();
             for (RecolnatSearchClient.RecolnatSpecimenMedia media :recolnatSpecimen.media) {
+
+                if (addedMediaId.contains(media.id)) {
+                    continue;
+                }
+                addedMediaId.add(media.id);
+
                 SpecimenMedia m = new SpecimenMedia();
                 m.setSpecimenId(specimen.getId());
                 m.setMediaNumber(number);
