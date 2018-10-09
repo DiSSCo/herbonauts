@@ -305,7 +305,7 @@ public class Specimens extends Application {
 
 	@Transactional(readOnly = true)
 	public static void specimenMedia(Long id) {
-		List<SpecimenMedia> mediaList = SpecimenMedia.find("specimenId = ?", id).fetch();
+		List<SpecimenMedia> mediaList = SpecimenMedia.find("specimenId = ? order by mediaNumber asc", id).fetch();
 		renderJSON(mediaList);
 	}
 	/**
