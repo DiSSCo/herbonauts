@@ -37,7 +37,9 @@
                     </a>
                     <ul class="dropdown-menu">
 						#{list items: specimens, as: 'specimen'}
-                            <li><a href="@{ContributionBoard.showBoard(specimen.mission.id, specimen.id)}">${specimen.mission.title}</a></li>
+							#{if specimen.mission.published && !specimen.mission.closed && specimen.tiled}
+                            	<li><a href="@{ContributionBoard.showBoard(specimen.mission.id, specimen.id)}">${specimen.mission.title}</a></li>
+							#{/if}
 						#{/list}
                     </ul>
                 </div>
