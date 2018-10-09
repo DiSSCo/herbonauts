@@ -55,8 +55,6 @@ public class Main {
 
 			// Change for each media for specimen
 
-
-
 			try {
 				System.out.print("[" + specimen.getStringPath() + "]");
 

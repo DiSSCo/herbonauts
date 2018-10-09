@@ -197,7 +197,7 @@
                         ng-class="{ 'disabled' : !!s._existing && (s._existing.mission.id != missionId) }">
 
                         <td>
-                            <input ng-disabled="!!s._existing && (s._existing.mission.id != missionId)" type="checkbox" ng-checked="isSelected(s._id)" /></td>
+                            <input type="checkbox" ng-checked="isSelected(s._id)" /></td>
 
                         <td>
                             <div ng-if="hasSpecimenImage(s)" class="specimen-image">
