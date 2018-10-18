@@ -2347,6 +2347,10 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
             $scope.defaultZoom);
     }
 
+    function clearSpecimenMediaBoard(media) {
+        clearSpecimenMediaMap();
+    }
+
 
     function loadSpecimen(specimenId, callback) {
 
@@ -2371,7 +2375,13 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
             // Load media list
             ContributionService.getSpecimenMedia(specimenId).then(function(response) {
                 $scope.specimenMediaList = response.data;
-                initSpecimenMediaBoard($scope.specimenMediaList[0]);
+
+                if ($scope.specimenMediaList.length > 0) {
+                    initSpecimenMediaBoard($scope.specimenMediaList[0]);
+                } else {
+                    console.error("No media for specimen");
+                    clearSpecimenMediaBoard();
+                }
             });
 
             if (!$scope.context) {

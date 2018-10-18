@@ -29,6 +29,16 @@ function getTilesMediaUrl(rootURL, institute, collection, code, media) {
     return url + 'tile_{z}_{x}_{y}.jpg';
 }
 
+function clearSpecimenMediaMap() {
+    console.log("clear media map");
+    if (window.specimenMap) {
+        console.log("remove map");
+        window.specimenMap.remove();
+        window.specimenMap.off();
+        window.specimenMap = null;
+    }
+}
+
 function initializeSpecimenMediaMap(rootURL, institute, collection, code, media, defaultZoom) {
 
     console.log("Init specimen media map", rootURL, institute, collection, code, media, defaultZoom);
@@ -75,6 +85,7 @@ function initializeSpecimenMap(rootURL, institute, collection, code, w, h, defau
 
     if (window.specimenMap) {
         window.specimenMap.remove();
+        window.specimenMap = null;
     }
 
     var mapElement = document.getElementById("map-container");
