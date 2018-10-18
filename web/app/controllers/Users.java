@@ -1,5 +1,6 @@
 package controllers;
 
+import com.ning.http.client.cookie.Cookie;
 import helpers.Facebook;
 import helpers.GsonUtils;
 import helpers.RecolnatAPIClient;
@@ -24,6 +25,7 @@ import models.serializer.contributions.DateContributionForTimelineJsonSerializer
 import notifiers.Mails;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
+import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.i18n.Messages;
@@ -588,6 +590,14 @@ public class Users extends Application {
 
 		// Save location 1 fois par session (dans main.html)
 		session.put("locationSaved", true);
+
+		if (latitude == null && longitude == null) {
+			String duration = Play.configuration.getProperty("location.disabled.duration", "180d");
+			response.setCookie("H_LOCATION_SAVED", "true", duration);
+		} else {
+			String duration = Play.configuration.getProperty("location.saved.duration", "180d");
+			response.setCookie("H_LOCATION_SAVED", "true", duration);
+		}
 
 		ok();
 	}

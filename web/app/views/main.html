@@ -711,7 +711,7 @@
 		<!-- ${session.get('locationSaved')} -->
 
 		<!-- -->
-		#{if isConnected && !session.get('locationSaved')}
+		#{if isConnected}
         <script>
 			herbonautes.getGeolocation('${connectedLogin}');
 		</script>
