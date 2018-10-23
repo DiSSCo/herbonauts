@@ -15,6 +15,10 @@ public class SpecimenMedia {
 
     private String url;
 
+    private Long tileWidth;
+
+    private Long tileHeight;
+
     public static SpecimenMedia create(ResultSet rs) {
         if (rs == null) return null;
         try {
@@ -24,6 +28,8 @@ public class SpecimenMedia {
             media.mediaNumber = rs.getLong("MEDIA_NUMBER");
             media.mediaId = rs.getString("MEDIA_ID");
             media.url = rs.getString("URL");
+            media.tileWidth = rs.getLong("TILEWIDTH");
+            media.tileHeight = rs.getLong("TILEHEIGHT");
             return media;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -68,5 +74,21 @@ public class SpecimenMedia {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Long getTileWidth() {
+        return tileWidth;
+    }
+
+    public void setTileWidth(Long tileWidth) {
+        this.tileWidth = tileWidth;
+    }
+
+    public Long getTileHeight() {
+        return tileHeight;
+    }
+
+    public void setTileHeight(Long tileHeight) {
+        this.tileHeight = tileHeight;
     }
 }

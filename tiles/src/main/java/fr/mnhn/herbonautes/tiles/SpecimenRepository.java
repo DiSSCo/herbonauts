@@ -25,6 +25,16 @@ public class SpecimenRepository {
 		}
 	}
 
+	public Specimen getTiledSpecimenMediaByCode(String code) {
+		try {
+			ResultSet rs = db.selectWithParams("SELECT * FROM H_SPECIMEN WHERE CODE = ? AND TILINGERROR = 0 AND TILED = 1", code);
+			Specimen specimen = Specimen.create(rs);
+			return specimen;
+		} finally {
+			db.closeConnection();
+		}
+	}
+
 	public List<SpecimenMedia> getMediaList(Long specimenId) throws SQLException {
 		ResultSet rs = db.selectMultiple("SELECT * FROM H_SPECIMEN_MEDIA WHERE SPECIMEN_ID = ? ORDER BY MEDIA_NUMBER", specimenId);
 		List<SpecimenMedia> mediaList = new ArrayList<SpecimenMedia>();

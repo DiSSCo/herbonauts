@@ -59,6 +59,24 @@ public class DB {
 		} 
 	}
 
+	public ResultSet selectWithParams(String query, String ... params) {
+		Connection conn = getConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement(query);
+			if (params != null) {
+				int i = 0;
+				for (String param : params) {
+					statement.setString(++i, param);
+				}
+			}
+			ResultSet rs = statement.executeQuery();
+			return rs.next() ? rs : null;
+		} catch (SQLException e) {
+			closeConnection();
+			throw new DBException("Connexion impossible", e);
+		}
+	}
+
 	public ResultSet selectMultiple(String query, Long ... params) {
 		Connection conn = getConnection();
 		try {

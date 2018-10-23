@@ -48,7 +48,41 @@ public class Main {
 			if (new File(existingTileImagePath).exists()) {
 				System.out.print("[" + specimen.getStringPath() + "]");
 				System.out.println(" >> Already exists >> SKIP");
-				SpecimenRepository.get().markAsTiled(specimen);
+
+				// Find existing specimen already tiles
+				Specimen tiledSpecimen = SpecimenRepository.get().getTiledSpecimenMediaByCode(specimen.getCode());
+
+				try {
+
+					// Get existing media list to update dimensions
+					List<SpecimenMedia> existingMediaList = SpecimenRepository.get().getMediaList(tiledSpecimen.getId());
+					List<SpecimenMedia> mediaList = SpecimenRepository.get().getMediaList(specimen.getId());
+
+
+					// Update dimensions
+					for (SpecimenMedia media : mediaList) {
+						System.out.print("  - media " + media.getMediaNumber());
+						for (SpecimenMedia existingMedia : existingMediaList) {
+							if (existingMedia.getMediaId().equals(media.getMediaId())) {
+								Long w = existingMedia.getTileWidth();
+								Long h = existingMedia.getTileHeight();
+								System.out.print(" >> " + w + " x " + h);
+								SpecimenRepository.get().saveMediaDims(media, w, h);
+								SpecimenRepository.get().markMediaAsTiled(media);
+								break;
+							}
+						}
+						System.out.println(" >> done");
+					}
+
+					SpecimenRepository.get().markAsTiled(specimen);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					SpecimenRepository.get().markAsError(specimen);
+
+				}
+
 				continue;
 			}
 
