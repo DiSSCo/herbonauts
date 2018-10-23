@@ -862,8 +862,8 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
         });
 
         var existingItem = _.find($scope.cart.cartItems, function(item) {
-            return !item.textFile && item.noCollectInfo == $scope.newCartItem.noCollectInfo &&
-                item.indexName == $scope.newCartItem.indexName &&
+            return !item.textFile && (item.noCollectInfo == $scope.newCartItem.noCollectInfo) &&
+                (item.indexName == $scope.newCartItem.indexName) &&
                 _.isEqual(item.terms, cleanTerms);
         });
 

@@ -170,6 +170,7 @@ public class MissionCartQuery extends Model {
         }
 
         return
+                (this.indexName.equals(model.indexName)) &&
             (this.noCollectInfo == model.noCollectInfo) &&
             CollectionUtils.isEqualCollection(this.terms.entrySet(), model.terms.entrySet());
     }
