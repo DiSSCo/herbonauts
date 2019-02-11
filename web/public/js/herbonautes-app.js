@@ -3526,12 +3526,13 @@ herbonautesApp.directive('geolocalisationMap', ['QuestionUtils', '$http', '$time
 
         var mapElement = element.find("div")[1];
 
-        var topoAttribution = 'Kartendaten: &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, <a href="http://viewfinderpanoramas.org">SRTM</a> | Kartendarstellung: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)';
+        var mapAttribution = '<a href="https://openstreetmap.org/copyright">OpenStreetMap</a>';
+        var mapTilesUrl = 'https://osm.tela-botanica.org/tuiles/osmfr/{z}/{x}/{y}.png';
 
         map = L.map(mapElement).setView([45.18478, 5.73134], 7);
-        L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        L.tileLayer(mapTilesUrl, {
             maxZoom: 17,
-            attribution: topoAttribution,
+            attribution: mapAttribution,
             zoomControl: false
         }).addTo(map);
 
