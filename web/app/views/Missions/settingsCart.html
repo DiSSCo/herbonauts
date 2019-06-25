@@ -22,7 +22,7 @@
 
     <div class="row">
 
-        <div class="span8">
+        <div class="span6">
             <h2>${mission.title} <small>Gestion des spécimens</small></h2>
             #{if mission.proposition}
                 #{if mission.propositionSubmitted}
@@ -35,6 +35,11 @@
             #{else}
                 <a href="@{Missions.settings(mission.id)}?tab=cart" class="btn btn-small">Retour à la gestion de la mission</a>
             #{/else}
+        </div>
+
+
+        <div class="span6">
+            <disk-usage-box></disk-usage-box>
         </div>
 
         *{
@@ -334,7 +339,6 @@
 
 
 </div>
-
 
 
 
