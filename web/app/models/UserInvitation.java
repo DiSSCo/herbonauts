@@ -10,21 +10,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-//@Entity
-//@Table(name="H_USER_INVITATION")
+@Entity
+@Table(name="H_USER_INVITATION")
 public class UserInvitation extends Model {
 
-	//@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name = "FROM_USER_ID")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "FROM_USER_ID")
 	private User fromUser;
 
-	//@Column(name = "TO_EMAIL")
+	@Column(name = "TO_EMAIL")
 	private String toEmail;
 
-	//@Column(name = "TOKEN")
+	@Column(name = "TOKEN")
 	private String token;
 
-	//@Column(name = "INVITATION_DATE")
+	@Column(name = "INVITATION_DATE")
 	private Date date;
 
 	public static void createAndSend(User from, String to) {

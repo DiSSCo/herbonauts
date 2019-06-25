@@ -21,9 +21,7 @@
 		
 		<li><a id="profile-link" href="${userURL}"><i class="icon-user"></i> &{'header.profile'}</a></li>
 
-		*{
 		<li><a href="@{Invitation.form()}"><i class="icon-bullhorn"></i> &{'invitation.menu'}</a></li>
-		}*
 
 		#{if isLeader}
 		<li class="divider"></li>
@@ -47,6 +45,7 @@
 		<li><a href="@{Contents.list}"><i class="icon-file"></i> &{'nemu.admin.content'}</a></li>
 		<li><a href="@{Admin.missionsList}"><i class="icon-list"></i> &{'menu.admin.mission.priority'}</a></li>
 		<li><a href="@{CategoriesController.manage}"><i class="icon-comment"></i> &{'menu.categories.management'}</a></li>
+		<li><a href="@{AdminTiles.tilesAdmin}"><i class="icon-picture"></i> &{'menu.admin.tiles'}</a></li>
 		#{/if}
 
 		<li class="divider"></li>
