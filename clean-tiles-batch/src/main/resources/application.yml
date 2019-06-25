@@ -1,0 +1,16 @@
+cleaner:
+  tilesRootDir: /Users/jgs/Missions/Herbonautes-2019-05/tiles-from-batch
+  apiTokens: xxxxx123, xxxxx456
+
+  keepFiles: tile_0_0_0.jpg
+  testFiles: original.jpg
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:XE
+    username: HERBOPROD
+    password: passe
+    driver:
+      class: oracle.jdbc.driver.OracleDriver
+
+
