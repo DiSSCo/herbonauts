@@ -9,12 +9,12 @@ import java.util.List;
 public class SpecimenRepository {
 
 	private DB db = new DB();
-	
+
 	// ~~ SINGLETON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	private static final SpecimenRepository INSTANCE = new SpecimenRepository();
 	private SpecimenRepository() {}
 	public static final SpecimenRepository get() { return INSTANCE; }
-	
+
 	public Specimen getNextUntiled() {
 		try {
 			ResultSet rs = db.select("SELECT * FROM H_SPECIMEN WHERE TILED = 0 AND TILINGERROR = 0");
@@ -48,11 +48,11 @@ public class SpecimenRepository {
 	public void markAsTiled(Specimen specimen) {
 		db.update("UPDATE H_SPECIMEN SET TILED=1 WHERE ID=?", specimen.getId());
 	}
-	
+
 	public void markAsError(Specimen specimen) {
 		db.update("UPDATE H_SPECIMEN SET TILINGERROR=1 WHERE ID=?", specimen.getId());
 	}
-	
+
 	public void saveDims(Specimen specimen, Long width, Long height) {
 		db.update("UPDATE H_SPECIMEN SET TILEWIDTH = ? ,TILEHEIGHT = ? WHERE ID=?", width, height, specimen.getId());
 	}
@@ -66,6 +66,10 @@ public class SpecimenRepository {
 	}
 
 	public void markMediaAsError(SpecimenMedia media) {
-		db.update("UPDATE H_SPECIMEN_MEDIA SET TILINGERROR=1 WHERE ID=?", media.getId());
+		db.update("UPDATE H_SPECIMEN_MEDIA SET TILINGERROR=1, MEDIA_NUMBER=-1 WHERE ID=?", media.getId());
+	}
+
+	public void markMediaAsFirst(SpecimenMedia media) {
+		db.update("UPDATE H_SPECIMEN_MEDIA SET MEDIA_NUMBER=1 WHERE ID=?", media.getId());
 	}
 }

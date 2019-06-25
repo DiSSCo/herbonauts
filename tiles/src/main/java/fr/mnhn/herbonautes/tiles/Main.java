@@ -30,6 +30,9 @@ public class Main {
 			System.out.println("Usage : java -jar herbonautes.jar /path/to/conf.properties");
 			System.exit(1);
 		}
+
+		System.out.println("Root dir: " + Conf.IMAGES_ROOT_DIRECTORY);
+
 		for (;;) {
 			Specimen specimen = SpecimenRepository.get().getNextUntiled();
 			if (specimen == null) {
@@ -95,13 +98,17 @@ public class Main {
 				List<SpecimenMedia> mediaList = SpecimenRepository.get().getMediaList(specimen.getId());
 				System.out.println(" >> " + mediaList.size() + " media");
 
+				boolean hasOneMedia = false;
+				boolean hasOneError = false;
+
 				for (SpecimenMedia media : mediaList) {
 
 					try {
 
 
 						String mediaBaseDir = Conf.IMAGES_ROOT_DIRECTORY + specimen.getStringPath() + "/";
-						if (media.getMediaNumber() > 1) {
+						//if (media.getMediaNumber() > 1 ) {
+						if (hasOneMedia) {
 							// First media images at root
 							mediaBaseDir += media.getMediaNumber() + "/";
 						}
@@ -127,18 +134,25 @@ public class Main {
 						long finalSize = FileUtils.sizeOfDirectory(new File(imageBaseDir)) / 1000;
 						System.out.println(" >> SUCCESS (" + finalSize + " Kb)");
 
+						if (!hasOneMedia) {
+						    // First media after error
+                            if (media.getMediaNumber() != 1L) {
+                                SpecimenRepository.get().markMediaAsFirst(media);
+                            }
+                        }
+
+                        hasOneMedia = true;
+
 					} catch (Exception e) {
 
 						SpecimenRepository.get().markMediaAsError(media);
 						System.out.println(" >> ERROR (" + e.getMessage() + ")");
 						//e.printStackTrace();
 
-						throw(e);
+						//throw(e);
 					}
 
-
 				}
-
 
 
 				System.out.println("All media tiled");
@@ -152,7 +166,12 @@ public class Main {
 				//	Runtime.getRuntime().exec(new String[]{"ln", "-s", target, link});
 				//}
 
-				SpecimenRepository.get().markAsTiled(specimen);
+                if (hasOneMedia) {
+                    System.out.println("At least one media, mark as tiled");
+                    SpecimenRepository.get().markAsTiled(specimen);
+                } else {
+                    SpecimenRepository.get().markAsError(specimen);
+                }
 				
 			} catch (Exception e) {
 				
