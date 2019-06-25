@@ -1205,7 +1205,18 @@ public class Mission extends DatedModificationsModel<Mission> {
         if (login == null) {
             return false;
         }
-        return login.equals(getLeader().getLogin());
+        if (login.equals(getLeader().getLogin())) {
+            return true;
+        }
+
+        List<MissionLeader> leaders = MissionLeader.find("missionId = ?", this.id).fetch();
+        for (MissionLeader leader : leaders) {
+            if (login.equals(leader.getUserLogin())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean isLoading() {

@@ -237,7 +237,15 @@ public class User extends DatedModificationsModel<User> {
 		if (!isLeader()) {
 			return null;
 		}
-		return Mission.find("leader.id = ? and proposition = false and closed = false ", this.id).fetch();
+
+		List<Mission> missions = JPA.em().createNativeQuery("SELECT * FROM H_MISSION M INNER JOIN H_MISSION_LEADER ML ON M.ID = ML.MISSION_ID WHERE ML.USER_ID = :userId and proposition = 0 and closed = 0", Mission.class)
+				.setParameter("userId", this.id)
+				.getResultList();
+
+		return missions;
+
+
+		//return Mission.find("leader.id = ? and proposition = false and closed = false ", this.id).fetch();
 	}
 	
 	// COUNTS

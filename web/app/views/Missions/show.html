@@ -89,7 +89,17 @@
 
 
         <dt>&{'mission.show.leader'}</dt>
+        *{
         <dd><a href="@{Users.show(mission.leader?.login)}">${mission.leader?.login}</a></dd>
+        }*
+
+        <dd>
+            <ul>
+            #{list items: leaders, as:'leader' }
+                <li><a href="@{Users.show(leader.userLogin)}">${leader.userLogin}</a></li>
+            #{/list}
+            </ul>
+        </dd>
 
         <dt>&{'mission.show.opening.date'}</dt>
         <dd>${mission.openingDate?.format('dd MMMM yyyy')}</dd>

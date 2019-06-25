@@ -232,6 +232,10 @@ id: 'mission-save'}
         </div>
     </div>
 
+
+
+
+
     *{
     #{field 'mission.goal'}
         <div class="control-group ${field.errorClass}">
@@ -309,6 +313,72 @@ id: 'mission-save'}
                                 }*
 
 </fieldset>
+
+
+<fieldset>
+    <legend>&{'mission.tab.leaders'}</legend>
+
+    <div class="control-group">
+        <label class="control-label" for="input-lang">&{'mission.tab.leaders'}</label>
+        <div class="controls not-editable">
+
+            <table class="leader-table">
+
+                <tr>
+                    <th>&{'mission.tab.leaders.login'}</th>
+                    <th>&{'mission.tab.leaders.visible'}</th>
+                    <th></th>
+                </tr>
+
+                <tr ng-repeat="leader in leaders" class="leader-line">
+                    <td>{{ leader.userLogin }}</td>
+                    <td>
+                        <input id="leader-visible-{{ leader.userLogin }}" type="checkbox" ng-model="leader.visible" ng-change="leaderUpdate(leader)"/>
+                        <label for="leader-visible-{{ leader.userLogin }}">&{'mission.tab.leaders.visible'}</label>
+                    </td>
+                    <td>
+                        <a href="#" ng-click="leaderDelete(leader, $event)">&{'mission.tab.leaders.deleteButton'}</a>
+                    </td>
+
+                </tr>
+
+
+
+                <tr ng-show="leaderEditing">
+
+                    <td colspan="2">
+                        <form ng-submit="leaderSave($event)">
+                            <input id="new-leader-input" type="text" ng-model="newLeaderLogin" ng-enter="leaderSave($event)"/>
+                            <p class="error" ng-if="newLeaderError">&{'mission.tab.leaders.unknownLogin'}</p>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="#" ng-click="leaderSave($event)">&{'mission.tab.leaders.validateButton'}</a>
+                        <a href="#" ng-click="leaderCancel($event)">&{'mission.tab.leaders.cancelButton'}</a>
+                    </td>
+                    *{
+                    <td>
+                        <input style="display:none" id="leader-visible-new" type="checkbox" ng-model="newLeaderVisible" />
+                        <label for="leader-visible-new">&{'mission.tab.leaders.visible'}</label>
+                    </td>
+                    <td>
+
+                    </td>
+                    }*
+                </tr>
+
+                <tr ng-hide="leaderEditing">
+                    <td colspan="3">
+                        <a href="#"  ng-click="leaderEdit();$event.preventDefault()">&{'mission.tab.leaders.addButton'}</a>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+</fieldset>
+
 
 *{
                             <fieldset>

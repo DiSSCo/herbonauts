@@ -2376,6 +2376,11 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
             ContributionService.getSpecimenMedia(specimenId).then(function(response) {
                 $scope.specimenMediaList = response.data;
 
+                // Filter media errors;
+                $scope.specimenMediaList = _.filter($scope.specimenMediaList, function(m) {
+                   return m.tiled && !m.tilingError;
+                });
+
                 if ($scope.specimenMediaList.length > 0) {
                     initSpecimenMediaBoard($scope.specimenMediaList[0]);
                 } else {
@@ -3302,7 +3307,12 @@ function toDecimal(val, type) {
         return val;
     }
 
+    if (val.split(",").length == 2) {
+        val = val.replace(",", ".");
+    }
+
     var splits = val.split(/[^\d\.]/);
+
     var decimal = 0;
     var index = 0;
     var neg = 1;
@@ -4462,3 +4472,6 @@ herbonautesApp.controller('ModalStatTopHerbonautesCtrl', ['$scope', '$modalInsta
     };
 
 }]);
+
+
+

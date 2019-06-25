@@ -156,10 +156,11 @@ herbonautesApp.controller('MissionSettingsCtrl', ['$scope', '$q',
                                                   'QuestionUtils',
                                                   'References',
                                                   'ReferencesSearch',
+                                                  '$http',
                                                   function($scope, $q,
                                                            MissionService,
                                                            QuestionTemplates,
-                                                           QuizService, QuestionUtils, References, ReferencesSearch) {
+                                                           QuizService, QuestionUtils, References, ReferencesSearch, $http) {
 
     $scope.specimensCount = 0;
     $scope.references = References.query();
@@ -232,6 +233,7 @@ herbonautesApp.controller('MissionSettingsCtrl', ['$scope', '$q',
         $scope.missionId = missionId;
         $scope.questions = MissionService.questions({id: $scope.missionId});
         savedQuestions = _.map($scope.questions, _.clone);
+        $scope.fetchLeaders();
     }
 
     $scope.setDefaultQuestions = function() {
@@ -347,6 +349,79 @@ herbonautesApp.controller('MissionSettingsCtrl', ['$scope', '$q',
         update: $scope.dragEnd,
         handle: '.sort-handle'
     });
+
+
+    // Mission leaders
+
+    $scope.newLeaderVisible = true;
+
+    $scope.fetchLeaders = function() {
+        $http.get(herbonautes.ctxPath + '/missions/' + $scope.missionId + '/leaders')
+            .then(function(r) {
+                $scope.leaders = r.data;
+            })
+    }
+
+    $scope.leaderEdit = function() {
+        $scope.leaderEditing = true;
+        $("#new-leader-input").focus();
+    }
+
+    $scope.leaderUpdate = function(leader) {
+        $scope.leaderEditing = false;
+
+        var url = herbonautes.ctxPath + '/missions/' + $scope.missionId + '/leaders/' + leader.userLogin + '?visible=' + (!!leader.visible);
+        $http.post(url)
+            .then(function(r) {
+                $scope.fetchLeaders();
+            });
+
+    }
+
+    $scope.leaderSave = function($event) {
+
+
+        var url = herbonautes.ctxPath + '/missions/' + $scope.missionId + '/leaders/' + $scope.newLeaderLogin + '?visible=' + (!!$scope.newLeaderVisible);
+        $http.post(url)
+            .then(function(r) {
+                $scope.fetchLeaders();
+                $scope.newLeaderLogin = '';
+                $scope.leaderEditing = false;
+
+            }, function(r) {
+                // Error
+                $scope.newLeaderError = true;
+
+            });
+
+        if ($event) {
+            $event.preventDefault();
+        }
+    }
+
+    $scope.leaderDelete = function(leader, $event) {
+        $scope.leaderEditing = false;
+
+
+
+        var url = herbonautes.ctxPath + '/missions/' + $scope.missionId + '/leaders/' + leader.userLogin;
+        $http.delete(url)
+            .then(function(r) {
+                $scope.fetchLeaders();
+            });
+
+
+        $event.preventDefault();
+    }
+
+    $scope.leaderCancel = function($event) {
+        $scope.leaderEditing = false;
+
+        $scope.newLeaderLogin = '';
+        $scope.newLeaderVisible = true;
+
+        $event.preventDefault();
+    }
 
 }]);
 
@@ -1184,3 +1259,61 @@ herbonautesApp.controller('RecolnatTransferCtrl', ['$scope', 'MissionService', f
 
 }]);
 
+
+herbonautesApp.directive('diskUsageBox', ['$http',  function($http) {
+
+    return {
+        restrict: 'E',
+        link: function($scope, element, attrs) {
+
+
+            $scope.getDiskUsagePercent = function() {
+                if (!$scope.report) {
+                    return 0;
+                }
+                return 100 - 100 * $scope.report.freeSpaceInBytes / $scope.report.totalSpaceInBytes ;
+            }
+
+            $scope.toGo = function(sizeInBytes) {
+                return Math.round(100 * sizeInBytes / (1024 * 1024 * 1024)) / 100;
+            }
+
+            $scope.report = null;
+            $scope.error = false;
+
+            $http.get('/admin/tiles/report').then(
+                function(response) {
+                    $scope.report = response.data;
+                },
+                function(response) {
+                    $scope.error = true
+                }
+                );
+
+
+
+        },
+        scope: {
+
+        },
+        templateUrl: function(elem, attr) {
+            return 'templates/disk-usage-box.html';
+        }
+    }
+
+}]);
+
+
+herbonautesApp.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});

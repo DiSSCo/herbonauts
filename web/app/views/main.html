@@ -486,7 +486,7 @@
 						#{/else}
 
 
-						*{
+						*{ }*
                         #{if play.configuration.get("herbonautes.login.form.debug", false)}
 
 							<br/>
@@ -510,7 +510,7 @@
 
 						#{/if}
 
-						}*
+
 		  				
 		  			</td>
 		  			<td style="vertical-align: top;width:260px;padding-left: 15px">
@@ -729,6 +729,23 @@
             </div>
         </div>
     </script>
-		
-    </body>
+
+    <script type="text/ng-template" id="templates/disk-usage-box.html">
+
+        <div class="alert alert-{{ report.status }}" ng-if="!!report">
+
+            <h5>&{'diskusage.title'} ({{ getDiskUsagePercent() | number : 1 }} % &{'diskusage.used'})</h5>
+            <div class="progress progress-{{ report.status }}">
+                <div class="bar" style="width: {{ getDiskUsagePercent() }}%"></div>
+            </div>
+            <p><b>&{'diskusage.tiledSpecimenCount'} :</b> <span>  {{ report.completeSpecimenCount }} sp.</span></p>
+            <p><b>&{'diskusage.freeSpace'} :</b> <span>{{ toGo(report.freeSpaceInBytes) }} Go / {{ toGo(report.totalSpaceInBytes) }} Go</span></p>
+			<p><b>&{'diskusage.approxSpecimenCountLeft'} : </b> {{ report.approxSpecimenCountLeft }} sp.</p>
+
+        </div>
+
+    </script>
+
+
+	</body>
 </html>

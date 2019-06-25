@@ -270,6 +270,9 @@ public class Missions extends Application {
         }
 
         mission.setLeader(Security.connected());
+
+        // Missio
+
         Cache.delete("connected_leader_missions_" + Security.connected().id);
 
         tag = new Tag();
@@ -304,6 +307,13 @@ public class Missions extends Application {
 
         }
 
+        // Create leader
+        MissionLeader leader = new MissionLeader();
+        leader.setMissionId(mission.id);
+        leader.setUserLogin(Security.connectedLogin());
+        leader.setUserId(Security.connectedId());
+        leader.setVisible(true);
+        leader.save();
 
         flash.success(Messages.get("mission.created", mission.getTitle()));
 
@@ -639,6 +649,8 @@ public class Missions extends Application {
         settings(id);
     }
 
+
+
     /**
      * Modifie la configuration de la mission
      */
@@ -651,7 +663,7 @@ public class Missions extends Application {
         // CHECK chef de mission
         Mission missionToUpdate = Mission.findById(id);
         notFoundIfNull(missionToUpdate);
-        if (connectedLogin() == null || (!Security.isAdmin() && !Security.isTeam() && !connectedLogin().equals(missionToUpdate.getLeader().getLogin()))) {
+        if (connectedLogin() == null || (!Security.isAdmin() && !Security.isTeam() && !missionToUpdate.isLeader(Security.connectedLogin()))) {
             forbidden();
         }
 
@@ -784,6 +796,9 @@ public class Missions extends Application {
             tab = "parameters";
         }
 
+        // Clear specimen count cache
+        Cache.delete("mission_specimens_count" + id);
+
         render(mission, langs, countries, announcements, contributionTypes, tab);
     }
 
@@ -825,8 +840,10 @@ public class Missions extends Application {
             tab = "comments";
         }
 
+        List<MissionLeader> leaders = MissionLeader.find("missionId = ? and visible = true", id).fetch();
 
-        render(mission, announcements, isMember, tab, isLoading, forceDiscussion);
+
+        render(mission, announcements, isMember, tab, isLoading, forceDiscussion, leaders);
     }
 
     /**
@@ -1863,6 +1880,58 @@ public class Missions extends Application {
         renderJSON(queries); //specimens, SpecimenSimpleWithMissionJsonSerializer.get(), MissionSimpleJsonSerializer.get());
     }
 
+    public static void getLeaders(Long id) {
+        //Security.forbiddenIfNotLeader();
+
+        List<MissionLeader> leaders = MissionLeader.find("missionId = ?", id).fetch();
+
+        renderJSON(leaders);
+    }
+
+    public static void addLeader(Long id, String login, Boolean visible) {
+        //Security.forbiddenIfNotLeader();
+
+        if (visible == null) {
+            visible = true;
+        }
+
+        User user = User.find("lower(login) = ?", login.toLowerCase()).first();
+
+        if (user == null) {
+            notFound();
+        }
+
+        //user.setLeader(true);
+        //user.save();
+
+        MissionLeader existing = MissionLeader.find("userId = ? and missionId = ?", user.id, id).first();
+        if (existing == null) {
+            MissionLeader leader = new MissionLeader();
+            leader.setUserId(user.id);
+            leader.setMissionId(id);
+            leader.setUserLogin(user.getLogin());
+            leader.setVisible(visible);
+            leader.save();
+        } else {
+            existing.setVisible(visible);
+            existing.save();
+        }
+
+        Cache.delete("connected_leader_missions_" + user.id);
+
+        ok();
+    }
+
+    public static void removeLeader(Long id, String login) {
+        Security.forbiddenIfNotLeader();
+
+        User user = User.findByLogin(login);
+        MissionLeader.delete("userId = ? and missionId = ?", user.id, id);
+
+        Cache.delete("connected_leader_missions_" + user.id);
+
+        ok();
+    }
 
 
     /*
