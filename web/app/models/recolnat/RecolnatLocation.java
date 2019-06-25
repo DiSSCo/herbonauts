@@ -4,6 +4,7 @@ import play.db.jpa.GenericModel;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @PersistenceUnit(name = "recolnat")
@@ -11,8 +12,8 @@ import java.util.Date;
 public class RecolnatLocation extends GenericModel {
 
     @Id
-    @Column(name = "LOCATIONID")
-    public Long localisationId;
+    @Column(name = "LOCALISATIONID")
+    public UUID localisationId;
 
     @Column(name = "COUNTRY")
     public String country;

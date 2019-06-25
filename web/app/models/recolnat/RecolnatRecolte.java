@@ -22,7 +22,7 @@ public class RecolnatRecolte extends GenericModel {
     public String fieldNumber;
 
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "LOCATIONID")
+    @JoinColumn(name = "LOCALISATIONID")
     public RecolnatLocation location;
 
     @Column(name = "SDAY")
