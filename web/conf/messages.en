@@ -273,6 +273,9 @@ badge.animator=Animator
 badge.sharer=Sharer
 badge.solidary=Solidary
 badge.candle=Candle
+badge.invitation=Sponsor
+badge.lucky=Lucky
+badge.high_five=High Five!
 
 # Errors
 validation.required=Required
@@ -537,6 +540,7 @@ nemu.admin.content=Contents
 menu.admin.mission.priority=Priorities missions
 menu.admin.quiz=Quiz management
 menu.categories.management=Categories management
+menu.admin.tiles=Tiles
 
 # Comments
 comment.answer.placeholder=Your comment
@@ -827,3 +831,27 @@ mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigate
 message.email.change.success=Votre adresse mail a été modifiée
 
 placeholder.geolocation=Enter a location
+
+
+# Tuiles
+diskusage.title=Disk space
+diskusage.used=used
+diskusage.tiledSpecimenCount=Tiled specimen count
+diskusage.freeSpace=Free space
+diskusage.approxSpecimenCountLeft=Available specimen count
+
+admin.tiles.title=Manage tiles
+admin.tiles.cleaner=Cleaning
+admin.tiles.running=Cleaning in progress
+admin.tiles.lastStart=Last launch: 
+admin.tiles.lastError=Error during last cleaning, check the logs
+admin.tiles.runCleanerButton=Launch cleaning
+
+mission.tab.leaders=Mission leaders
+mission.tab.leaders.login=Login
+mission.tab.leaders.visible=Visible
+mission.tab.leaders.deleteButton=Delete
+mission.tab.leaders.validateButton=Add
+mission.tab.leaders.cancelButton=Cancel
+mission.tab.leaders.addButton=+ Add leader
+mission.tab.leaders.unknownLogin=Unknown login

@@ -852,6 +852,12 @@ public class ContributionConflictService {
         public boolean sendAlert = false;
     }
 
+    public static class ContributionChanges {
+        public boolean changedAnswer = false;
+        public boolean previousConflict = false;
+        public boolean nextValidated = false;
+    }
+
     public static class ReferenceValue {
         public String id;
         public String label;

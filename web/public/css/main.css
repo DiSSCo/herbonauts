@@ -1718,6 +1718,14 @@ dl.bubble-infos dt {
 	background: url(../img/badge_invitation.gif);
 }
 
+.badge-lucky {
+	background: url(../img/badge_lucky.png);
+}
+
+.badge-high_five {
+	background: url(../img/badge_high_five.png);
+}
+
 #badge-modal p {
 	margin-left: 1em;
 }
@@ -2592,4 +2600,16 @@ table.legend .square,
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+}
+
+.leader-table td {
+	padding: 5px;
+}
+
+.leader-table th {
+	text-align: left;
+}
+
+.leader-table label {
+	display: inline;
 }

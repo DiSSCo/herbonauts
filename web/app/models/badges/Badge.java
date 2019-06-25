@@ -32,7 +32,10 @@ public class Badge extends Model {
 		WRITER,
 		ANIMATOR,
 		CANDLE,
-		SOLIDARY
+		SOLIDARY,
+
+		HIGH_FIVE,
+		LUCKY
 	};
 	
 	@ManyToOne
@@ -65,6 +68,8 @@ public class Badge extends Model {
 			case CANDLE: return new CandleBadge(user);
 			case SOLIDARY: return new SolidaryBadge(user);
 			case INVITATION: return new InvitationBadge(user);
+			case LUCKY: return new LuckyBadge(user);
+			case HIGH_FIVE: return new HighFiveBadge(user);
 		}
 		return null;
 	}

@@ -280,6 +280,8 @@ badge.sharer=Partageur
 badge.solidary=Solidaire
 badge.candle=Bougie
 badge.invitation=Parrain
+badge.lucky=Chanceux
+badge.high_five=Tôpe là !
 
 # Errors
 validation.required=Obligatoire
@@ -558,6 +560,7 @@ nemu.admin.content=Contenus
 menu.admin.mission.priority=Priorités missions
 menu.admin.quiz=Gestion des quiz
 menu.categories.management=Gestion des catégories
+menu.admin.tiles=Tuiles
 
 # Comments
 comment.answer.placeholder=Votre commentaire
@@ -945,3 +948,28 @@ mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigate
 message.email.change.success=Votre adresse mail a été modifiée
 
 placeholder.geolocation=Indiquez un lieu
+
+
+# Tuiles
+diskusage.title=Espace disque
+diskusage.used=utilisé
+diskusage.tiledSpecimenCount=Nombre de spécimens tuilés
+diskusage.freeSpace=Espace disponible
+diskusage.approxSpecimenCountLeft=Estimation spécimens disponibles
+
+
+admin.tiles.title=Gestion des tuiles
+admin.tiles.cleaner=Nettoyage
+admin.tiles.running=Le nettoyage est en cours
+admin.tiles.lastStart=Dernier lancement : 
+admin.tiles.lastError=Erreur lors du dernier nettoyage, consultez les logs
+admin.tiles.runCleanerButton=Lancer le nettoyage
+
+mission.tab.leaders=Chefs de mission
+mission.tab.leaders.login=Login
+mission.tab.leaders.visible=Visible
+mission.tab.leaders.deleteButton=Supprimer
+mission.tab.leaders.validateButton=Ajouter
+mission.tab.leaders.cancelButton=Annuler
+mission.tab.leaders.addButton=+ Nouveau chef
+mission.tab.leaders.unknownLogin=Login inconnu

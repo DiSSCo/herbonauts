@@ -10,6 +10,7 @@ import conf.Herbonautes;
 
 import libs.Json;
 import models.Mission;
+import models.Specimen;
 import models.UserInvitation;
 import models.discussions.Discussion;
 import models.discussions.Message;
@@ -20,6 +21,7 @@ import models.User;
 import models.badges.Badge;
 import models.contributions.Contribution;
 import models.contributions.ContributionFeedback;
+import services.ContributionConflictService;
 
 /**
  * Création des badges
@@ -41,6 +43,8 @@ public class BadgeInspector extends BaseInspector implements Inspector{
 				createEnderBadge(objects);
 				createNightBadge(objects);
 				createExplorerBadge(objects);
+				createLuckyBadge(objects);
+				createHighFiveBadge(objects);
 				break;
 
 			case MISSION_PROPOSITION_ACCEPTED:
@@ -168,17 +172,7 @@ public class BadgeInspector extends BaseInspector implements Inspector{
 		
 	}
 
-	private void createInvitationBadge(Object... objects) {
-		UserInvitation invitation = extract(UserInvitation.class, objects);
-		if (invitation.getFromUser().hasBadge(Badge.Type.INVITATION)) {
-			Logger.info("Badge invitation already winned by %s", invitation.getFromUser().getLogin());
-			return;
-		}
-		Logger.info("Create badge invitation for %s", invitation.getFromUser().getLogin());
-		Badge badge = Badge.add(invitation.getFromUser(), Badge.Type.INVITATION);
-		chain(badge, objects);
-	}
-	
+
 	private void createSherlockBadge(Object... objects) {
 		//Contribution contribution = extract(Contribution.class, objects);
 		ContributionAnswer contribution = extract(ContributionAnswer.class, objects);
@@ -402,5 +396,98 @@ public class BadgeInspector extends BaseInspector implements Inspector{
 			chain(badge, objects);
 		}
 	}
+
+	private void createInvitationBadge(Object... objects) {
+		UserInvitation invitation = extract(UserInvitation.class, objects);
+		if (invitation.getFromUser().hasBadge(Badge.Type.INVITATION)) {
+			Logger.info("Badge invitation already winned by %s", invitation.getFromUser().getLogin());
+			return;
+		}
+		Logger.info("Create badge invitation for %s", invitation.getFromUser().getLogin());
+		Badge badge = Badge.add(invitation.getFromUser(), Badge.Type.INVITATION);
+		chain(badge, objects);
+	}
+
+
+	private void createLuckyBadge(Object... objects) {
+		ContributionAnswer contribution = extract(ContributionAnswer.class, objects);
+		if (contribution == null) {
+			return;
+		}
+
+		User user = extract(User.class, objects);
+		Logger.info("Create lucky badge for %s ?", user.getLogin());
+
+		if (user.hasBadge(Badge.Type.LUCKY)) {
+			Logger.info("Badge lucky already winned by %s", user.getLogin());
+			return;
+		}
+
+		Specimen specimen = extract(Specimen.class, objects);
+		Logger.info("Lucky badge specimen %s %s %s", specimen.getFamily(), specimen.getGenus(), specimen.getSpecificEpithet());
+
+		boolean createBadge = false;
+
+		if (specimen.getFamily() != null) {
+			if (Herbonautes.get().luckyBadgeFamilyList.contains(specimen.getFamily().toLowerCase())) {
+				createBadge = true;
+			}
+		}
+
+		if (specimen.getGenus() != null) {
+			if (Herbonautes.get().luckyBadgeGenusList.contains(specimen.getGenus().toLowerCase())) {
+				createBadge = true;
+			}
+		}
+
+		if (specimen.getSpecificEpithet() != null) {
+			if (Herbonautes.get().luckyBadgeSpecificEpithetList.contains(specimen.getSpecificEpithet().toLowerCase())) {
+				createBadge = true;
+			}
+		}
+
+		if (createBadge) {
+			Logger.info("Create badge lucky for %s", user.getLogin());
+			Badge badge = Badge.add(user, Badge.Type.LUCKY);
+			chain(badge, objects);
+		}
+
+	}
+
+	private void createHighFiveBadge(Object... objects) {
+		ContributionAnswer contribution = extract(ContributionAnswer.class, objects);
+		if (contribution == null) {
+			return;
+		}
+
+		User user = extract(User.class, objects);
+		Logger.info("Create high five badge for %s ?", user.getLogin());
+
+		if (user.hasBadge(Badge.Type.HIGH_FIVE)) {
+			Logger.info("Badge high five already winned by %s", user.getLogin());
+			return;
+		}
+
+		ContributionConflictService.ContributionChanges changes =
+				extract(ContributionConflictService.ContributionChanges.class, objects);
+
+		if (changes == null) {
+			Logger.info("No changes (keep answer)");
+			return;
+		}
+
+		Logger.info("Contribution changes");
+		Logger.info("- changes: %s", changes.changedAnswer);
+		Logger.info("- prev conflicts: %s", changes.previousConflict);
+		Logger.info("- next validated: %s", changes.nextValidated);
+
+		if (changes.changedAnswer && changes.previousConflict && changes.nextValidated) {
+			Logger.info("Create badge high five for %s", user.getLogin());
+			Badge badge = Badge.add(user, Badge.Type.HIGH_FIVE);
+			chain(badge, objects);
+		}
+	}
+
+
 
 }

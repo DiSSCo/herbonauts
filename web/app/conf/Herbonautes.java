@@ -4,10 +4,7 @@ import models.contributions.Contribution;
 import play.Logger;
 import play.Play;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Singleton contenant la configuration de l'application
@@ -87,6 +84,11 @@ public class Herbonautes {
 
 	public String baseUrl;
 	public String logoUrl;
+
+	public List<String> luckyBadgeFamilyList;
+	public List<String> luckyBadgeGenusList;
+	public List<String> luckyBadgeSpecificEpithetList;
+
 
 	private Herbonautes() {
 
@@ -182,11 +184,41 @@ public class Herbonautes {
 
 		timezoneOffset = getInteger("herbonautes.timezone.offset", -60);
 
+		// Lucky badge
+		luckyBadgeFamilyList =  toLowerCase(getStringList("herbonautes.badge.lucky.familyList"));
+		luckyBadgeGenusList = toLowerCase(getStringList("herbonautes.badge.lucky.genusList"));
+		luckyBadgeSpecificEpithetList = toLowerCase(getStringList("herbonautes.badge.lucky.specificEpithetList"));
 
 	}
 
 	public static final Herbonautes get() {
 		return INSTANCE;
+	}
+
+	/**
+	 * Récupère la chaine ou retourne la valeur par défaut
+	 */
+	private static List<String> getStringList(String key) {
+		String val = Play.configuration.getProperty(key);
+		if (val != null) {
+			Logger.info("%s : %s", key, val);
+			ArrayList<String> l = new ArrayList<String>();
+			for (String i : val.split(",")) {
+				l.add(i.trim());
+			}
+			return l;
+		} else {
+			Logger.warn("%s (defaut) : empty list", key);
+			return Collections.emptyList();
+		}
+	}
+
+	private static List<String> toLowerCase(List<String> l) {
+		List<String> lowerCaseList = new ArrayList<String>();
+		for (String s : l) {
+			lowerCaseList.add(s.toLowerCase());
+		}
+		return lowerCaseList;
 	}
 
 	/**
