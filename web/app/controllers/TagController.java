@@ -7,6 +7,7 @@ import forms.SaveTagsForm;
 import helpers.GsonUtils;
 import models.Mission;
 import models.Specimen;
+import models.SpecimenMaster;
 import models.User;
 import models.discussions.Discussion;
 import models.serializer.SpecimenSimpleJsonSerializer;
@@ -86,7 +87,7 @@ public class TagController extends Application {
 
     @Transactional(readOnly = true)
     public static void getSpecimensByTag(String tagLabel) {
-        List<Specimen> specimens = Specimen.getSpecimensByTag(tagLabel);
+        List<SpecimenMaster> specimens = Specimen.getSpecimensByTag(tagLabel);
         GsonBuilder gsonBuilder = GsonUtils.getGsonBuilder();
         gsonBuilder.registerTypeAdapter(Specimen.class, SpecimenSimpleJsonSerializer.get());
         renderJSON(gsonBuilder.create().toJson(specimens));

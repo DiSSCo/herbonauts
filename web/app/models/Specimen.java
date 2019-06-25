@@ -374,24 +374,24 @@ public class Specimen extends DatedModificationsModel<Specimen> {
 
     public static int countSpecimensByTag(String tagLabel) {
         StringBuilder request = new StringBuilder();
-        request.append("SELECT count(distinct s.id) FROM H_SPECIMEN s ");
+        request.append("SELECT count(distinct s.id) FROM H_SPECIMEN_MASTER s ");
         request.append("INNER JOIN H_TAGS_LINKS TL ON TL.target_id = s.id ");
         request.append("INNER JOIN H_TAGS T ON t.id = tl.tag_id ");
         request.append("WHERE TL.link_type = '").append(TagType.SPECIMEN).append("' ");
         request.append("AND T.label = '").append(tagLabel).append("' ");
-        request.append("ORDER BY s.last_update_date desc");
+        //request.append("ORDER BY s.last_update_date desc");
         return ((Number) JPA.em().createNativeQuery(request.toString()).getSingleResult()).intValue();
     }
 
-    public static List<Specimen> getSpecimensByTag(String tagLabel) {
+    public static List<SpecimenMaster> getSpecimensByTag(String tagLabel) {
         StringBuilder request = new StringBuilder();
-        request.append("SELECT s.* FROM H_SPECIMEN s ");
+        request.append("SELECT s.* FROM H_SPECIMEN_MASTER s ");
         request.append("INNER JOIN H_TAGS_LINKS TL ON TL.target_id = s.id ");
         request.append("INNER JOIN H_TAGS T ON t.id = tl.tag_id ");
         request.append("WHERE TL.link_type = '").append(TagType.SPECIMEN).append("' ");
         request.append("AND T.label = '").append(tagLabel).append("' ");
-        request.append("ORDER BY s.last_update_date desc");
-        return JPA.em().createNativeQuery(request.toString(), Specimen.class)
+
+        return JPA.em().createNativeQuery(request.toString(), SpecimenMaster.class)
                 .getResultList();
     }
 

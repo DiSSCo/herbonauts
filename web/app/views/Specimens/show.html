@@ -377,7 +377,7 @@
     </div>
 
       <div class="tab-pane" id="tags-tab-pane">
-	  #{elementTags connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, tagLinkType: 'SPECIMEN', targetId: specimen.id, principalTagLabel: specimen.code}
+	  #{elementTags connectedLogin: connectedLogin, connectedLevel: connectedLevel, isAdmin: isAdmin, tagLinkType: 'SPECIMEN', targetId: specimen.master.id, principalTagLabel: specimen.code}
         #{/elementTags}
       </div>
 
