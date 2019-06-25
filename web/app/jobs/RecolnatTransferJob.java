@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import conf.Herbonautes;
 import libs.Json;
 import models.Mission;
-import models.MissionCartQuery;
 import models.Specimen;
 import models.questions.ContributionAnswer;
 import models.questions.ContributionQuestionStat;
-import models.recolnat.*;
 import models.references.ReferenceRecord;
+
+import models.recolnat.*;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import play.Logger;
@@ -84,7 +83,7 @@ public class RecolnatTransferJob extends Job {
             mission = Mission.findById(this.missionId);
 
             Logger.info("---------------------------------------------------------------------------------");
-            Logger.info("Versement Recolnat pour la mission %s", mission.getTitle());;
+            Logger.info("Versement Recolnat pour la mission %s", mission.getTitle());
             if (debugNoRecolnat) {
                 Logger.info("  DEBUG MODE");
             }
@@ -93,7 +92,7 @@ public class RecolnatTransferJob extends Job {
             specimens = Specimen.find("mission.id = ?", this.missionId).fetch();
 
             Logger.info("Lock mission");
-            mission.setLoadingCart(true);
+            mission.recolnatTransferInProgress = true;
             mission.save();
 
             JPA.closeTx("default");
@@ -103,8 +102,9 @@ public class RecolnatTransferJob extends Job {
         }
 
 
-        Logger.info("%d specimens", specimens.size());
+        Logger.info("%d specimens", specimens == null ? -1 : specimens.size());
         Logger.info("---------------------------------------------------------------------------------", specimens.size());
+
         for (Specimen specimen : specimens) {
             //List<ContributionAnswer> answerForSpecimen = ContributionAnswer.findAllValidAnswersForSpecimen(specimen.id);
 
@@ -867,7 +867,7 @@ public class RecolnatTransferJob extends Job {
 
                 RecolnatDetermination validDetermination = findValidDetermination(recolnatSpecimen, specimen);
 
-                String recolnatIdentifiedBy = validDetermination.identifiedBy;
+                String recolnatIdentifiedBy = (validDetermination != null) ? validDetermination.identifiedBy : null;
                 String herbonautesIdentifieddBy = getIdentifiedBy(answersByQuestionName.get("identifier"));
 
                 //ContributionAnswer answer = answersByQuestionName.get("country");
