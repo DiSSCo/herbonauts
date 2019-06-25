@@ -1,19 +1,23 @@
 package controllers;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode; 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import models.Mission;
+import models.User;
 import models.serializer.PageJsonSerializer;
 import models.serializer.UserForAdminJsonSerializer;
 import play.Logger;
+import play.Play;
+import play.libs.WS;
 import play.mvc.Before;
-
-import models.Mission;
-import models.User;
+import play.utils.HTTP;
 import services.Page;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller d'admin. Ces actions ne sont autorisées que pour l'administrateurs
@@ -130,5 +134,8 @@ public class Admin extends Application {
         Page<User> users = User.findUsers(filter, page, PAGE_SIZE, sortBy, order);
         renderJSON(users, PageJsonSerializer.get(), UserForAdminJsonSerializer.get());
     }
+
+
+
 
 }

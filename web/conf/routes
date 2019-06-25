@@ -69,6 +69,10 @@ POST	/missions/{id}/banMember						Missions.banMember
 GET		/missions										Missions.list(format:'html')
 GET		/missions.{format}								Missions.list
 
+GET     /missions/{id}/leaders                          Missions.getLeaders
+POST    /missions/{id}/leaders/{login}                  Missions.addLeader
+DELETE  /missions/{id}/leaders/{login}                  Missions.removeLeader
+
 GET     /missions/{id}/stats/contributions              Missions.statsContributionsByQuestion
 GET     /missions/{id}/stats/contributionsByUser        Missions.statsContributionsByUser
 GET     /missions/{id}/stats/contributionsByUserDetails Missions.statsContributionsByUserDetails
@@ -121,6 +125,11 @@ GET		/admin/leaders									Admin.leaders
 POST	/admin/leaders									Admin.addLeader
 GET		/admin/notleader								Admin.removeLeader
 POST	/admin/missionsSort								Admin.saveMissionsSort
+
+GET	    /admin/tiles								    AdminTiles.tilesAdmin
+GET     /admin/tiles/report                             AdminTiles.tilesReport
+GET     /admin/tiles/status                             AdminTiles.tilesStatus
+POST     /admin/tiles/run                               AdminTiles.tilesRun
 
 #
 # Contributions

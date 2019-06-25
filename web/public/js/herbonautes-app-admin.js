@@ -118,3 +118,41 @@ herbonautesApp.controller('AdminUsersCtrl', ['$scope', 'UserAdminService', funct
     }
 
 }]);
+
+
+//herbonautesApp.factory('TilesAdminService', ['$resource', function($resource) {
+//    return $resource(herbonautes.ctxPath + '/admin/tiles',
+//        {
+//            report: { method: 'GET', url: herbonautes.ctxPath + '/admin/tiles/report', isArray: false }
+//        }
+//    );
+//}]);
+
+
+herbonautesApp.controller('AdminTilesCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+
+    $scope.status = {
+
+    }
+
+    $scope.updateStatus = function() {
+        $http.get(herbonautes.ctxPath + '/admin/tiles/status').then(function(r) {
+            $scope.status = r.data;
+            console.log("Update status");
+            if ($scope.status.running) {
+                $timeout($scope.updateStatus, 2000);
+            }
+        });
+    }
+
+    $scope.run = function() {
+        $http.post(herbonautes.ctxPath + '/admin/tiles/run').then(function(r) {
+            $scope.status = r.data;
+            $scope.status.running = true;
+            $timeout($scope.updateStatus, 1000);
+        });
+    }
+
+    $scope.updateStatus();
+
+}]);

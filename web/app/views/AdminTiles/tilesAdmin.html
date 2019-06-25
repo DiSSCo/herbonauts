@@ -1,0 +1,49 @@
+#{extends 'main.html' /}
+#{set title: 'Admin tiles' /}
+
+<div ng-controller="AdminTilesCtrl">
+
+    <div class="row">
+        <div class="span6">
+            <h2>&{'admin.tiles.title'}</h2>
+            <disk-usage-box></disk-usage-box>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="span12">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="span12">
+            <h3>&{'admin.tiles.cleaner'}</h3>
+            <br>
+
+            <p>
+                <div ng-if="status.running">
+                    <p>&{'admin.tiles.running'}</p>
+                    <p>&{'admin.tiles.lastStart'} {{ status.lastStart }}</p>
+                </div>
+                <div ng-if="status.lastError">
+                    <p>&{'admin.tiles.lastError'}</p>
+                </div>
+            </p>
+
+
+            <p>
+                <button class="btn" ng-click="run()" ng-disabled="status.running">&{'admin.tiles.runCleanerButton'}</button>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+#{set 'moreScripts'}
+    <script src="@{'/public/js/herbonautes-app.js'}" type="text/javascript"></script>
+    <script src="@{'/public/js/herbonautes-app-chef.js'}" type="text/javascript"></script>
+    <script src="@{'/public/js/herbonautes-app-admin.js'}" type="text/javascript"></script>
+#{/set}
+
+
