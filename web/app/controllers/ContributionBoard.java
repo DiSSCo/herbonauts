@@ -172,6 +172,20 @@ public class ContributionBoard extends Application {
         Mission mission = Mission.findById(missionId);
         ensureMember(mission);
 
+        ContributionQuestionStat stats = ContributionQuestionStat.find("question.id = :questionId and missionId = :missionId and specimenId = :specimenId")
+                .setParameter("specimenId", specimenId)
+                .setParameter("missionId", missionId)
+                .setParameter("questionId", questionId)
+                .first();
+
+        Logger.info("Previous stats : %s", stats);
+
+        ContributionConflictService.ContributionChanges changes = new ContributionConflictService.ContributionChanges();
+
+        if (stats != null) {
+            changes.previousConflict = stats.getConflicts();
+        }
+
         Specimen specimen = Specimen.findById(specimenId);
 
         JsonNode json = mapper.readTree(request.body);
@@ -184,8 +198,10 @@ public class ContributionBoard extends Application {
 
         ContributionAnswer answerToSave = ContributionAnswer.findUserAnswer(connected.id, missionId, specimenId, questionId);
         if (answerToSave == null) {
+            changes.changedAnswer = false;
             answerToSave = answer;
         } else {
+            changes.changedAnswer = true;
             answerToSave.setJsonValue(answer.getJsonValue());
         }
         answerToSave.setMissionId(missionId);
@@ -209,6 +225,11 @@ public class ContributionBoard extends Application {
         ContributionConflictService.ConflictReport report = ContributionConflictService.userConflictReport(specimenId, question, answerToSave);
         Logger.info("Submit answer v2 : %s", json.toString());
 
+
+        if (report.stat.getValidated()) {
+            changes.nextValidated = true;
+        }
+
         boolean noConflicts = "true".equals(request.params.get("noConflicts"));
 
         if (noConflicts) {
@@ -223,7 +244,7 @@ public class ContributionBoard extends Application {
             report.sendAlert = false;
         }
 
-        InspectorChain.get().inspect(Event.CONTRIBUTION_V2_ADDED, mission, specimen, connected, question, answerToSave, report);
+        InspectorChain.get().inspect(Event.CONTRIBUTION_V2_ADDED, mission, specimen, connected, question, answerToSave, report, changes);
 
 
 
