@@ -280,7 +280,7 @@ badge.sharer=Partageur
 badge.solidary=Solidaire
 badge.candle=Bougie
 badge.invitation=Parrain
-badge.lucky=Chanceux
+badge.lucky=Porte-bonheur
 badge.high_five=Tôpe là !
 
 # Errors
