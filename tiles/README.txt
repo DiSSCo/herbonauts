@@ -16,11 +16,11 @@ Alternative : utiliser maven :
 
 Installer le jar Oracle dans le repository local :
 
-mvn install:install-file -DgroupId=oracle -DartifactId=ojdbc -Dversion=5 -Dfile=lib/ojdbc5.jar -Dpackaging=jar
+./mvnw install:install-file -DgroupId=oracle -DartifactId=ojdbc -Dversion=5 -Dfile=lib/ojdbc5.jar -Dpackaging=jar
 
 Créer le jar executable :
 
-mvn package
+./mvnwmvn package
 
 Lancer le batch (exemple de configuration dans les sources) :
 
