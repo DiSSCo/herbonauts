@@ -802,6 +802,21 @@ user.confirm.email=You just changed your email address. A confirmation message h
 
 mission.goal.specimens=out of %d specimens
 
+
+
+mail.email.change.subject=[Les herbonautes] Confirmation de votre nouvelle adresse
+mail.email.change.content=Veuillez confirmer votre nouvelle adresse
+mail.email.change.subject.more1=Confirmer en cliquant sur le <a href="%s">lien</a>
+mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigateur %s
+
+message.email.change.success=Votre adresse mail a été modifiée
+
+placeholder.geolocation=Enter a location
+
+#
+# Invitations
+#
+
 invitation.menu=Parrainer
 invitation.title=Parrainez de nouveaux Herbonautes
 invitation.text=Saisissez les adresses emails des personnes que vous souhaitez inviter (une adresse par ligne).
@@ -823,17 +838,11 @@ invitation.validate.text=%s vous invite à rejoindre les herbonautes, l'herbier 
 invitation.validate.btn=Je m'inscris
 message.invitation.welcome=Merci d'avoir rejoint les Herbonautes
 
-mail.email.change.subject=[Les herbonautes] Confirmation de votre nouvelle adresse
-mail.email.change.content=Veuillez confirmer votre nouvelle adresse
-mail.email.change.subject.more1=Confirmer en cliquant sur le <a href="%s">lien</a>
-mail.email.change.subject.more2=Ou copiez l'adresse suivante dans votre navigateur %s
 
-message.email.change.success=Votre adresse mail a été modifiée
+#
+# Tiles administration
+#
 
-placeholder.geolocation=Enter a location
-
-
-# Tuiles
 diskusage.title=Disk space
 diskusage.used=used
 diskusage.tiledSpecimenCount=Tiled specimen count
@@ -855,3 +864,5 @@ mission.tab.leaders.validateButton=Add
 mission.tab.leaders.cancelButton=Cancel
 mission.tab.leaders.addButton=+ Add leader
 mission.tab.leaders.unknownLogin=Unknown login
+
+
