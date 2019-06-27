@@ -1,15 +1,26 @@
+server:
+  # HTTP server listen port
+  port: 8181
+
 cleaner:
-  tilesRootDir: /Users/jgs/Missions/Herbonautes-2019-05/tiles-from-batch
+  # Root directory where tiles are generated
+  tilesRootDir: /Users/jgs/Missions/Herbonautes-2019-05/tiles-from-batch 
+  # List of API keys that must be in header apiKey to launch clean
   apiTokens: xxxxx123, xxxxx456
 
+  # Files that will not be deleted
   keepFiles: tile_0_0_0.jpg
+  # Files that are tested to know if tiles are already cleaned
   testFiles: original.jpg
 
+
 spring:
+
+  # Data source configuration
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521:XE
-    username: HERBOPROD
-    password: passe
+    url: ${TILES_DATASOURCE_URL}
+    username: ${TILES_DATASOURCE_USERNAME}
+    password: ${TILES_DATASOURCE_PASSWORD}
     driver:
       class: oracle.jdbc.driver.OracleDriver
 
