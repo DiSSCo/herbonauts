@@ -1281,7 +1281,7 @@ herbonautesApp.directive('diskUsageBox', ['$http',  function($http) {
             $scope.report = null;
             $scope.error = false;
 
-            $http.get('/admin/tiles/report').then(
+            $http.get(herbonautes.ctxPath + '/admin/tiles/report').then(
                 function(response) {
                     $scope.report = response.data;
                 },
