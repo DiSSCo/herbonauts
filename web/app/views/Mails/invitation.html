@@ -4,7 +4,7 @@
 #{set 'indexUrl'}@@{Application.index()}#{/set}
 #{set 'validateUrl'}@@{Invitation.validate(invitation.token)}#{/set}
 <p>&{'mail.invitation.content', invitation.fromUser.login}</p>
-<p>&{'mail.invitation.content.more1', indexUrl}</p>
-<p>&{'mail.invitation.content.more2', validateUrl}</p>
-<p>&{'mail.invitation.content.more3', validateUrl}</p>
+<p>&{'mail.invitation.content.more1', indexUrl, indexUrl}</p>
+<p>&{'mail.invitation.content.more2', validateUrl, validateUrl}</p>
+<p>&{'mail.invitation.content.more3'}</p>
 

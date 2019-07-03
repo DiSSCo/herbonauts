@@ -943,10 +943,18 @@ invitation.send.button=Envoyer les invitations
 message.invitation.sent=Merci ! Les invitations ont été envoyées
 
 mail.invitation.subject=[Les herbonautes] %s vous invite à rejoindre les Herbonautes
-mail.invitation.content=<b>%s</b> vous invite à rejoindre les Herbonautes
-mail.invitation.content.more1=<a href="%s">les Herbonautes</a>, l'herbier numérique collaboratif citoyen...
-mail.invitation.content.more2=Pour vous inscrire, suivez ce  <a href="%s">lien</a>
-mail.invitation.content.more3=Si le lien ne s'ouvre pas, copier cette adresse dans cotre navigateur %s
+mail.invitation.content=<p><em>%s</em> vous invite à rejoindre les Herbonautes.</p>
+mail.invitation.content.more1=<p>Les Herbonautes (<em><a href="%s">%s</a></em>) est un programme vous \
+  permettant d'explorer et de documenter les herbiers des collections naturalistes. <br/>\
+  À vous d'explorer ces plantes et leurs étiquettes pour déterminer quand et où elles ont été récoltées. En renseignant \
+  les informations qu'elles contiennent vous permettez à tous, chercheurs et citoyens, d'avoir accès à \
+  ces données primordiales pour mieux connaître la biodiversité, mesurer et prévoir son érosion.<br/>\
+  À vous de jouer !</p>
+mail.invitation.content.more2=<p><strong>Rejoindre Les Herbonautes</strong><br/>\
+  Pour vous inscrire suivez <a href="%s">ce lien</a><br/>\
+  Si le lien ne s'ouvre pas copiez cette adresse dans votre navigateur %s</p>
+mail.invitation.content.more3=<p>A bientôt sur Les Herbonautes !</p>
+
 message.email.invalid=L'adresse '%s' est invalide
 
 invitation.invalid.token=Lien invalide
