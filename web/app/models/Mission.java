@@ -1219,6 +1219,12 @@ public class Mission extends DatedModificationsModel<Mission> {
         return false;
     }
 
+    @NoTransaction
+    public List<MissionLeader> getLeaderList() {
+        List<MissionLeader> leaders = MissionLeader.find("missionId = ?", this.id).fetch();
+        return leaders;
+    }
+
     public boolean isLoading() {
         return loading;
     }

@@ -13,12 +13,20 @@
 				
 				#{if _isLeader}
 						<br/>
-						#{if _mission.isLeader(_userLogin)}
-							<span class="label label-info">${_mission.leader.login}</span>
-						#{/if}
-						#{else}
-							<span class="label">${_mission.leader.login}</span>
-						#{/else}
+						#{list items: _mission.getLeaderList(), as: 'leader'}
+
+							#{if leader.visible}
+								#{if leader.userLogin == _userLogin}
+									<span class="label label-info">${leader.userLogin}</span>
+								#{/if}
+								#{else}
+									<span class="label">${leader.userLogin}</span>
+								#{/else}
+							#{/if}
+
+						#{/list}
+
+
 						#{if _mission.published}
 							<span class="label label-success">&{'published'}</span>
 						#{/if}
@@ -36,7 +44,7 @@
 				 		goalRatio = 100;
 				 	}
 				 	if (goalRatio > 100) goalRatio = 100;
-				 	goalRatio = Math.round(goalRatio)
+				 	goalRatio = java.lang.Math.round(goalRatio)
 				 }% }*
 
 

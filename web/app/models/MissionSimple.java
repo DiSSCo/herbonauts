@@ -230,4 +230,10 @@ public class MissionSimple extends Model {
                 "where (c.validated = true or unusableValidated = true) and c.missionId = ?", this.id);
         //return count("select count(s) from Mission m join m.specimens s where s.complete = true and m.id = ?", this.id);
     }
+
+    @NoTransaction
+    public List<MissionLeader> getLeaderList() {
+        List<MissionLeader> leaders = MissionLeader.find("missionId = ?", this.id).fetch();
+        return leaders;
+    }
 }
