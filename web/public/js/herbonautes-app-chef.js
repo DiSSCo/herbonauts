@@ -876,9 +876,18 @@ herbonautesApp.controller('MissionSettingsCartCtrl', ['$scope', '$timeout', 'Car
                // fin de chargement, update du panier
                 updateCartItems();
             }
+
+            // End of loading
+            if ($scope.cart.loading & !response.data.loading) {
+                // Update specimen count when loading finish
+                $timeout(updateSpecimenCount, countUpdateInterval);
+            }
+
             $scope.cart.loading = response.data.loading;
             console.log("Cart loading ? " + $scope.cart.loading);
             $timeout(updateCartLoading, loadingUpdateInterval);
+
+
         })
     }
 
