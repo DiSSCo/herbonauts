@@ -76,7 +76,15 @@
                     <option value="paleontologie">Paléontologie</option>
                 </select><br/>
 
-                <input type="checkbox" ng-model="newCartItem.noCollectInfo" /> Spécimens sans information de récolte<br/> <br/>
+                *{
+                <input type="checkbox" ng-model="newCartItem.noCollectInfo" /> Spécimens <br/> <br/>
+                }*
+
+                <select ng-model="newCartItem.noCollectInfo">
+                    <option value="true">Sans information de récolte uniquement</option>
+                    <option value="false">Tous les spécimens</option>
+                </select><br/>
+
                 <input ng-repeat="searchField in searchFields" type="text" placeholder="{{ searchField.name }}" ng-model="newCartItem.terms[searchField.key]" typeahead="suggestion.key for suggestion in suggest(searchField.key, $viewValue)">
                 <button class="btn btn-mini btn-success" type="submit">Rechercher</button>
             </form>
@@ -225,6 +233,10 @@
                             </table>
                         </td>
                         <td>
+                            <div ng-show="!s._source.country && !s._source.recordedby">
+                                <em style="color:#5eb95e">Sans information</em>
+                            </div>
+
                             <div ng-show="!!s._existing">
                                 <div ng-repeat="existing in s._existing">
                                     <span ng-if="existing.mission.id == missionId">

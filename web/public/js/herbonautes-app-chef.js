@@ -47,23 +47,33 @@ herbonautesApp.service('RecolnatSearch', ['ElasticSearch', function(ElasticSearc
                 hasmedia: 1
             }});
 
-            // Sans info de collect
+            // Transtype
+            if (cartItem.noCollectInfo == 'false') {
+                cartItem.noCollectInfo = false;
+            }
+            if (cartItem.noCollectInfo == 'true') {
+                cartItem.noCollectInfo = true;
+            }
+
+            // fix #20
             if (!cartItem.noCollectInfo) {
-                andQuery.push({
-                    "or": [
-                        {
-                            "exists": {
-                                "field": "country"
-                            }
-                        },
-                        {
-                            "exists": {
-                                "field": "recordedby"
-                            }
-                        }
-                    ]
-                });
+                // All specimens, no filter
+                // andQuery.push({
+                //     "or": [
+                //         {
+                //             "exists": {
+                //                 "field": "country"
+                //             }
+                //         },
+                //         {
+                //             "exists": {
+                //                 "field": "recordedby"
+                //             }
+                //         }
+                //     ]
+                // });
             } else {
+
                 andQuery.push({
                     "and": [
                         {

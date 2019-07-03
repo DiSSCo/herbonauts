@@ -166,6 +166,7 @@ public class RecolnatSearchClient {
             collectCriteria.set("and", collectionFields);
 
         } else {
+            // All specimens, no filter fix #20
             ArrayNode collectionFields = mapper.createArrayNode();
 
             collectionFields.add(mapper.createObjectNode().set("exists", mapper.createObjectNode().put("field", "country")));
