@@ -281,7 +281,7 @@ badge.solidary=Solidaire
 badge.candle=Bougie
 badge.invitation=Parrain
 badge.lucky=Porte-bonheur
-badge.high_five=Tôpe là !
+badge.high_five=Tope là !
 
 # Errors
 validation.required=Obligatoire
