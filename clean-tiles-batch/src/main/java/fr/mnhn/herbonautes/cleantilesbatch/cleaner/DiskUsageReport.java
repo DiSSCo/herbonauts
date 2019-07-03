@@ -16,8 +16,8 @@ public class DiskUsageReport {
     public static DiskUsageReport build(CleanerConfiguration configuration) throws IOException {
         final DiskUsageReport report = new DiskUsageReport();
 
-        report.totalSpaceInBytes = new File("/").getTotalSpace();
-        report.freeSpaceInBytes = new File("/").getFreeSpace();
+        report.totalSpaceInBytes = new File(configuration.getTilesRootDir()).getTotalSpace();
+        report.freeSpaceInBytes = new File(configuration.getTilesRootDir()).getFreeSpace();
 
         long completeTotalSpaceUsageInBytes = 0;
 
