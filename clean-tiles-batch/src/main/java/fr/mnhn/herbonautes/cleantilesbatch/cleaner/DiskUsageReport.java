@@ -2,7 +2,14 @@ package fr.mnhn.herbonautes.cleantilesbatch.cleaner;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DiskUsageReport {
 
@@ -14,6 +21,54 @@ public class DiskUsageReport {
     private Integer minimalSpecimenCount = 0;
 
     public static DiskUsageReport build(CleanerConfiguration configuration) throws IOException {
+        return buildV2(configuration);
+    }
+
+    public static DiskUsageReport buildSimple(CleanerConfiguration configuration) throws IOException {
+        final DiskUsageReport report = new DiskUsageReport();
+
+        report.totalSpaceInBytes = new File(configuration.getTilesRootDir()).getTotalSpace();
+        report.freeSpaceInBytes = new File(configuration.getTilesRootDir()).getFreeSpace();
+
+        return report;
+    }
+
+    public static DiskUsageReport buildV2(CleanerConfiguration configuration) throws IOException {
+        final DiskUsageReport report = new DiskUsageReport();
+
+        report.totalSpaceInBytes = new File(configuration.getTilesRootDir()).getTotalSpace();
+        report.freeSpaceInBytes = new File(configuration.getTilesRootDir()).getFreeSpace();
+
+        String testFileName = configuration.getTestFiles().get(0);
+
+        Path root = Paths.get(configuration.getTilesRootDir());
+
+        try (Stream<Path> walk = Files.walk(root, 3)) {
+
+            walk
+                    .parallel()
+                    .filter(Files::isDirectory)
+                    .filter(p -> p.getParent().getParent().getParent().equals(root)) // test ../../.. == root
+                    .forEach(codeDir -> {
+
+                report.totalSpecimenCount += 1;
+
+                Path testFile = codeDir.resolve(testFileName);
+                if (Files.exists(testFile)) {
+                    report.completeSpecimenCount += 1;
+                } else {
+                    report.minimalSpecimenCount += 1;
+                }
+
+            });
+
+        }
+
+        return report;
+    }
+
+    @Deprecated
+    public static DiskUsageReport buildV1(CleanerConfiguration configuration) throws IOException {
         final DiskUsageReport report = new DiskUsageReport();
 
         report.totalSpaceInBytes = new File(configuration.getTilesRootDir()).getTotalSpace();
@@ -90,5 +145,15 @@ public class DiskUsageReport {
     }
 
 
+    @Override
+    public String toString() {
+        return "DiskUsageReport{" +
+                "totalSpaceInBytes=" + totalSpaceInBytes +
+                ", freeSpaceInBytes=" + freeSpaceInBytes +
+                ", totalSpecimenCount=" + totalSpecimenCount +
+                ", completeSpecimenCount=" + completeSpecimenCount +
+                ", minimalSpecimenCount=" + minimalSpecimenCount +
+                '}';
+    }
 }
 
