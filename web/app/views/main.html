@@ -739,7 +739,7 @@
             <div class="progress progress-{{ report.status }}">
                 <div class="bar" style="width: {{ getDiskUsagePercent() }}%"></div>
             </div>
-            <p><b>&{'diskusage.tiledSpecimenCount'} :</b> <span>  {{ report.completeSpecimenCount }} sp.</span></p>
+            *{<p><b>&{'diskusage.tiledSpecimenCount'} :</b> <span>  {{ report.completeSpecimenCount }} sp.</span></p>}*
             <p><b>&{'diskusage.freeSpace'} :</b> <span>{{ toGo(report.freeSpaceInBytes) }} Go / {{ toGo(report.totalSpaceInBytes) }} Go</span></p>
 			<p><b>&{'diskusage.approxSpecimenCountLeft'} : </b> {{ report.approxSpecimenCountLeft }} sp.</p>
 

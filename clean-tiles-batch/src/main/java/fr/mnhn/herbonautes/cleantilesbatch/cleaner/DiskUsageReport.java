@@ -21,7 +21,7 @@ public class DiskUsageReport {
     private Integer minimalSpecimenCount = 0;
 
     public static DiskUsageReport build(CleanerConfiguration configuration) throws IOException {
-        return buildV2(configuration);
+        return buildSimple(configuration);
     }
 
     public static DiskUsageReport buildSimple(CleanerConfiguration configuration) throws IOException {
