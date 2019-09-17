@@ -128,7 +128,7 @@ public class TagController extends Application {
             Mission mission = Mission.findById(form.getTargetId());
             mission.save();
         }else if (TagLinkType.valueOf(form.getTagLinkType()).equals(TagLinkType.SPECIMEN)) {
-            Specimen specimen = Specimen.findById(form.getTargetId());
+            SpecimenMaster specimen = SpecimenMaster.findById(form.getTargetId());
             specimen.save();
         }
         ok();
