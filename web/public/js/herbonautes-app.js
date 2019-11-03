@@ -2435,7 +2435,7 @@ herbonautesApp.controller('ContributionBoard', ['$scope', '$rootScope', '$locati
             //setAllLoading(false);
 
             $rootScope.$emit('reloadDiscussions', $scope.specimen.code);
-            $rootScope.$emit('reloadSpecimenTags', $scope.specimen.id, $scope.specimen.code);
+            $rootScope.$emit('reloadSpecimenTags', $scope.specimen.masterId, $scope.specimen.code);
 
             $scope.firstLoading = false;
 

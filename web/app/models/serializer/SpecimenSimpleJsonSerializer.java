@@ -39,7 +39,8 @@ public class SpecimenSimpleJsonSerializer implements JsonSerializer<Specimen> {
         obj.addProperty("th", specimen.getTileHeight());
 
 
-		
+		obj.addProperty("masterId", specimen.getMaster().id);
+
 		return obj;
 	}
 
