@@ -620,6 +620,19 @@ herbonautesApp.service('QuestionUtils', [function() {
         return true;
     }
 
+    function isDateDefined(d) {
+        if (typeof(d) == "undefined") {
+            return false;
+        }
+        if (typeof(d) != "number") {
+            return false;
+        }
+        if (isNaN(d)) {
+            return false;
+        }
+        return true;
+    }
+
     function cleanAnswer(question, answer) {
 
         function cleanAutocomplete(conf, val) {
@@ -689,7 +702,10 @@ herbonautesApp.service('QuestionUtils', [function() {
                     // 1 date only
                     if (ans.start && ans.start.raw) {
                         var p = guessPeriod(ans.start.raw);
-                        if (!p || !p[0] || !p[1]) { return null }
+                        if (!p) { return null }
+                        if (!isDateDefined(p[0]) || !isDateDefined(p[1])) {
+                            return null;
+                        }  
                         ans.start.ts = p[0];
                         ans.end = { ts: p[1]};
                         return ans;
@@ -802,7 +818,7 @@ herbonautesApp.service('QuestionUtils', [function() {
         }
         if (questionLine.type == 'period') {
 
-            if (!ans || !ans.start || !ans.start.ts || ans.start<ans.end || ans.start.ts>ans.end.ts) {
+            if (!ans || !ans.start || !isDateDefined(ans.start.ts) || ans.start<ans.end || ans.start.ts>ans.end.ts) {
 //            	console.log("this is test", rawAns.start, rawAns.end, ans.start, ans.end, type);
                 return "error.bad.period";
             }
